@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+
+    <ProjectReference Include="..\..\src\NainLegacyModernizer.Core\NainLegacyModernizer.Core.csproj" />
+    <ProjectReference Include="..\..\src\NainLegacyModernizer.Gateway\NainLegacyModernizer.Gateway.csproj" />
+    <ProjectReference Include="..\..\src\NainLegacyModernizer.LegacyMonolith\NainLegacyModernizer.LegacyMonolith.csproj" />
+    <ProjectReference Include="..\..\src\NainLegacyModernizer.ModernApi\NainLegacyModernizer.ModernApi.csproj" />
+    <ProjectReference Include="..\..\src\NainLegacyModernizer.ShadowRunner\NainLegacyModernizer.ShadowRunner.csproj" />
+  </ItemGroup>
+</Project>
