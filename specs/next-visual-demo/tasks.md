@@ -14,6 +14,8 @@
 | T-010 | H | Approve ADR (Proposed to Approved) | ADR status changed by the owner |
 | T-011 | M | Push `feat/visual-demo`, open the PR, merge, confirm the published URL | URL answers 200 |
 
+| T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
+
 ## Blockers
 
 - T-009: needs repository admin rights. Without it the workflow's deploy job fails at

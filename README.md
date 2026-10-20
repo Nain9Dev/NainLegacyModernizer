@@ -7,7 +7,7 @@
 [![Reverse Proxy](https://img.shields.io/badge/YARP-v2.3-blue)](https://microsoft.github.io/reverse-proxy/)
 [![Operating Cost](https://img.shields.io/badge/Cost-0.00_EUR-22c55e)](docs/00-charter.md)
 
-**[Live demo](https://www.naindev.com/NainLegacyModernizer/)**: an interactive, no-backend illustration of the Strangler Fig routing and the shadow run (source in [`demo/`](demo/)).
+**[Live demo](https://modernizer.naindev.com/)**: an interactive, no-backend illustration of the Strangler Fig routing and the shadow run (source in [`demo/`](demo/)).
 
 ---
 
