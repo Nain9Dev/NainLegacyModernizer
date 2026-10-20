@@ -115,5 +115,5 @@ test("REQ-DEMO-16: Pages workflow pins actions, limits permissions, deploys only
 
 test("REQ-DEMO-17: README links to the demo", () => {
   const readme = read(root, "README.md");
-  assert.match(readme, /\[Live demo\]\(https:\/\/www\.naindev\.com\/NainLegacyModernizer\/\)/);
+  assert.match(readme, /\[Live demo\]\(https:\/\/modernizer\.naindev\.com\/\)/);
 });

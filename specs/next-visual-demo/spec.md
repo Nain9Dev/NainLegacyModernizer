@@ -71,6 +71,8 @@ run proves both answer the same before the cut-over.
 - **REQ-DEMO-16** A GitHub Actions workflow shall build, test and publish `demo/dist` to GitHub Pages on
   push to `main`, and shall only build and test on pull requests.
 - **REQ-DEMO-17** The README shall link to the demo.
+- **REQ-DEMO-18** The demo shall be served at `https://modernizer.naindev.com/`, through GitHub Pages
+  behind a Cloudflare-proxied subdomain, at no cost (ADR `next-demo-hosting-subdomain`, Proposed).
 
 ## Verification
 
