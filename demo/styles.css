@@ -93,6 +93,10 @@ code { font-family: var(--nain-font-mono); font-size: 0.9375em; }
 .controls input[type="range"] { flex: 1 1 220px; min-height: 44px; accent-color: var(--nain-blue); }
 
 /* Diagram */
+.samples { display: flex; flex-wrap: wrap; gap: var(--nain-s3); margin: 0 0 var(--nain-s4); }
+.btn-link { display: inline-flex; align-items: center; min-height: 44px; padding: var(--nain-s2) var(--nain-s4); border: 2px solid var(--nain-blue); border-radius: var(--nain-radius); color: var(--nain-blue); font-weight: 600; text-decoration: none; background: var(--nain-surface); }
+.btn-link::after { content: "\2192"; margin-left: var(--nain-s2); }
+.btn-link:hover { background: var(--nain-paper); text-decoration: underline; }
 .stage { display: block; width: 100%; height: auto; background: var(--nain-paper); border: 2px solid var(--nain-blue-deep); border-radius: var(--nain-radius); }
 .stage text { font-family: var(--nain-font-sans); font-size: 15px; font-weight: 600; fill: var(--nain-blue-deep); }
 .stage .node rect { fill: var(--nain-surface); stroke: var(--nain-blue-deep); stroke-width: 2; }

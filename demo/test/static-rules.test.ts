@@ -102,6 +102,16 @@ test("REQ-DEMO-13: the published folder stays under 150 KB", () => {
   assert.ok(existsSync(new URL("main.js", dist)));
 });
 
+test("REQ-DEMO-19: the demo links the generated sample reports and ships them", () => {
+  for (const name of ["parity-report-not-ready.html", "parity-report-ready.html"]) {
+    assert.ok(html.includes(`href="samples/${name}"`), `link to ${name}`);
+    assert.ok(existsSync(new URL(`dist/samples/${name}`, demo)), `dist/samples/${name}`);
+    const sample = read(demo, `samples/${name}`);
+    assert.ok(!/<script/i.test(sample), `${name} has no script`);
+    assert.ok(!/https?:\/\//i.test(sample), `${name} has no external reference`);
+  }
+});
+
 test("REQ-DEMO-16: Pages workflow pins actions, limits permissions, deploys only from main", () => {
   const wf = read(root, ".github/workflows/pages.yml");
   assert.match(wf, /^permissions:\s*\n\s+contents: read/m);

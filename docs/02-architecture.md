@@ -34,4 +34,21 @@ flowchart TB
 | `NainLegacyModernizer.ModernApi` | High-throughput, clean architecture implementation of the carved slice | .NET 10, ASP.NET Core, CQRS |
 | `NainLegacyModernizer.LegacyMonolith` | High-fidelity emulation of legacy monolith behaviors and schemas | .NET 10 (emulating .NET 4.8 / MVC 5 contracts) |
 | `NainLegacyModernizer.ShadowRunner` | Audit harness comparing legacy vs modern domain execution | .NET 10, Concurrent Pipeline |
+| `NainLegacyModernizer.ShadowRunner` (parity) | JSON comparer, HTTP runner and HTML report renderer for any pair of APIs | .NET 10, BCL only |
+| `NainLegacyModernizer.ParityCli` | `nain-parity` console tool and CI gate (exit codes) | .NET 10, `PackAsTool` |
 | `NainLegacyModernizer.Tests` | Integration verification of proxying, fallback, and discrepancy audits | xUnit, Microsoft.AspNetCore.Mvc.Testing |
+
+## 3. Parity Report Flow
+
+```mermaid
+flowchart LR
+    cli[ParityCli<br/>arguments, files, exit code] --> runner[ShadowRunner<br/>ParityRunner]
+    runner --> cmp[JsonParityComparer]
+    runner --> http[HttpClient x2<br/>GET only]
+    cli --> html[ParityHtmlRenderer]
+    runner --> core[Core<br/>ParityReport, RouteParityResult]
+    html --> core
+    cmp --> core
+```
+
+`Core` holds only the report models (no HTTP, no JSON). Comparison, HTTP and rendering live in `ShadowRunner`; the CLI does I/O and exit codes only.
