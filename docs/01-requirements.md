@@ -22,6 +22,16 @@ This document defines the functional and non-functional requirements for the mod
   - Identical outputs yield `ParityVerdict.Matched` with 0 mismatches.
   - Value divergence (e.g., rounding differences or field omissions) yields `ParityVerdict.Discrepancy` with detailed field-level diffs.
 
+### REQ-PAR: Parity Report and CLI
+
+- **Statement**: When a team runs `nain-parity` against a legacy and a modern base URL, the tool shall send the same `GET` requests to both, compare the JSON responses, and write a self-contained HTML report that states whether every route is ready to cut over.
+- **Acceptance Criteria**:
+  - Field names match ignoring case, `_` and `-`; `--map` aligns renamed fields; `--ignore` skips fields on both sides.
+  - Numbers compare as decimals (NFR-02); a field present on one side only is a discrepancy.
+  - A request failure or a non-JSON body is an `ExecutionError` for that route and the run continues.
+  - An empty report is never ready (fail closed). Exit codes: `0` ready, `1` not ready, `2` invalid arguments.
+  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-16`: `specs/next-parity-report/spec.md`.
+
 ## 2. Non-Functional Requirements
 
 - **NFR-01: Framework Modernity**: Modern services and gateway target `.NET 10` with C# 13 and strict nullable annotations.

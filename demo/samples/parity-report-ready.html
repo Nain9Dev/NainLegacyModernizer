@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parity report</title>
+<style>
+:root{--blue-deep:#002B66;--blue-mid:#3C5F94;--paper:#EDF1F6;--surface:#F7F9FC;--line:#C6D2E3;--green-ink:#2E6B00;--red-ink:#C4001A;--black:#1D1D1B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--blue-deep);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:960px;margin:0 auto;padding:24px 16px 48px}
+.banner{background:var(--surface);border:3px solid var(--green-ink);border-radius:4px;padding:16px 24px;box-shadow:8px 8px 0 var(--black)}
+.banner.bad{border-color:var(--red-ink);border-style:dashed}
+h1{margin:0;font-size:1.75rem}
+.ok{color:var(--green-ink)}.bad-text{color:var(--red-ink)}
+.counts{margin:8px 0 0;font-weight:600}
+.bar{display:block;width:100%;height:28px;margin:16px 0;border:2px solid var(--blue-deep);border-radius:4px;background:var(--surface)}
+.meta{color:var(--blue-mid);font-size:.9375rem;margin:16px 0}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9375em}
+.route{background:var(--surface);border:2px solid var(--blue-mid);border-radius:4px;padding:12px 16px;margin:12px 0}
+.route h2{margin:0;font-size:1.0625rem;display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+.state{font-weight:700;border:2px solid;border-radius:4px;padding:0 8px}
+.state-matched{color:var(--green-ink);border-color:var(--green-ink)}
+.state-different{color:var(--red-ink);border-color:var(--red-ink);border-style:dashed}
+.state-failed{color:var(--black);border-color:var(--black);border-style:dotted;border-width:3px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.9375rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--blue-mid);vertical-align:top;overflow-wrap:anywhere}
+td.diff{font-weight:700;color:var(--red-ink)}
+.err{margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+<header class="banner">
+<h1 class="ok">&#10003; Ready to cut over</h1>
+<p class="counts">2 matched &middot; 0 different &middot; 0 failed</p>
+</header>
+<svg class="bar" viewBox="0 0 100 6" preserveAspectRatio="none" role="img" aria-label="2 matched, 0 different, 0 failed">
+<rect x="0" y="0" width="100" height="6" fill="#2E6B00"/>
+</svg>
+<p class="meta">Legacy <code>LegacyMonolith (in-repo)</code> against modern <code>ModernApi (in-repo)</code> &middot; 2026-10-20 00:00:00Z</p>
+<p class="meta">Ignored fields: <code>CustomerRef</code>, <code>ItemsCount</code>, <code>Source</code></p>
+<section class="route">
+<h2><code>/api/orders/ORD-1</code> <span class="state state-matched">&#10003; Matched</span></h2>
+</section>
+<section class="route">
+<h2><code>/api/orders/ORD-2</code> <span class="state state-matched">&#10003; Matched</span></h2>
+</section>
+</main>
+</body>
+</html>

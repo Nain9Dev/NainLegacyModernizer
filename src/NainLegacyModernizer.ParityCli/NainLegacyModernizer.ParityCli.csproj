@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>NainLegacyModernizer.ParityCli</RootNamespace>
+    <AssemblyName>nain-parity</AssemblyName>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>nain-parity</ToolCommandName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NainLegacyModernizer.Core\NainLegacyModernizer.Core.csproj" />
+    <ProjectReference Include="..\NainLegacyModernizer.ShadowRunner\NainLegacyModernizer.ShadowRunner.csproj" />
+  </ItemGroup>
+</Project>

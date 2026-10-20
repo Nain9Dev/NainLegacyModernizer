@@ -4,6 +4,7 @@
     <Project Path="src/NainLegacyModernizer.Gateway/NainLegacyModernizer.Gateway.csproj" />
     <Project Path="src/NainLegacyModernizer.LegacyMonolith/NainLegacyModernizer.LegacyMonolith.csproj" />
     <Project Path="src/NainLegacyModernizer.ModernApi/NainLegacyModernizer.ModernApi.csproj" />
+    <Project Path="src/NainLegacyModernizer.ParityCli/NainLegacyModernizer.ParityCli.csproj" />
     <Project Path="src/NainLegacyModernizer.ShadowRunner/NainLegacyModernizer.ShadowRunner.csproj" />
   </Folder>
   <Folder Name="/tests/">
