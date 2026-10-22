@@ -1,5 +1,6 @@
 namespace NainLegacyModernizer.Core;
 
+/// <summary>Sample domain used by the bundled legacy and modern demo backends.</summary>
 public sealed record Money(decimal Amount, string Currency)
 {
     public static Money Eur(decimal amount) => new(amount, "EUR");
@@ -26,19 +27,3 @@ public sealed record Order(
         }
     }
 }
-
-public enum ParityVerdict
-{
-    Matched,
-    Discrepancy,
-    ExecutionError,
-}
-
-public sealed record DiscrepancyDetail(string Field, string LegacyValue, string ModernValue);
-
-public sealed record ShadowAuditResult(
-    string RequestPath,
-    ParityVerdict Verdict,
-    TimeSpan LegacyLatency,
-    TimeSpan ModernLatency,
-    IReadOnlyList<DiscrepancyDetail> Discrepancies);
