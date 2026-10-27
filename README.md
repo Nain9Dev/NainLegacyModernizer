@@ -3,6 +3,8 @@
 > Zero-downtime modernization harness for legacy .NET workloads: a YARP gateway that moves each route through
 > **Legacy → Shadow → Canary → Modern**, verifies parity on real traffic and shows it all in a control panel a client can drive.
 
+[![Language: English](https://img.shields.io/badge/Language-English-blue.svg)](#)
+[![Versión en Español](https://img.shields.io/badge/Versión-Español-red.svg)](README.es.md)
 [![Architecture](https://img.shields.io/badge/Architecture-Strangler_Fig-0047AB)](docs/02-architecture.md)
 [![Target](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/)
 [![Reverse Proxy](https://img.shields.io/badge/YARP-2.3-blue)](https://microsoft.github.io/reverse-proxy/)
