@@ -1,3 +1,4 @@
+using System.Globalization;
 using NainLegacyModernizer.Core;
 using NainLegacyModernizer.ShadowRunner;
 using Xunit;
@@ -6,7 +7,20 @@ namespace NainLegacyModernizer.Tests;
 
 public sealed class ShadowAuditorTests
 {
+    // The two scenarios below are the synthetic fixtures the static demo mirrors (demo/src/fixtures.ts):
+    // ORD-001 agrees at 100.00 EUR, ORD-002 diverges (legacy 99.99 against modern 100.00). The demo's own tests read
+    // this file to check that both stay in sync, so keep the ids, paths and amounts literal.
     private static readonly ShadowAuditRequest Request = new("orders", "GET", "/api/orders/ORD-001");
+    private static readonly ShadowAuditRequest DivergingRequest = new("orders", "GET", "/api/orders/ORD-002");
+
+    private static readonly ParityComparisonOptions Aliases = new()
+    {
+        FieldAliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["OrderID"] = "id",
+            ["Total"] = "totalAmount",
+        },
+    };
 
     [Fact]
     public async Task AuditAsync_WhenOutputsMatch_YieldsParityMatched()
@@ -15,9 +29,9 @@ public sealed class ShadowAuditorTests
 
         var result = await auditor.AuditAsync(
             Request,
-            _ => Task.FromResult(new ProbeResponse(200, """{"OrderID":"ORD-001","Total":"100.00"}""")),
-            _ => Task.FromResult(new ProbeResponse(200, """{"id":"ORD-001","total":100.00}""")),
-            new ParityComparisonOptions { FieldAliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { ["OrderID"] = "id" } });
+            _ => Task.FromResult(new ProbeResponse(200, LegacyBody("ORD-001", 100.00m))),
+            _ => Task.FromResult(new ProbeResponse(200, ModernBody("ORD-001", 100.00m))),
+            Aliases);
 
         Assert.Equal(ParityVerdict.Matched, result.Verdict);
         Assert.Empty(result.Discrepancies);
@@ -32,16 +46,25 @@ public sealed class ShadowAuditorTests
         var auditor = new ShadowAuditor();
 
         var result = await auditor.AuditAsync(
-            Request,
-            _ => Task.FromResult(new ProbeResponse(200, """{"total":99.99}""")),
-            _ => Task.FromResult(new ProbeResponse(200, """{"total":100.00}""")));
+            DivergingRequest,
+            _ => Task.FromResult(new ProbeResponse(200, LegacyBody("ORD-002", 99.99m))),
+            _ => Task.FromResult(new ProbeResponse(200, ModernBody("ORD-002", 100.00m))),
+            Aliases);
 
         Assert.Equal(ParityVerdict.Discrepancy, result.Verdict);
         var diff = Assert.Single(result.Discrepancies);
-        Assert.Equal("total", diff.Field);
-        Assert.Equal("99.99", diff.LegacyValue);
+        Assert.Equal("Total", diff.Field);
+        Assert.Equal("\"99.99\"", diff.LegacyValue);
         Assert.Equal("100.00", diff.ModernValue);
     }
+
+    /// <summary>PascalCase and a stringified decimal, as the monolith answers.</summary>
+    private static string LegacyBody(string id, decimal total) =>
+        $$"""{"OrderId":"{{id}}","Total":"{{total.ToString("F2", CultureInfo.InvariantCulture)}}","Currency":"EUR"}""";
+
+    /// <summary>camelCase and a numeric decimal, as the modern API answers.</summary>
+    private static string ModernBody(string id, decimal total) =>
+        $$"""{"id":"{{id}}","totalAmount":{{total.ToString("F2", CultureInfo.InvariantCulture)}},"currency":"EUR"}""";
 
     [Fact]
     public async Task AuditAsync_WhenStatusCodesDiffer_ReportsStatusDiscrepancy()

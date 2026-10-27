@@ -16,8 +16,13 @@
 - Integration tests that boot the gateway against in-memory legacy and modern servers.
 
 ### Changed
-- Gateway routing moved from static YARP configuration to per-request forwarding (ADR-0001).
+- Gateway routing moved from static YARP configuration to per-request forwarding (ADR: per-request routing over
+  YARP's forwarder, number pending).
 - Legacy and modern demo backends expose five slices (`invoices`, `orders`, `customers`, `catalog`, `pricing`).
+- The shadow replay comparer is now `ShadowParityComparer`; `JsonParityComparer` keeps serving the `nain-parity`
+  CLI. Both coexist until a decision unifies them (see `docs/02-architecture.md`).
+- The sample parity reports are regenerated from the shared demo data: the not-ready report shows the stringified
+  legacy total and the VAT rounding difference on `CUST-501`; the ready report covers `catalog` and `pricing`.
 
 ## 0.1.0
 

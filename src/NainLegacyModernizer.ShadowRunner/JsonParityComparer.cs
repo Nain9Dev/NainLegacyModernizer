@@ -4,264 +4,147 @@ using NainLegacyModernizer.Core;
 
 namespace NainLegacyModernizer.ShadowRunner;
 
-/// <summary>Rules applied while comparing a legacy and a modern response body.</summary>
-public sealed record ParityComparisonOptions
-{
-    public static ParityComparisonOptions Default { get; } = new();
+/// <summary>Field names to skip and legacy-to-modern name aliases. Names are matched after normalisation.</summary>
+public sealed record JsonParityOptions(
+    IReadOnlySet<string>? Ignore = null,
+    IReadOnlyDictionary<string, string>? Map = null);
 
-    /// <summary>Legacy property name to modern property name.</summary>
-    public IReadOnlyDictionary<string, string> FieldAliases { get; init; } =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>Property names or dotted paths excluded from the comparison.</summary>
-    public IReadOnlyList<string> IgnoredFields { get; init; } = [];
-
-    /// <summary>Absolute difference tolerated between two numeric values.</summary>
-    public decimal DecimalTolerance { get; init; }
-
-    public bool IgnoreCase { get; init; } = true;
-
-    /// <summary>Treat a numeric string ("12.50") as equal to the number 12.50. Legacy stacks often stringify decimals.</summary>
-    public bool CoerceNumericStrings { get; init; } = true;
-
-    public static ParityComparisonOptions ForRoute(MigrationRoute route, decimal decimalTolerance = 0m)
-    {
-        ArgumentNullException.ThrowIfNull(route);
-        return new ParityComparisonOptions
-        {
-            FieldAliases = route.FieldAliases,
-            IgnoredFields = route.IgnoredFields,
-            DecimalTolerance = decimalTolerance,
-        };
-    }
-}
-
-/// <summary>
-/// Structural JSON comparison that tolerates the usual legacy-vs-modern noise:
-/// property casing, renamed fields, generated metadata and sub-cent rounding.
-/// Falls back to a trimmed text comparison when a body is not JSON.
-/// </summary>
 public static class JsonParityComparer
 {
-    private const int MaxRenderedValueLength = 200;
-    private const string BodyField = "$body";
+    public const string Missing = "<missing>";
 
-    public static IReadOnlyList<DiscrepancyDetail> Compare(string? legacyBody, string? modernBody, ParityComparisonOptions? options = null)
+    /// <exception cref="JsonException">Either document is not valid JSON.</exception>
+    public static IReadOnlyList<DiscrepancyDetail> Compare(string legacyJson, string modernJson, JsonParityOptions? options = null)
     {
-        options ??= ParityComparisonOptions.Default;
+        options ??= new JsonParityOptions();
+        var ignore = new HashSet<string>((options.Ignore ?? new HashSet<string>()).Select(Normalise), StringComparer.Ordinal);
+        var map = (options.Map ?? new Dictionary<string, string>())
+            .ToDictionary(p => Normalise(p.Key), p => Normalise(p.Value), StringComparer.Ordinal);
 
-        var legacyText = legacyBody?.Trim() ?? string.Empty;
-        var modernText = modernBody?.Trim() ?? string.Empty;
-
-        using var legacyDoc = TryParse(legacyText);
-        using var modernDoc = TryParse(modernText);
-
-        if (legacyDoc is null || modernDoc is null)
+        // Ignoring a legacy name also ignores the modern name it is mapped to.
+        foreach (var (legacyName, modernName) in map)
         {
-            return string.Equals(legacyText, modernText, StringComparison.Ordinal)
-                ? []
-                : [new DiscrepancyDetail(BodyField, Render(legacyText), Render(modernText))];
+            if (ignore.Contains(legacyName))
+            {
+                ignore.Add(modernName);
+            }
         }
 
+        var legacy = Flatten(legacyJson, ignore, map, applyMap: true);
+        var modern = Flatten(modernJson, ignore, map, applyMap: false);
+
         var diffs = new List<DiscrepancyDetail>();
-        var ctx = new Context(options, diffs);
-        CompareElement(ctx, string.Empty, legacyDoc.RootElement, modernDoc.RootElement);
+        foreach (var (key, legacyField) in legacy)
+        {
+            if (!modern.TryGetValue(key, out var modernField))
+            {
+                diffs.Add(new DiscrepancyDetail(legacyField.Display, legacyField.Value, Missing));
+            }
+            else if (!SameValue(legacyField, modernField))
+            {
+                diffs.Add(new DiscrepancyDetail(legacyField.Display, legacyField.Value, modernField.Value));
+            }
+        }
+
+        foreach (var (key, modernField) in modern)
+        {
+            if (!legacy.ContainsKey(key))
+            {
+                diffs.Add(new DiscrepancyDetail(modernField.Display, Missing, modernField.Value));
+            }
+        }
+
         return diffs;
     }
 
-    private static JsonDocument? TryParse(string text)
-    {
-        if (text.Length == 0)
-        {
-            return null;
-        }
+    private static string Normalise(string name) =>
+        name.Replace("_", string.Empty, StringComparison.Ordinal)
+            .Replace("-", string.Empty, StringComparison.Ordinal)
+            .ToLowerInvariant();
 
-        try
-        {
-            return JsonDocument.Parse(text);
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
+    private readonly record struct Field(string Display, string Value, JsonValueKind Kind);
+
+    private static Dictionary<string, Field> Flatten(string json, HashSet<string> ignore, Dictionary<string, string> map, bool applyMap)
+    {
+        using var document = JsonDocument.Parse(json);
+        var fields = new Dictionary<string, Field>(StringComparer.Ordinal);
+        Walk(document.RootElement, string.Empty, string.Empty, fields, ignore, map, applyMap);
+        return fields;
     }
 
-    private static void CompareElement(Context ctx, string path, JsonElement legacy, JsonElement modern)
+    private static void Walk(
+        JsonElement element,
+        string display,
+        string key,
+        Dictionary<string, Field> fields,
+        HashSet<string> ignore,
+        Dictionary<string, string> map,
+        bool applyMap)
     {
-        if (legacy.ValueKind == JsonValueKind.Object && modern.ValueKind == JsonValueKind.Object)
-        {
-            CompareObject(ctx, path, legacy, modern);
-            return;
-        }
-
-        if (legacy.ValueKind == JsonValueKind.Array && modern.ValueKind == JsonValueKind.Array)
-        {
-            CompareArray(ctx, path, legacy, modern);
-            return;
-        }
-
-        if (TryAsNumber(ctx.Options, legacy, out var legacyNumber) && TryAsNumber(ctx.Options, modern, out var modernNumber))
-        {
-            if (Math.Abs(legacyNumber - modernNumber) > ctx.Options.DecimalTolerance)
-            {
-                ctx.Add(path, Render(legacy), Render(modern), DiscrepancyKind.ValueMismatch);
-            }
-
-            return;
-        }
-
-        if (IsBoolean(legacy) && IsBoolean(modern))
-        {
-            if (legacy.ValueKind != modern.ValueKind)
-            {
-                ctx.Add(path, Render(legacy), Render(modern), DiscrepancyKind.ValueMismatch);
-            }
-
-            return;
-        }
-
-        if (legacy.ValueKind != modern.ValueKind)
-        {
-            ctx.Add(path, Render(legacy), Render(modern), DiscrepancyKind.TypeMismatch);
-            return;
-        }
-
-        if (legacy.ValueKind == JsonValueKind.String &&
-            !string.Equals(legacy.GetString(), modern.GetString(), StringComparison.Ordinal))
-        {
-            ctx.Add(path, Render(legacy), Render(modern), DiscrepancyKind.ValueMismatch);
-        }
-    }
-
-    private static void CompareObject(Context ctx, string path, JsonElement legacy, JsonElement modern)
-    {
-        var comparer = ctx.Options.IgnoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
-        var modernProps = new Dictionary<string, JsonProperty>(comparer);
-        foreach (var prop in modern.EnumerateObject())
-        {
-            modernProps.TryAdd(prop.Name, prop);
-        }
-
-        var matchedModern = new HashSet<string>(comparer);
-
-        foreach (var legacyProp in legacy.EnumerateObject())
-        {
-            var childPath = Join(path, legacyProp.Name);
-            if (ctx.IsIgnored(legacyProp.Name, childPath))
-            {
-                continue;
-            }
-
-            var modernName = ctx.Options.FieldAliases.TryGetValue(legacyProp.Name, out var alias) ? alias : legacyProp.Name;
-
-            if (!modernProps.TryGetValue(modernName, out var modernProp))
-            {
-                ctx.Add(childPath, Render(legacyProp.Value), null, DiscrepancyKind.MissingInModern);
-                continue;
-            }
-
-            matchedModern.Add(modernProp.Name);
-            CompareElement(ctx, childPath, legacyProp.Value, modernProp.Value);
-        }
-
-        foreach (var modernProp in modern.EnumerateObject())
-        {
-            if (matchedModern.Contains(modernProp.Name))
-            {
-                continue;
-            }
-
-            var childPath = Join(path, modernProp.Name);
-            if (ctx.IsIgnored(modernProp.Name, childPath))
-            {
-                continue;
-            }
-
-            ctx.Add(childPath, null, Render(modernProp.Value), DiscrepancyKind.MissingInLegacy);
-        }
-    }
-
-    private static void CompareArray(Context ctx, string path, JsonElement legacy, JsonElement modern)
-    {
-        var legacyLength = legacy.GetArrayLength();
-        var modernLength = modern.GetArrayLength();
-        if (legacyLength != modernLength)
-        {
-            ctx.Add(
-                Join(path, "length"),
-                legacyLength.ToString(CultureInfo.InvariantCulture),
-                modernLength.ToString(CultureInfo.InvariantCulture),
-                DiscrepancyKind.ValueMismatch);
-            return;
-        }
-
-        var index = 0;
-        using var legacyItems = legacy.EnumerateArray();
-        using var modernItems = modern.EnumerateArray();
-        while (legacyItems.MoveNext() && modernItems.MoveNext())
-        {
-            CompareElement(ctx, $"{path}[{index}]", legacyItems.Current, modernItems.Current);
-            index++;
-        }
-    }
-
-    private static bool TryAsNumber(ParityComparisonOptions options, JsonElement element, out decimal value)
-    {
-        value = 0m;
         switch (element.ValueKind)
         {
-            case JsonValueKind.Number:
-                if (element.TryGetDecimal(out value))
+            case JsonValueKind.Object:
+                foreach (var property in element.EnumerateObject())
                 {
-                    return true;
+                    var normalised = Normalise(property.Name);
+                    if (ignore.Contains(normalised))
+                    {
+                        continue;
+                    }
+
+                    var segment = applyMap && map.TryGetValue(normalised, out var alias) ? alias : normalised;
+                    Walk(
+                        property.Value,
+                        display.Length == 0 ? property.Name : $"{display}.{property.Name}",
+                        key.Length == 0 ? segment : $"{key}.{segment}",
+                        fields,
+                        ignore,
+                        map,
+                        applyMap);
                 }
 
-                if (element.TryGetDouble(out var dbl) && !double.IsNaN(dbl) && !double.IsInfinity(dbl))
+                break;
+            case JsonValueKind.Array:
+                var index = 0;
+                foreach (var item in element.EnumerateArray())
                 {
-                    value = (decimal)dbl;
-                    return true;
+                    Walk(item, $"{display}[{index}]", $"{key}[{index}]", fields, ignore, map, applyMap);
+                    index++;
                 }
 
-                return false;
-
-            case JsonValueKind.String when options.CoerceNumericStrings:
-                return decimal.TryParse(element.GetString(), NumberStyles.Number, CultureInfo.InvariantCulture, out value);
-
+                break;
             default:
-                return false;
+                var name = display.Length == 0 ? "$" : display;
+                fields[key.Length == 0 ? "$" : key] = new Field(name, Render(element), element.ValueKind);
+                break;
         }
     }
 
-    private static bool IsBoolean(JsonElement element) =>
-        element.ValueKind is JsonValueKind.True or JsonValueKind.False;
-
-    private static string Join(string path, string name) =>
-        path.Length == 0 ? name : $"{path}.{name}";
-
-    private static string Render(JsonElement element) => Render(element.GetRawText());
-
-    private static string Render(string text) =>
-        text.Length <= MaxRenderedValueLength ? text : string.Concat(text.AsSpan(0, MaxRenderedValueLength), "…");
-
-    private sealed class Context(ParityComparisonOptions options, List<DiscrepancyDetail> diffs)
+    private static string Render(JsonElement element) => element.ValueKind switch
     {
-        public ParityComparisonOptions Options { get; } = options;
+        JsonValueKind.String => element.GetString() ?? string.Empty,
+        JsonValueKind.Null => "null",
+        JsonValueKind.True => "true",
+        JsonValueKind.False => "false",
+        _ => element.GetRawText(),
+    };
 
-        public void Add(string path, string? legacy, string? modern, DiscrepancyKind kind) =>
-            diffs.Add(new DiscrepancyDetail(path.Length == 0 ? "$" : path, legacy, modern, kind));
-
-        public bool IsIgnored(string name, string path)
+    private static bool SameValue(Field legacy, Field modern)
+    {
+        if (legacy.Kind == JsonValueKind.Number && modern.Kind == JsonValueKind.Number)
         {
-            foreach (var ignored in Options.IgnoredFields)
-            {
-                if (string.Equals(ignored, name, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(ignored, path, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
+            var parsedLegacy = decimal.TryParse(legacy.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var l);
+            var parsedModern = decimal.TryParse(modern.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var m);
+            return parsedLegacy && parsedModern ? l == m : string.Equals(legacy.Value, modern.Value, StringComparison.Ordinal);
+        }
 
+        var legacyIsBool = legacy.Kind is JsonValueKind.True or JsonValueKind.False;
+        var modernIsBool = modern.Kind is JsonValueKind.True or JsonValueKind.False;
+        if (legacy.Kind != modern.Kind && !(legacyIsBool && modernIsBool))
+        {
             return false;
         }
+
+        return string.Equals(legacy.Value, modern.Value, StringComparison.Ordinal);
     }
 }

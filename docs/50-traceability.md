@@ -12,7 +12,7 @@ All tests live in `tests/NainLegacyModernizer.Tests`. Run `dotnet test`.
 | REQ-STR-06 | `GatewayRoutingTests.ChangingMode_FromPanel_AppliesToNextRequest`, `MigrationRouteRegistryTests.SetMode_*` |
 | REQ-STR-07 | `GatewayRoutingTests.LegacyRoute_IsServedByMonolith_WithDiagnosticHeaders` |
 | REQ-SHD-01 | `GatewayRoutingTests.ShadowRoute_ServesLegacy_AndRecordsMatchedAudit`, `ShadowRoute_ReplaysPostBody_ToModern` |
-| REQ-SHD-02 | `JsonParityComparerTests.*`, `ShadowAuditorTests.AuditAsync_WhenStatusCodesDiffer_ReportsStatusDiscrepancy`, `GatewayRoutingTests.ShadowRoute_DetectsRoundingBug_AsDiscrepancy` |
+| REQ-SHD-02 | `ShadowParityComparerTests.*`, `ShadowAuditorTests.AuditAsync_WhenStatusCodesDiffer_ReportsStatusDiscrepancy`, `GatewayRoutingTests.ShadowRoute_DetectsRoundingBug_AsDiscrepancy` |
 | REQ-SHD-03 | `ShadowAuditorTests.AuditAsync_WhenModernThrows_*`, `AuditAsync_WhenCancelled_*`, `GatewayRoutingTests.ShadowRoute_WhenModernIsDown_*` |
 | REQ-SHD-04 | `CutoverPolicyTests.*`, `GatewayRoutingTests.Overview_ReportsRoutesSummariesAndReadiness` |
 | REQ-CP-01 | `GatewayRoutingTests.Overview_ReportsRoutesSummariesAndReadiness`, `InMemoryAuditStoreTests.GetSummary_*` |
@@ -20,6 +20,7 @@ All tests live in `tests/NainLegacyModernizer.Tests`. Run `dotnet test`.
 | REQ-CP-03 | `GatewayRoutingTests.AuditsEndpoint_FiltersByVerdict_AndClears` |
 | REQ-CP-04 | `GatewayRoutingTests.Panel_IsServedFromEmbeddedResources` |
 | REQ-CP-05 | Manual: demo panel "Send 50 requests" (browser-only behaviour) |
+| REQ-PAR (REQ-PAR-01 to REQ-PAR-16) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*`, `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
 | NFR-02 | `DomainInvariantsTests.Order_CalculatesTotalAmount_WithDeterministicDecimalPrecision` |
 | NFR-03 | `GatewayFixture` (all hosts in memory, no sockets) |
 

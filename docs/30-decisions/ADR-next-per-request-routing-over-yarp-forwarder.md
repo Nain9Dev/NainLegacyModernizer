@@ -1,4 +1,4 @@
-# ADR-0001: Per-request routing on top of YARP's IHttpForwarder
+# ADR (number pending): Per-request routing on top of YARP's IHttpForwarder
 
 Status: Proposed
 Date: 2026-10-22

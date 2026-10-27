@@ -115,7 +115,7 @@ public sealed class ShadowAuditor(TimeProvider? timeProvider = null) : IShadowAu
                     modern.StatusCode?.ToString(CultureInfo.InvariantCulture)));
             }
 
-            diffs.AddRange(JsonParityComparer.Compare(legacy.Body, modern.Body, comparison));
+            diffs.AddRange(ShadowParityComparer.Compare(legacy.Body, modern.Body, comparison));
             discrepancies = diffs;
             verdict = diffs.Count == 0 ? ParityVerdict.Matched : ParityVerdict.Discrepancy;
         }

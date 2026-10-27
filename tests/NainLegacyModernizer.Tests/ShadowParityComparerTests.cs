@@ -4,12 +4,12 @@ using Xunit;
 
 namespace NainLegacyModernizer.Tests;
 
-public sealed class JsonParityComparerTests
+public sealed class ShadowParityComparerTests
 {
     [Fact]
     public void Compare_IgnoresPropertyCasing()
     {
-        var diffs = JsonParityComparer.Compare("""{"OrderId":"A","Total":10}""", """{"orderId":"A","total":10}""");
+        var diffs = ShadowParityComparer.Compare("""{"OrderId":"A","Total":10}""", """{"orderId":"A","total":10}""");
 
         Assert.Empty(diffs);
     }
@@ -22,7 +22,7 @@ public sealed class JsonParityComparerTests
             FieldAliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { ["OrderID"] = "id" },
         };
 
-        var diffs = JsonParityComparer.Compare("""{"OrderID":"A"}""", """{"id":"A"}""", options);
+        var diffs = ShadowParityComparer.Compare("""{"OrderID":"A"}""", """{"id":"A"}""", options);
 
         Assert.Empty(diffs);
     }
@@ -32,7 +32,7 @@ public sealed class JsonParityComparerTests
     {
         var options = new ParityComparisonOptions { IgnoredFields = ["Source", "meta.servedAt"] };
 
-        var diffs = JsonParityComparer.Compare(
+        var diffs = ShadowParityComparer.Compare(
             """{"id":"A","Source":"legacy","meta":{"servedAt":"1"}}""",
             """{"id":"A","source":"modern","meta":{"servedAt":"2"}}""",
             options);
@@ -43,7 +43,7 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_TreatsNumericStringsAsNumbers()
     {
-        var diffs = JsonParityComparer.Compare("""{"total":"450.50"}""", """{"total":450.5}""");
+        var diffs = ShadowParityComparer.Compare("""{"total":"450.50"}""", """{"total":450.5}""");
 
         Assert.Empty(diffs);
     }
@@ -51,8 +51,8 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_HonoursDecimalTolerance()
     {
-        var exact = JsonParityComparer.Compare("""{"tax":262.61}""", """{"tax":262.60}""");
-        var tolerant = JsonParityComparer.Compare("""{"tax":262.61}""", """{"tax":262.60}""", new ParityComparisonOptions { DecimalTolerance = 0.01m });
+        var exact = ShadowParityComparer.Compare("""{"tax":262.61}""", """{"tax":262.60}""");
+        var tolerant = ShadowParityComparer.Compare("""{"tax":262.61}""", """{"tax":262.60}""", new ParityComparisonOptions { DecimalTolerance = 0.01m });
 
         var diff = Assert.Single(exact);
         Assert.Equal("tax", diff.Field);
@@ -65,7 +65,7 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_ReportsMissingFields_WithDirection()
     {
-        var diffs = JsonParityComparer.Compare("""{"a":1,"onlyLegacy":true}""", """{"a":1,"onlyModern":true}""");
+        var diffs = ShadowParityComparer.Compare("""{"a":1,"onlyLegacy":true}""", """{"a":1,"onlyModern":true}""");
 
         Assert.Equal(2, diffs.Count);
         Assert.Contains(diffs, d => d.Field == "onlyLegacy" && d.Kind == DiscrepancyKind.MissingInModern);
@@ -75,7 +75,7 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_WalksArraysAndNestedObjects()
     {
-        var diffs = JsonParityComparer.Compare(
+        var diffs = ShadowParityComparer.Compare(
             """{"lines":[{"sku":"S1","qty":2},{"sku":"S2","qty":1}]}""",
             """{"lines":[{"sku":"S1","qty":2},{"sku":"S2","qty":3}]}""");
 
@@ -86,7 +86,7 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_ArrayLengthMismatch_IsReportedOnce()
     {
-        var diffs = JsonParityComparer.Compare("""{"lines":[1,2,3]}""", """{"lines":[1]}""");
+        var diffs = ShadowParityComparer.Compare("""{"lines":[1,2,3]}""", """{"lines":[1]}""");
 
         var diff = Assert.Single(diffs);
         Assert.Equal("lines.length", diff.Field);
@@ -95,7 +95,7 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_TypeMismatch_IsFlagged()
     {
-        var diffs = JsonParityComparer.Compare("""{"active":"yes"}""", """{"active":true}""");
+        var diffs = ShadowParityComparer.Compare("""{"active":"yes"}""", """{"active":true}""");
 
         Assert.Equal(DiscrepancyKind.TypeMismatch, Assert.Single(diffs).Kind);
     }
@@ -103,9 +103,9 @@ public sealed class JsonParityComparerTests
     [Fact]
     public void Compare_NonJsonBodies_FallBackToTextComparison()
     {
-        Assert.Empty(JsonParityComparer.Compare("OK\n", "OK"));
+        Assert.Empty(ShadowParityComparer.Compare("OK\n", "OK"));
 
-        var diff = Assert.Single(JsonParityComparer.Compare("OK", "KO"));
+        var diff = Assert.Single(ShadowParityComparer.Compare("OK", "KO"));
         Assert.Equal("$body", diff.Field);
     }
 }

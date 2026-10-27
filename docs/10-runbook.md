@@ -49,7 +49,26 @@ dotnet build --configuration Release
 dotnet test --configuration Release
 ```
 
-## 5. Failure modes
+## 5. Static demo hosting
+
+The static demo (`demo/`) is deployed by `.github/workflows/pages.yml` to GitHub Pages and served at
+`https://modernizer.naindev.com/`, the same pattern as the other NainDev projects:
+
+```mermaid
+flowchart LR
+    visitor[Visitor] --> cf[Cloudflare DNS + proxy<br/>modernizer.naindev.com]
+    cf --> pages[GitHub Pages<br/>Nain9Dev/NainLegacyModernizer]
+    gha[pages.yml on push to main] -->|demo/dist| pages
+```
+
+- **Deploy**: push to `main` touching `demo/**` runs build, test and deploy. Pull requests only build and test.
+- **Domain**: the custom domain is a Pages setting (`cname`), not a `CNAME` file, because the site is deployed
+  from a workflow. DNS is a Cloudflare record pointing the subdomain at `nain9dev.github.io`.
+- **Cost**: 0.00 EUR (GitHub Pages and Cloudflare free plan).
+- **Rollback**: re-run the workflow on a previous commit, or revert the change on `main`.
+- **Check**: `curl -sI https://modernizer.naindev.com/` answers `200`.
+
+## 6. Failure modes
 
 - **Route served by the wrong side**: check the `X-Modernizer-Mode` / `X-Modernizer-Target` response headers, then the
   route's `PathPattern` (most specific pattern wins; literals beat parameters).
@@ -59,7 +78,7 @@ dotnet test --configuration Release
   properties to `FieldAliases`; use `DecimalTolerance` only when the business accepts the difference.
 - **Panel shows no routes**: the gateway found no `Modernizer:Routes`; verify the content root contains `appsettings.json`.
 
-## 6. Known limits
+## 7. Known limits
 
 - Modes and audits are in memory; restarting the gateway returns to the configured modes.
 - No authentication on `/_modernizer`: keep it inside the client's network.

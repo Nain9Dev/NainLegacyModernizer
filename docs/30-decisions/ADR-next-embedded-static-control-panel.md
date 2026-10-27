@@ -1,4 +1,4 @@
-# ADR-0002: Control panel as embedded static assets without a build step
+# ADR (number pending): Control panel as embedded static assets without a build step
 
 Status: Proposed
 Date: 2026-10-22

@@ -58,10 +58,15 @@ visual control panel so a client can watch and drive the migration without readi
 
 ## Session state
 
-- Last updated: 2026-10-22
-- Done: T01-T07 implemented; 54 tests green; demo verified in the browser (traffic, promotion with confirmation,
-  canary slider, audit drawer, light/dark, EN/ES). Requirements consolidated into `docs/01-requirements.md`;
-  ADR-0001 and ADR-0002 drafted as Proposed.
-- Verified: `dotnet test` (54/54), manual walkthrough on the demo host.
-- Next: optional Playwright smoke test for the panel (REQ-CP-02/05); persistence of mode changes if a client asks.
-- Blocked: owner approval of ADR-0001 and ADR-0002.
+- Last updated: 2026-10-27
+- Done: T01-T07 implemented; demo verified in the browser (traffic, promotion with confirmation, canary slider,
+  audit drawer, light/dark, EN/ES). Requirements consolidated into `docs/01-requirements.md`; the two ADRs
+  (per-request routing, embedded static panel) drafted as Proposed with number pending.
+- 2026-10-27: merged with the parity report CLI (`specs/next-parity-report`) and the static demo. The shadow comparer
+  was renamed `ShadowParityComparer` so the CLI keeps `JsonParityComparer`; the in-repo parity samples were
+  regenerated from the shared `SampleData`; `ShadowAuditorTests` keeps the `ORD-001`/`ORD-002` fixtures the demo
+  mirrors (REQ-DEMO-06).
+- Verified: `dotnet test` (112/112 after the merge), demo `npm test`, manual walkthrough on the demo host (2026-10-22).
+- Next: optional Playwright smoke test for the panel (REQ-CP-02/05); persistence of mode changes if a client asks;
+  decide whether the two comparers merge into one (ADR candidate).
+- Blocked: owner approval of both ADRs (numbers assigned at merge).

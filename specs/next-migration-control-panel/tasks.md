@@ -5,9 +5,9 @@ All tasks closed on 2026-10-22; see `spec.md` → Session state.
 - [x] **T01** `[A]` Core migration and parity model (`MigrationMode`, `MigrationRoute`, `CutoverPolicy`, summaries).
   - **Covers**: FR1, FR9
   - **Done when**: `CutoverPolicyTests` pass.
-- [x] **T02** `[A]` `JsonParityComparer` with casing, aliases, ignored fields and decimal tolerance.
+- [x] **T02** `[A]` `ShadowParityComparer` with casing, aliases, ignored fields and decimal tolerance.
   - **Covers**: FR7
-  - **Done when**: `JsonParityComparerTests` pass.
+  - **Done when**: `ShadowParityComparerTests` pass.
 - [x] **T03** `[A]` Fault-tolerant `ShadowAuditor` and `InMemoryAuditStore`.
   - **Covers**: FR5, FR8, FR11, FR12
   - **Done when**: `ShadowAuditorTests` and `InMemoryAuditStoreTests` pass.

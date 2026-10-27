@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NainLegacyModernizer: replace a legacy system one route at a time</title>
+  <meta name="description" content="Interactive illustration of the Strangler Fig pattern with a YARP gateway and a shadow run.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#diagram" data-i18n="skip">Skip to content</a>
+
+  <header class="hero">
+    <div class="shell hero-row">
+      <div>
+        <h1 data-i18n="title">NainLegacyModernizer</h1>
+        <p class="tagline" data-i18n="tagline">Replace a legacy system one route at a time, with no downtime.</p>
+      </div>
+      <button type="button" id="lang" class="btn btn-on-dark" lang="es" data-i18n="langButton" data-i18n-aria="langButtonLabel">Español</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="diagram" class="shell panel" aria-labelledby="diagram-title">
+      <h2 id="diagram-title" data-i18n="diagramTitle">Move traffic route by route</h2>
+      <p class="lead" data-i18n="diagramIntro">Slide to send the orders route from the old system to the new API.</p>
+
+      <div class="controls">
+        <label for="migrated" class="control-label"><span data-i18n="sliderLabel">Migrated traffic</span>: <output id="migrated-out" for="migrated">50%</output></label>
+        <input id="migrated" type="range" min="0" max="100" step="1" value="50">
+        <button type="button" id="motion" class="btn" data-i18n="pause">Pause animation</button>
+      </div>
+
+      <svg id="stage" class="stage" viewBox="0 0 720 360" role="img" aria-labelledby="stage-label">
+        <title id="stage-label" data-i18n="diagramLabel">Diagram: a client sends requests through a gateway to the legacy monolith or the modern API.</title>
+        <line class="wire wire-in" x1="130" y1="180" x2="230" y2="180"/>
+        <line id="wire-modern" class="wire wire-legacy-state" x1="360" y1="180" x2="540" y2="75"/>
+        <line id="wire-legacy" class="wire wire-old" x1="360" y1="180" x2="540" y2="285"/>
+        <g id="packets"></g>
+        <g class="node node-client">
+          <rect x="20" y="150" width="110" height="60" rx="4"/>
+          <text x="75" y="186" text-anchor="middle" data-i18n="nodeClient">Client</text>
+        </g>
+        <g class="node node-gateway">
+          <rect x="230" y="140" width="130" height="80" rx="4"/>
+          <text x="295" y="186" text-anchor="middle" data-i18n="nodeGateway">YARP gateway</text>
+        </g>
+        <g class="node node-modern">
+          <rect x="540" y="40" width="170" height="70" rx="4"/>
+          <text x="625" y="80" text-anchor="middle" data-i18n="nodeModern">Modern API (.NET 10)</text>
+        </g>
+        <g class="node node-legacy">
+          <rect x="540" y="250" width="170" height="70" rx="4"/>
+          <text x="625" y="290" text-anchor="middle" data-i18n="nodeLegacy">Legacy monolith</text>
+        </g>
+        <text class="wire-label" x="372" y="88">/api/orders/*</text>
+        <text class="wire-label" x="372" y="294">/api/invoices/*</text>
+      </svg>
+
+      <h3 data-i18n="routesHeading">Routes</h3>
+      <ul class="routes">
+        <li><code>/api/orders/*</code> <span id="orders-status" class="chip chip-legacy" data-i18n="statusLegacy">Legacy</span></li>
+        <li><code>/api/invoices/*</code> <span class="chip chip-legacy" data-i18n="statusNotMigrated">Legacy (not migrated)</span></li>
+      </ul>
+      <p class="note" data-i18n="illustrationNote">Illustration. The gateway in this repository routes by path; the percentage is only for this demo.</p>
+    </section>
+
+    <section id="shadow" class="shell panel" aria-labelledby="shadow-title">
+      <h2 id="shadow-title" data-i18n="shadowTitle">Shadow run: same request, two answers</h2>
+      <p class="lead" data-i18n="shadowIntro">Both systems receive the request. Only the answers are compared.</p>
+
+      <fieldset class="scenarios">
+        <legend data-i18n="scenarioLabel">Scenario</legend>
+        <label class="seg"><input type="radio" name="scenario" value="ORD-001" checked><span><code>ORD-001</code> <span data-i18n="scenarioMatch">Equal totals</span></span></label>
+        <label class="seg"><input type="radio" name="scenario" value="ORD-002"><span><code>ORD-002</code> <span data-i18n="scenarioDiverge">Different totals</span></span></label>
+      </fieldset>
+
+      <p class="samples">
+        <a class="btn-link" href="samples/parity-report-not-ready.html" data-i18n="sampleNotReady">Sample report: not ready</a>
+        <a class="btn-link" href="samples/parity-report-ready.html" data-i18n="sampleReady">Sample report: ready</a>
+      </p>
+
+      <div class="compare">
+        <section class="card" aria-labelledby="legacy-h">
+          <h3 id="legacy-h" data-i18n="legacyHeading">Legacy response</h3>
+          <dl id="legacy-rows" class="rows"></dl>
+        </section>
+        <section class="card" aria-labelledby="modern-h">
+          <h3 id="modern-h" data-i18n="modernHeading">Modern response</h3>
+          <dl id="modern-rows" class="rows"></dl>
+        </section>
+      </div>
+
+      <div class="parity" role="status" aria-live="polite">
+        <span class="parity-label" data-i18n="parityLabel">Parity</span>
+        <strong id="verdict" class="verdict verdict-matched">Matched</strong>
+        <span id="summary" class="summary"></span>
+      </div>
+      <h3 data-i18n="differencesHeading">Differences</h3>
+      <ul id="differences" class="differences"></ul>
+      <p class="note" data-i18n="syntheticNote">Synthetic data taken from the shadow auditor tests in this repository.</p>
+    </section>
+
+    <section id="steps" class="shell panel" aria-labelledby="steps-title">
+      <h2 id="steps-title" data-i18n="stepsTitle">How a migration goes</h2>
+      <ol class="steps">
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="10" width="36" height="28" rx="3"/><path d="M6 24h14M28 24h14M24 14v7M24 27v7"/></svg>
+          <h3 data-i18n="step1Title">Carve out</h3>
+          <p data-i18n="step1Text">Pick one route and build it in .NET 10.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="6" width="26" height="26" rx="3"/><rect x="16" y="16" width="26" height="26" rx="3"/></svg>
+          <h3 data-i18n="step2Title">Shadow run</h3>
+          <p data-i18n="step2Text">Send the same request to both systems.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 14h32M8 34h32M16 24h16"/></svg>
+          <h3 data-i18n="step3Title">Compare</h3>
+          <p data-i18n="step3Text">Check that both answers match.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 24h26M24 14l10 10-10 10"/><rect x="36" y="10" width="6" height="28" rx="2"/></svg>
+          <h3 data-i18n="step4Title">Cut over</h3>
+          <p data-i18n="step4Text">Point the gateway at the new API.</p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="shell foot">
+    <a href="https://github.com/Nain9Dev/NainLegacyModernizer" data-i18n="sourceLink">Source code</a>
+  </footer>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

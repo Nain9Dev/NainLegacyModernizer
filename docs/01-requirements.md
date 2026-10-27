@@ -17,9 +17,19 @@ Requirements follow the **EARS** pattern. Each one is traced to a test in [50-tr
 ### Shadow running (parity)
 
 - **REQ-SHD-01 Shadow replay**: When a request matches a route in `Shadow` mode, the gateway shall serve the legacy response to the caller, replay the same method, path, headers and body against the modern backend and record a parity audit.
-- **REQ-SHD-02 Tolerant JSON comparison**: When comparing bodies, the comparer shall ignore property-name casing, apply field aliases, skip ignored fields, treat numeric strings as numbers and honour the configured decimal tolerance; array length and status-code differences are reported as discrepancies.
+- **REQ-SHD-02 Tolerant JSON comparison**: When comparing bodies, the shadow comparer shall ignore property-name casing, apply field aliases, skip ignored fields, treat numeric strings as numbers and honour the configured decimal tolerance; array length and status-code differences are reported as discrepancies.
 - **REQ-SHD-03 Execution errors**: If a shadow call throws, times out or exceeds the capture limit, the audit shall carry verdict `ExecutionError` and the caller shall still receive the primary response.
 - **REQ-SHD-04 Cutover readiness**: When a route has at least `MinimumSamples` audits, zero execution errors and a parity ratio at or above `MinimumParityRatio`, it shall be reported as `Ready`; a route already in `Modern` is `Completed`; a route in `Legacy` with no audits is `Collecting` with guidance.
+
+### Parity report and CLI (`nain-parity`)
+
+- **REQ-PAR Statement**: When a team runs `nain-parity` against a legacy and a modern base URL, the tool shall send the same `GET` requests to both, compare the JSON responses, and write a self-contained HTML report that states whether every route is ready to cut over.
+- **Acceptance Criteria**:
+  - Field names match ignoring case, `_` and `-`; `--map` aligns renamed fields; `--ignore` skips fields on both sides.
+  - Numbers compare as decimals (NFR-02); a field present on one side only is a discrepancy.
+  - A request failure or a non-JSON body is an `ExecutionError` for that route and the run continues.
+  - An empty report is never ready (fail closed). Exit codes: `0` ready, `1` not ready, `2` invalid arguments.
+  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-16`: `specs/next-parity-report/spec.md`.
 
 ### Control panel
 

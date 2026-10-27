@@ -16,7 +16,7 @@ flowchart TB
     subgraph gateway [Gateway .NET 10]
         proxy[StranglerProxy<br/>target selection per route mode]:::proxy
         registry[MigrationRouteRegistry<br/>runtime modes]:::proxy
-        mirror[Shadow mirror<br/>replay + JsonParityComparer]:::proxy
+        mirror[Shadow mirror<br/>replay + ShadowParityComparer]:::proxy
         store[(InMemoryAuditStore<br/>traffic, audits, summaries)]:::proxy
         panel[Control panel<br/>embedded HTML/CSS/JS + /_modernizer/api]:::panel
     end
@@ -51,16 +51,38 @@ Unmatched paths behave as `Legacy` under the synthetic route id `legacy-fallback
 
 | Project | Responsibility | Notes |
 | :--- | :--- | :--- |
-| `NainLegacyModernizer.Core` | Domain: migration modes and routes, cutover policy, parity model, summaries, demo sample data | No references to HTTP or serialization |
-| `NainLegacyModernizer.ShadowRunner` | `JsonParityComparer`, fault-tolerant `ShadowAuditor`, `InMemoryAuditStore` with change notifications | Reusable outside the gateway |
+| `NainLegacyModernizer.Core` | Domain: migration modes and routes, cutover policy, parity model, parity report model, summaries, demo sample data | No references to HTTP or serialization |
+| `NainLegacyModernizer.ShadowRunner` | `ShadowParityComparer`, fault-tolerant `ShadowAuditor`, `InMemoryAuditStore` with change notifications | Reusable outside the gateway |
+| `NainLegacyModernizer.ShadowRunner` (parity report) | `JsonParityComparer`, `ParityRunner` (HTTP, `GET` only) and `ParityHtmlRenderer` for any pair of APIs | BCL only |
 | `NainLegacyModernizer.Gateway` | YARP `IHttpForwarder` proxying, per-request target selection, shadow capture and replay, control panel API and embedded UI | Configured through the `Modernizer` section |
+| `NainLegacyModernizer.ParityCli` | `nain-parity` console tool and CI gate (exit codes) | `PackAsTool` |
 | `NainLegacyModernizer.LegacyMonolith` | Demo stand-in for the system being strangled (PascalCase, stringified decimals, slow) | Replace with the real system |
 | `NainLegacyModernizer.ModernApi` | Demo stand-in for the rewritten slices (camelCase, typed domain, fast) | Replace with the real system |
 | `NainLegacyModernizer.Demo` | Runs the three hosts in one process for demos | Not for production |
 | `NainLegacyModernizer.Tests` | Unit tests plus in-memory gateway integration tests | No sockets |
+
+Two comparers coexist on purpose: `ShadowParityComparer` serves the gateway's shadow replay (route aliases, ignored
+fields, decimal tolerance, non-JSON fallback, typed `DiscrepancyKind`), while `JsonParityComparer` serves the
+`nain-parity` CLI (name normalisation across `_`, `-` and case; non-JSON is an execution error). Unifying them is a
+pending decision, not an accident of the merge.
 
 ## 4. Presentation boundary
 
 The control panel (`Gateway/Panel`) only renders what `/_modernizer/api` returns and sends the operator's intent back
 (`PUT /routes/{id}/mode`). Parity ratios, readiness and latency percentiles are computed server side (`Core` and
 `ShadowRunner`), never in the browser.
+
+## 5. Parity report flow
+
+```mermaid
+flowchart LR
+    cli[ParityCli<br/>arguments, files, exit code] --> runner[ShadowRunner<br/>ParityRunner]
+    runner --> cmp[JsonParityComparer]
+    runner --> http[HttpClient x2<br/>GET only]
+    cli --> html[ParityHtmlRenderer]
+    runner --> core[Core<br/>ParityReport, RouteParityResult]
+    html --> core
+    cmp --> core
+```
+
+`Core` holds only the report models (no HTTP, no JSON). Comparison, HTTP and rendering live in `ShadowRunner`; the CLI does I/O and exit codes only.

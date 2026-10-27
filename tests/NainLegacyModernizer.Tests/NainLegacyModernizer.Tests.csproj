@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\src\NainLegacyModernizer.Gateway\NainLegacyModernizer.Gateway.csproj" />
     <ProjectReference Include="..\..\src\NainLegacyModernizer.LegacyMonolith\NainLegacyModernizer.LegacyMonolith.csproj" />
     <ProjectReference Include="..\..\src\NainLegacyModernizer.ModernApi\NainLegacyModernizer.ModernApi.csproj" />
+    <ProjectReference Include="..\..\src\NainLegacyModernizer.ParityCli\NainLegacyModernizer.ParityCli.csproj" />
     <ProjectReference Include="..\..\src\NainLegacyModernizer.ShadowRunner\NainLegacyModernizer.ShadowRunner.csproj" />
   </ItemGroup>
 </Project>

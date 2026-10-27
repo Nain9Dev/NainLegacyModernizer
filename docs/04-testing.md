@@ -5,7 +5,9 @@
 1. **Unit tests**
    - Monetary invariants (`DomainInvariantsTests`).
    - Parity comparison rules: casing, aliases, ignored fields, numeric strings, tolerance, arrays, type mismatch,
-     non-JSON fallback (`JsonParityComparerTests`).
+     non-JSON fallback (`ShadowParityComparerTests`).
+   - Parity report and CLI: comparer normalisation, runner, HTML renderer, CLI options, sample reports
+     (`ParityComparerTests`, `ParityRunnerTests`, `ParityHtmlRendererTests`, `ParityCliOptionsTests`, `SampleReportTests`).
    - Auditor fault handling: exceptions, cancellation, status mismatch (`ShadowAuditorTests`).
    - Store eviction, summaries, subscriptions (`InMemoryAuditStoreTests`).
    - Cutover policy states (`CutoverPolicyTests`).
