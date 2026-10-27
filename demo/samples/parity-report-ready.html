@@ -33,18 +33,21 @@ td.diff{font-weight:700;color:var(--red-ink)}
 <main>
 <header class="banner">
 <h1 class="ok">&#10003; Ready to cut over</h1>
-<p class="counts">2 matched &middot; 0 different &middot; 0 failed</p>
+<p class="counts">3 matched &middot; 0 different &middot; 0 failed</p>
 </header>
-<svg class="bar" viewBox="0 0 100 6" preserveAspectRatio="none" role="img" aria-label="2 matched, 0 different, 0 failed">
+<svg class="bar" viewBox="0 0 100 6" preserveAspectRatio="none" role="img" aria-label="3 matched, 0 different, 0 failed">
 <rect x="0" y="0" width="100" height="6" fill="#2E6B00"/>
 </svg>
 <p class="meta">Legacy <code>LegacyMonolith (in-repo)</code> against modern <code>ModernApi (in-repo)</code> &middot; 2026-10-20 00:00:00Z</p>
-<p class="meta">Ignored fields: <code>CustomerRef</code>, <code>ItemsCount</code>, <code>Source</code></p>
+<p class="meta">Ignored fields: <code>CreatedAtUtc</code>, <code>GeneratedBy</code>, <code>Source</code></p>
 <section class="route">
-<h2><code>/api/orders/ORD-1</code> <span class="state state-matched">&#10003; Matched</span></h2>
+<h2><code>/api/catalog/SKU-100</code> <span class="state state-matched">&#10003; Matched</span></h2>
 </section>
 <section class="route">
-<h2><code>/api/orders/ORD-2</code> <span class="state state-matched">&#10003; Matched</span></h2>
+<h2><code>/api/catalog/SKU-400</code> <span class="state state-matched">&#10003; Matched</span></h2>
+</section>
+<section class="route">
+<h2><code>/api/pricing/quote?sku=SKU-200&amp;qty=12</code> <span class="state state-matched">&#10003; Matched</span></h2>
 </section>
 </main>
 </body>

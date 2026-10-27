@@ -125,8 +125,8 @@ public static class ParityHtmlRenderer
             foreach (var d in route.Discrepancies)
             {
                 html.Append("<tr><th scope=\"row\"><code>").Append(Encode(d.Field)).Append("</code></th><td class=\"diff\">")
-                    .Append(Encode(d.LegacyValue)).Append("</td><td class=\"diff\">&ne; ")
-                    .Append(Encode(d.ModernValue)).Append("</td></tr>\n");
+                    .Append(Encode(d.LegacyValue ?? JsonParityComparer.Missing)).Append("</td><td class=\"diff\">&ne; ")
+                    .Append(Encode(d.ModernValue ?? JsonParityComparer.Missing)).Append("</td></tr>\n");
             }
 
             html.Append("</tbody>\n</table>\n");

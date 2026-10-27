@@ -24,5 +24,11 @@ Started 2026-10-20.
   report and JSON written.
 - Found while testing: ignoring a legacy field did not ignore its mapped modern name. Fixed with a test.
 - Known: Git Bash rewrites `--paths /a,/b`; documented in the README.
+- 2026-10-27: merged with the migration control panel (`specs/next-migration-control-panel`). Both stand-ins now
+  share `SampleData`, so the samples were regenerated (`UPDATE_SAMPLES=1`): not ready = `/api/orders/ORD-1`
+  (stringified legacy total) and `/api/customers/CUST-501` (VAT rounding); ready = `catalog` and `pricing`.
+  The screenshots in `docs/images/parity-*.webp` still show the previous samples and need a retake.
+  `DiscrepancyDetail` values are now nullable (the shadow comparer leaves a missing side `null`); the renderer
+  prints `<missing>` for them.
 - Next (needs a decision): `--header` for authenticated APIs, a request body or POST mode behind an
   explicit opt-in, a `dotnet tool` release.

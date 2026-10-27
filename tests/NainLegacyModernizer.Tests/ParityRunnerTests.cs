@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -126,21 +127,25 @@ public sealed class ParityRunnerTests
         using var legacy = legacyFactory.CreateClient();
         using var modern = modernFactory.CreateClient();
         var options = new JsonParityOptions(
-            Ignore: new HashSet<string> { "Source" },
+            Ignore: new HashSet<string> { "Source", "GeneratedBy", "CreatedAtUtc" },
             Map: new Dictionary<string, string>
             {
                 ["OrderID"] = "id",
                 ["CustomerRef"] = "customerReference",
+                ["Lines"] = "items",
+                ["Qty"] = "quantity",
             });
 
         var result = await new ParityRunner(legacy, modern, options).RunAsync("/api/orders/ORD-1", CancellationToken.None);
 
-        // Same id, same total (450.50), same currency. The services differ in the seeded customer
-        // reference and in the item count that only the modern API exposes.
+        // Both stand-ins build the order from the same SampleData, so id, customer, currency and every line
+        // agree once the renamed fields are mapped. The one real difference is the legacy habit of
+        // stringifying decimals: "450.50" is not the number 450.50 for this comparer (REQ-PAR-05).
         Assert.Equal(ParityVerdict.Discrepancy, result.Verdict);
+        var only = Assert.Single(result.Discrepancies);
+        Assert.Equal("TotalAmount", only.Field);
         Assert.Equal(
-            ["CustomerRef", "itemsCount"],
-            result.Discrepancies.Select(d => d.Field).Order(StringComparer.Ordinal));
-        Assert.DoesNotContain(result.Discrepancies, d => d.Field.Contains("Total", StringComparison.OrdinalIgnoreCase));
+            decimal.Parse(only.LegacyValue!, CultureInfo.InvariantCulture),
+            decimal.Parse(only.ModernValue!, CultureInfo.InvariantCulture));
     }
 }

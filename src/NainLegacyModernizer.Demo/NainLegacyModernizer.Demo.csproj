@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NainLegacyModernizer.Gateway\NainLegacyModernizer.Gateway.csproj" />
+    <ProjectReference Include="..\NainLegacyModernizer.LegacyMonolith\NainLegacyModernizer.LegacyMonolith.csproj" />
+    <ProjectReference Include="..\NainLegacyModernizer.ModernApi\NainLegacyModernizer.ModernApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The gateway reads its routes from its own appsettings; ship a copy next to the demo binary. -->
+    <Content Include="..\NainLegacyModernizer.Gateway\appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

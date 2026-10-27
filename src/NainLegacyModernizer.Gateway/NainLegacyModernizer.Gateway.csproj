@@ -1,10 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <GenerateEmbeddedFilesManifest>false</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The control panel ships inside the assembly so any host that references the gateway serves it. -->
+    <EmbeddedResource Include="Panel\**" LogicalName="NainLegacyModernizer.Gateway.Panel.%(Filename)%(Extension)" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Yarp.ReverseProxy" />
     <ProjectReference Include="..\NainLegacyModernizer.Core\NainLegacyModernizer.Core.csproj" />
+    <ProjectReference Include="..\NainLegacyModernizer.ShadowRunner\NainLegacyModernizer.ShadowRunner.csproj" />
   </ItemGroup>
 </Project>

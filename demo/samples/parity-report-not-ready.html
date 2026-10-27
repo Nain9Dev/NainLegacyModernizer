@@ -39,24 +39,23 @@ td.diff{font-weight:700;color:var(--red-ink)}
 <rect x="0" y="0" width="100" height="6" fill="#C4001A"/>
 </svg>
 <p class="meta">Legacy <code>LegacyMonolith (in-repo)</code> against modern <code>ModernApi (in-repo)</code> &middot; 2026-10-20 00:00:00Z</p>
-<p class="meta">Ignored fields: <code>Source</code></p>
+<p class="meta">Ignored fields: <code>CreatedAtUtc</code>, <code>GeneratedBy</code>, <code>Source</code></p>
 <section class="route">
 <h2><code>/api/orders/ORD-1</code> <span class="state state-different">&ne; Different</span></h2>
 <table>
 <thead><tr><th scope="col">Field</th><th scope="col">Legacy</th><th scope="col">Modern</th></tr></thead>
 <tbody>
-<tr><th scope="row"><code>CustomerRef</code></th><td class="diff">LEGACY-CUST-001</td><td class="diff">&ne; MODERN-CUST-001</td></tr>
-<tr><th scope="row"><code>itemsCount</code></th><td class="diff">&lt;missing&gt;</td><td class="diff">&ne; 2</td></tr>
+<tr><th scope="row"><code>TotalAmount</code></th><td class="diff">2084.25</td><td class="diff">&ne; 2084.25</td></tr>
 </tbody>
 </table>
 </section>
 <section class="route">
-<h2><code>/api/orders/ORD-2</code> <span class="state state-different">&ne; Different</span></h2>
+<h2><code>/api/customers/CUST-501</code> <span class="state state-different">&ne; Different</span></h2>
 <table>
 <thead><tr><th scope="col">Field</th><th scope="col">Legacy</th><th scope="col">Modern</th></tr></thead>
 <tbody>
-<tr><th scope="row"><code>CustomerRef</code></th><td class="diff">LEGACY-CUST-001</td><td class="diff">&ne; MODERN-CUST-001</td></tr>
-<tr><th scope="row"><code>itemsCount</code></th><td class="diff">&lt;missing&gt;</td><td class="diff">&ne; 2</td></tr>
+<tr><th scope="row"><code>TaxAmount</code></th><td class="diff">262.61</td><td class="diff">&ne; 262.60</td></tr>
+<tr><th scope="row"><code>GrossBalance</code></th><td class="diff">1513.11</td><td class="diff">&ne; 1513.10</td></tr>
 </tbody>
 </table>
 </section>

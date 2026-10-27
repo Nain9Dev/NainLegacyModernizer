@@ -6,7 +6,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <NoWarn>$(NoWarn);CA1848;CA1873</NoWarn>
+    <!-- CA2007: ASP.NET Core has no SynchronizationContext; ConfigureAwait(false) adds noise without value here. -->
+    <NoWarn>$(NoWarn);CA1848;CA1873;CA2007</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsTestProject)' == 'true' Or $(MSBuildProjectName.EndsWith('Tests'))">
