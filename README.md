@@ -1,3 +1,9 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/banner-light.svg">
+  <img alt="NainLegacyModernizer Architectural Blueprint" src="docs/assets/banner-dark.svg" width="100%">
+</picture>
+
 # NainLegacyModernizer
 
 > Zero-downtime modernization harness for legacy .NET workloads: a YARP gateway that moves each route through

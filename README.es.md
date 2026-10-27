@@ -1,3 +1,9 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/banner-light.svg">
+  <img alt="Plano arquitectónico de NainLegacyModernizer" src="docs/assets/banner-dark.svg" width="100%">
+</picture>
+
 # NainLegacyModernizer
 
 > Arnés de modernización sin tiempo de inactividad para cargas de trabajo heredadas de .NET: una pasarela YARP que traslada cada ruta a través de
