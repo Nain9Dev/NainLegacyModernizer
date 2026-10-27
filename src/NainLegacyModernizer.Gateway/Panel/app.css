@@ -1,93 +1,93 @@
-/* Legacy Modernizer control panel. No build step, no external assets. */
+/* Legacy Modernizer control panel. Aligned with NainDev Design System v1.6. */
 
 :root {
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
-  --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "SF Mono", monospace;
+  --font: "Urbanist", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
 
-  --bg: #f4f6f9;
-  --bg-glow-a: rgba(13, 148, 136, 0.10);
-  --bg-glow-b: rgba(217, 119, 6, 0.08);
-  --surface: #ffffff;
-  --surface-2: #f3f5f8;
-  --surface-3: #e9edf2;
-  --border: #e1e5ec;
-  --border-strong: #cfd5df;
-  --text: #0f1626;
-  --muted: #5b6577;
-  --faint: #8b94a7;
+  /* Surfaces (Architectural Paper Canvas) */
+  --bg: #EDF1F6;
+  --grid-rgb: 0, 43, 102;
+  --surface: #F7F9FC;
+  --surface-2: #DEE6F0;
+  --surface-3: #D0DBE8;
+  --border: #C6D2E3;
+  --border-strong: #9CB2CE;
+  --text: #002B66;
+  --muted: #3C5F94;
+  --faint: #64748B;
 
-  /* Series colors: validated pair (light surface). */
-  --legacy: #d97706;
-  --modern: #0d9488;
+  /* Series colors: Legacy (Amber) vs Modern (Signature Blue) */
+  --legacy: #c97a08;
+  --modern: #0047AB;
   --legacy-ink: #9a5200;
-  --modern-ink: #0a6f66;
-  --legacy-soft: rgba(217, 119, 6, 0.12);
-  --modern-soft: rgba(13, 148, 136, 0.12);
+  --modern-ink: #002B66;
+  --legacy-soft: rgba(201, 122, 8, 0.12);
+  --modern-soft: rgba(0, 71, 171, 0.12);
 
-  /* Mode colors (identity badges, always paired with a label). */
+  /* Mode colors */
   --shadow: #7c3aed;
   --shadow-soft: rgba(124, 58, 237, 0.12);
   --canary: #0369a1;
   --canary-soft: rgba(3, 105, 161, 0.12);
 
   /* Status */
-  --ok: #15803d;
-  --ok-soft: rgba(21, 128, 61, 0.12);
+  --ok: #2E6B00;
+  --ok-soft: rgba(128, 255, 0, 0.16);
   --warn: #b45309;
   --warn-soft: rgba(180, 83, 9, 0.12);
-  --bad: #dc2626;
-  --bad-soft: rgba(220, 38, 38, 0.12);
-  --info-soft: rgba(91, 101, 119, 0.12);
+  --bad: #C4001A;
+  --bad-soft: rgba(255, 0, 31, 0.12);
+  --info-soft: rgba(60, 95, 148, 0.12);
 
-  --accent: #0d9488;
-  --accent-contrast: #ffffff;
-  --focus: 0 0 0 3px rgba(13, 148, 136, 0.35);
+  --accent: #0047AB;
+  --accent-contrast: #FFFFFF;
+  --focus: 0 0 0 3px rgba(0, 71, 171, 0.35);
 
-  --radius: 14px;
-  --radius-sm: 9px;
-  --shadow-1: 0 1px 2px rgba(15, 22, 38, 0.05), 0 10px 30px -18px rgba(15, 22, 38, 0.25);
-  --shadow-2: 0 2px 6px rgba(15, 22, 38, 0.08), 0 24px 60px -24px rgba(15, 22, 38, 0.35);
+  --radius: 4px;
+  --radius-sm: 4px;
+  --shadow-1: 4px 4px 0 #1D1D1B;
+  --shadow-2: 8px 8px 0 #1D1D1B;
 }
 
 [data-theme="dark"] {
-  --bg: #0b0f16;
-  --bg-glow-a: rgba(15, 154, 137, 0.16);
-  --bg-glow-b: rgba(201, 122, 8, 0.10);
-  --surface: #111824;
-  --surface-2: #161e2c;
-  --surface-3: #1d2736;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --text: #e9edf5;
-  --muted: #9ba6bb;
-  --faint: #6c768a;
+  /* Surfaces (Ergonomic Blueprint Dark) */
+  --bg: #060D1A;
+  --grid-rgb: 0, 255, 224;
+  --surface: #0B1930;
+  --surface-2: #11223F;
+  --surface-3: #1A2F54;
+  --border: #1E3A5F;
+  --border-strong: #2D5284;
+  --text: #EDF1F6;
+  --muted: #94A3B8;
+  --faint: #64748B;
 
-  /* Validated pair for the dark surface. */
-  --legacy: #c97a08;
-  --modern: #0f9a89;
-  --legacy-ink: #f2b04a;
-  --modern-ink: #45cdb9;
-  --legacy-soft: rgba(201, 122, 8, 0.18);
-  --modern-soft: rgba(15, 154, 137, 0.18);
+  /* Series colors: Legacy vs Modern */
+  --legacy: #E0921B;
+  --modern: #38bdf8;
+  --legacy-ink: #F5BA63;
+  --modern-ink: #80B5FF;
+  --legacy-soft: rgba(224, 146, 27, 0.18);
+  --modern-soft: rgba(56, 189, 248, 0.18);
 
   --shadow: #a78bfa;
   --shadow-soft: rgba(167, 139, 250, 0.16);
   --canary: #38bdf8;
   --canary-soft: rgba(56, 189, 248, 0.16);
 
-  --ok: #4ade80;
-  --ok-soft: rgba(74, 222, 128, 0.14);
+  --ok: #80FF00;
+  --ok-soft: rgba(128, 255, 0, 0.18);
   --warn: #fbbf24;
   --warn-soft: rgba(251, 191, 36, 0.14);
-  --bad: #fb7185;
-  --bad-soft: rgba(251, 113, 133, 0.16);
-  --info-soft: rgba(155, 166, 187, 0.14);
+  --bad: #FF001F;
+  --bad-soft: rgba(255, 0, 31, 0.22);
+  --info-soft: rgba(148, 163, 184, 0.14);
 
-  --accent: #14b8a6;
-  --accent-contrast: #06201d;
-  --focus: 0 0 0 3px rgba(20, 184, 166, 0.4);
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -20px rgba(0, 0, 0, 0.7);
-  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.5), 0 30px 70px -30px rgba(0, 0, 0, 0.8);
+  --accent: #0047AB;
+  --accent-contrast: #EDF1F6;
+  --focus: 0 0 0 3px #00FFE0;
+  --shadow-1: 4px 4px 0 rgba(0, 0, 0, 0.85);
+  --shadow-2: 8px 8px 0 rgba(0, 0, 0, 0.85);
 }
 
 * { box-sizing: border-box; }
@@ -100,10 +100,11 @@ body {
   font-size: 14px;
   line-height: 1.45;
   color: var(--text);
-  background:
-    radial-gradient(900px 420px at 8% -10%, var(--bg-glow-a), transparent 60%),
-    radial-gradient(800px 380px at 100% 0%, var(--bg-glow-b), transparent 60%),
-    var(--bg);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(to right, rgba(var(--grid-rgb), 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-rgb), 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }

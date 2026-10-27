@@ -49,6 +49,7 @@ const I18N = {
     status: "status", latency: "latency", noBody: "(no body captured)",
     sentBatch: (n) => `${n} requests sent`, cleared: "Observed data cleared", noSamples: "No sample requests configured",
     requestsShort: (n) => `${n} shown`,
+    export: "Export", exportTitle: "Export parity audit dossier as JSON", dossierExported: "Parity audit dossier exported",
   },
   es: {
     subtitle: "Panel de control strangler-fig",
@@ -88,6 +89,7 @@ const I18N = {
     status: "estado", latency: "latencia", noBody: "(cuerpo no capturado)",
     sentBatch: (n) => `${n} peticiones enviadas`, cleared: "Datos observados borrados", noSamples: "No hay peticiones de ejemplo configuradas",
     requestsShort: (n) => `${n} mostradas`,
+    export: "Exportar", exportTitle: "Exportar dossier de auditoría de paridad como JSON", dossierExported: "Dossier de auditoría de paridad exportado",
   },
 };
 
@@ -553,6 +555,31 @@ function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
 }
 
+function exportDossier() {
+  if (!state.overview) { toast(t("awaitingData"), true); return; }
+  const payload = {
+    exportedAtUtc: new Date().toISOString(),
+    harness: "NainLegacyModernizer",
+    version: "1.0",
+    policy: state.overview.policy,
+    totals: state.overview.totals,
+    routes: state.overview.routes,
+    trafficSampleCount: state.traffic.length,
+    audits: state.audits,
+  };
+  const jsonStr = JSON.stringify(payload, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `nain-parity-dossier-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast(t("dossierExported"));
+}
+
 function wireEvents() {
   $("btnLang").addEventListener("click", () => applyLanguage(state.lang === "en" ? "es" : "en"));
   $("btnTheme").addEventListener("click", () => applyTheme(state.theme === "dark" ? "light" : "dark"));
@@ -562,6 +589,7 @@ function wireEvents() {
     await api("/audits", { method: "DELETE" });
     toast(t("cleared"));
   });
+  $("btnExport")?.addEventListener("click", exportDossier);
 
   $("columns").addEventListener("click", (e) => {
     const modeBtn = e.target.closest("[data-mode-btn]");
