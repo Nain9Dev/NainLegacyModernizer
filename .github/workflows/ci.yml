@@ -42,7 +42,7 @@ jobs:
       - name: Pack
         run: dotnet pack src/NainLegacyModernizer.ParityCli --configuration Release --output artifacts
       - name: Upload package
-        uses: actions/upload-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: nain-parity-tool
           path: artifacts/*.nupkg
