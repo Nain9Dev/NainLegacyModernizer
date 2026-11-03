@@ -16,7 +16,7 @@
 [![Proxy Inverso](https://img.shields.io/badge/YARP-2.3-blue)](https://microsoft.github.io/reverse-proxy/)
 [![Coste Operativo](https://img.shields.io/badge/Cost-0.00_EUR-22c55e)](docs/00-charter.md)
 
-**[Demostración en vivo](https://modernizer.naindev.com/)**: una ilustración interactiva sin backend del enrutamiento Strangler Fig y la ejecución en sombra (código fuente en [`demo/`](demo/)).
+**[Demostración en vivo](https://modernizer.naindev.com/)**: una ilustración interactiva sin backend del enrutamiento Strangler Fig y la ejecución en sombra, en español por defecto y en inglés, con tema claro y oscuro (código fuente en [`demo/`](demo/)).
 
 ## Pruébalo en un solo comando
 

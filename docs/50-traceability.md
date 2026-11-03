@@ -25,3 +25,15 @@ All tests live in `tests/NainLegacyModernizer.Tests`. Run `dotnet test`.
 | NFR-03 | `GatewayFixture` (all hosts in memory, no sockets) |
 
 Open gaps: REQ-CP-02 end-to-end over HTTP and REQ-CP-05 have no automated test yet (candidate for a Playwright smoke test).
+
+## Static demo (`demo/`, run `npm test` in `demo/`)
+
+| Requirement | Test |
+| :--- | :--- |
+| REQ-DEMO-05 | `routing.test.ts` |
+| REQ-DEMO-06, 08 | `parity.test.ts` |
+| REQ-DEMO-09, 15, 20 | `i18n.test.ts` |
+| REQ-DEMO-21 | `prefs.test.ts`, `static-rules.test.ts` (both theme blocks equal) |
+| REQ-DEMO-22 | `routing.test.ts` (modes), `static-rules.test.ts` (mode controls present) |
+| REQ-DEMO-10 to 14, 16, 17, 19, 23 | `static-rules.test.ts` |
+| REQ-DEMO-01 to 04, 07 | Browser check (Playwright script, both themes and languages) |

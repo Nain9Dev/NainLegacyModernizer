@@ -1,18 +1,20 @@
-import { clampPercent, routeStatus, targetFor, type RouteStatus, type Target } from "./routing.ts";
+import { MODE_PERCENT, MODES, clampPercent, modeFor, routeStatus, targetFor, type Mode, type RouteStatus, type Target } from "./routing.ts";
 import { comparedFields, compare } from "./parity.ts";
 import { scenarios } from "./fixtures.ts";
-import { detectLang, t, type Key, type Lang } from "./i18n.ts";
+import { resolveLang, t, type Key, type Lang } from "./i18n.ts";
+import { LANG_KEY, THEME_KEY, readPref, resolveTheme, writePref, type Theme } from "./prefs.ts";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 // Coordinates match the viewBox in index.html.
 const CLIENT = { x: 130, y: 180 };
 const GATEWAY = { x: 295, y: 180 };
-const DEST = { modern: { x: 540, y: 75 }, legacy: { x: 540, y: 285 } } as const;
+const DEST = { modern: { x: 540, y: 70 }, legacy: { x: 540, y: 290 } } as const;
 const SPEED = 0.22; // px per ms
 const SPAWN_MS = 600;
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const prefersLight = window.matchMedia("(prefers-color-scheme: light)");
 
 function byId<T extends Element>(id: string): T {
   const el = document.getElementById(id);
@@ -21,8 +23,10 @@ function byId<T extends Element>(id: string): T {
 }
 
 const state = {
-  lang: detectLang(navigator.languages?.length ? navigator.languages : [navigator.language]) as Lang,
-  percent: 50,
+  lang: resolveLang(readPref(LANG_KEY), new URLSearchParams(window.location.search).get("lang")) as Lang,
+  theme: resolveTheme(readPref(THEME_KEY), prefersLight.matches) as Theme,
+  percent: MODE_PERCENT.canary,
+  shadow: false,
   paused: false,
   scenarioId: scenarios[0]?.id ?? "ORD-001",
 };
@@ -31,9 +35,12 @@ const slider = byId<HTMLInputElement>("migrated");
 const sliderOut = byId<HTMLOutputElement>("migrated-out");
 const ordersStatus = byId<HTMLElement>("orders-status");
 const wireModern = byId<SVGLineElement>("wire-modern");
+const wireShadowLabel = byId<SVGTextElement>("wire-shadow-label");
 const packetsLayer = byId<SVGGElement>("packets");
 const motionButton = byId<HTMLButtonElement>("motion");
-const langButton = byId<HTMLButtonElement>("lang");
+const themeButton = byId<HTMLButtonElement>("theme");
+const modeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-mode]"));
+const langButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-lang]"));
 
 const statusKey: Record<RouteStatus, Key> = {
   legacy: "statusLegacy",
@@ -46,29 +53,70 @@ const statusKey: Record<RouteStatus, Key> = {
 function applyLang(): void {
   document.documentElement.lang = state.lang;
   document.title = t(state.lang, "pageTitle");
+  document.querySelector('meta[name="description"]')?.setAttribute("content", t(state.lang, "pageDescription"));
   for (const el of document.querySelectorAll<HTMLElement>("[data-i18n]")) {
     el.textContent = t(state.lang, el.dataset["i18n"] as Key);
-    const aria = el.dataset["i18nAria"];
-    if (aria) el.setAttribute("aria-label", t(state.lang, aria as Key));
   }
-  langButton.lang = state.lang === "en" ? "es" : "en";
+  for (const el of document.querySelectorAll<HTMLElement>("[data-i18n-aria]")) {
+    el.setAttribute("aria-label", t(state.lang, el.dataset["i18nAria"] as Key));
+  }
+  for (const el of document.querySelectorAll<HTMLElement>("[data-i18n-title]")) {
+    el.title = t(state.lang, el.dataset["i18nTitle"] as Key);
+  }
+  for (const button of langButtons) {
+    button.setAttribute("aria-pressed", String(button.dataset["lang"] === state.lang));
+  }
   renderRoute();
   renderMotionButton();
+  renderTheme();
   renderShadow();
+}
+
+/* ---------- theme ---------- */
+
+function renderTheme(): void {
+  document.documentElement.dataset["theme"] = state.theme;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", state.theme === "dark" ? "#060D1A" : "#EDF1F6");
+  themeButton.setAttribute("aria-label", t(state.lang, state.theme === "dark" ? "themeLight" : "themeDark"));
 }
 
 /* ---------- route diagram ---------- */
 
 function renderRoute(): void {
   const status = routeStatus(state.percent);
+  const mode = modeFor(state.percent, state.shadow);
   sliderOut.textContent = `${state.percent}%`;
+  slider.value = String(state.percent);
   slider.setAttribute("aria-valuetext", t(state.lang, "sliderValueText", { p: state.percent }));
   ordersStatus.textContent = t(state.lang, statusKey[status]);
   ordersStatus.className = `chip chip-${status}`;
-  wireModern.setAttribute(
-    "class",
-    `wire ${status === "legacy" ? "wire-legacy-state" : status === "transition" ? "wire-transition" : "wire-migrated"}`,
+  const wireClass = mode === "shadow" ? "wire-shadow" : status === "legacy" ? "wire-legacy-state" : status === "transition" ? "wire-transition" : "wire-migrated";
+  wireModern.setAttribute("class", `wire ${wireClass}`);
+  wireShadowLabel.setAttribute("visibility", mode === "shadow" ? "visible" : "hidden");
+  for (const button of modeButtons) {
+    button.setAttribute("aria-pressed", String(button.dataset["mode"] === mode));
+  }
+  renderSplit();
+}
+
+/** Deterministic share for any 100 consecutive orders requests (REQ-DEMO-05). */
+function renderSplit(): void {
+  const modern = state.percent;
+  const legacy = 100 - modern;
+  byId<HTMLElement>("split-legacy").style.width = `${legacy}%`;
+  byId<HTMLElement>("split-modern").style.width = `${modern}%`;
+  byId<HTMLElement>("count-legacy").textContent = t(state.lang, "servedCount", { n: legacy });
+  byId<HTMLElement>("count-modern").textContent = t(state.lang, "servedCount", { n: modern });
+  byId<HTMLElement>("split").setAttribute(
+    "aria-label",
+    `${t(state.lang, "servedLegacy")} ${legacy}%, ${t(state.lang, "servedModern")} ${modern}%`,
   );
+}
+
+function selectMode(mode: Mode): void {
+  state.percent = MODE_PERCENT[mode];
+  state.shadow = mode === "shadow";
+  renderRoute();
 }
 
 interface Packet {
@@ -90,16 +138,9 @@ function distance(a: { x: number; y: number }, b: { x: number; y: number }): num
   return Math.hypot(b.x - a.x, b.y - a.y);
 }
 
-function spawn(): void {
-  const isOrders = spawned % 2 === 0;
-  spawned++;
-  let target: Target = "legacy";
-  if (isOrders) {
-    target = targetFor(ordersSpawned, state.percent);
-    ordersSpawned++;
-  }
+function packetElement(isOrders: boolean, className: string): SVGGElement {
   const g = document.createElementNS(SVG_NS, "g");
-  g.setAttribute("class", target === "modern" ? "pkt-modern" : "pkt-legacy");
+  g.setAttribute("class", className);
   // Orders are circles and invoices are squares, so the route is readable without colour.
   const shape = isOrders ? document.createElementNS(SVG_NS, "circle") : document.createElementNS(SVG_NS, "rect");
   if (isOrders) {
@@ -112,17 +153,30 @@ function spawn(): void {
   }
   g.appendChild(shape);
   packetsLayer.appendChild(g);
-  packets.push({
-    el: g,
-    target,
-    age: 0,
-    first: distance(CLIENT, GATEWAY),
-    second: distance(GATEWAY, DEST[target]),
-  });
+  return g;
+}
+
+function push(el: SVGGElement, target: Target, age = 0): void {
+  packets.push({ el, target, age, first: distance(CLIENT, GATEWAY), second: distance(GATEWAY, DEST[target]) });
+}
+
+function spawn(): void {
+  const isOrders = spawned % 2 === 0;
+  spawned++;
+  let target: Target = "legacy";
+  if (isOrders) {
+    target = targetFor(ordersSpawned, state.percent);
+    ordersSpawned++;
+  }
+  push(packetElement(isOrders, target === "modern" ? "pkt-modern" : "pkt-legacy"), target);
+  // Shadow mode: the monolith answers and a copy of the orders request is replayed to the modern API.
+  if (isOrders && modeFor(state.percent, state.shadow) === "shadow") {
+    push(packetElement(true, "pkt-shadow"), "modern", -120);
+  }
 }
 
 function place(p: Packet): void {
-  const travelled = p.age * SPEED;
+  const travelled = Math.max(0, p.age) * SPEED;
   let x: number;
   let y: number;
   if (travelled <= p.first) {
@@ -179,7 +233,8 @@ function syncAnimation(): void {
 }
 
 function renderMotionButton(): void {
-  motionButton.textContent = t(state.lang, state.paused ? "play" : "pause");
+  byId<HTMLElement>("motion-label").textContent = t(state.lang, state.paused ? "play" : "pause");
+  motionButton.setAttribute("aria-pressed", String(state.paused));
 }
 
 /* ---------- shadow run panel ---------- */
@@ -207,22 +262,25 @@ function renderShadow(): void {
   const result = compare(scenario.legacy, scenario.modern);
   const differing = new Set(result.differences.map((d) => d.field));
 
-  const legacyRows = byId<HTMLElement>("legacy-rows");
-  const modernRows = byId<HTMLElement>("modern-rows");
-  legacyRows.replaceChildren(
+  byId<HTMLElement>("request-path").textContent = scenario.requestPath;
+  byId<HTMLElement>("legacy-rows").replaceChildren(
     ...comparedFields.map((f) => row(f.legacyName, f.legacy(scenario.legacy), differing.has(f.field))),
   );
-  modernRows.replaceChildren(
+  byId<HTMLElement>("modern-rows").replaceChildren(
     ...comparedFields.map((f) => row(f.modernName, f.modern(scenario.modern), differing.has(f.field))),
   );
 
+  const matched = result.verdict === "Matched";
   const verdict = byId<HTMLElement>("verdict");
-  verdict.textContent = t(state.lang, result.verdict === "Matched" ? "verdictMatched" : "verdictDiscrepancy");
+  verdict.textContent = t(state.lang, matched ? "verdictMatched" : "verdictDiscrepancy");
   verdict.className = `verdict verdict-${result.verdict.toLowerCase()}`;
   byId<HTMLElement>("summary").textContent = t(state.lang, "comparedSummary", {
     compared: result.compared,
     differ: result.differences.length,
   });
+  const hint = byId<HTMLElement>("ready-hint");
+  hint.textContent = t(state.lang, matched ? "readyHint" : "notReadyHint");
+  hint.dataset["ready"] = matched ? "yes" : "no";
 
   const list = byId<HTMLElement>("differences");
   const items = result.differences.map((d) => {
@@ -245,14 +303,39 @@ slider.addEventListener("input", () => {
   renderRoute();
 });
 
+for (const button of modeButtons) {
+  button.addEventListener("click", () => {
+    const mode = button.dataset["mode"];
+    if (MODES.includes(mode as Mode)) selectMode(mode as Mode);
+    if (button.classList.contains("stage")) byId<HTMLElement>("diagram").scrollIntoView({ block: "start" });
+  });
+}
+
 motionButton.addEventListener("click", () => {
   state.paused = !state.paused;
   syncAnimation();
 });
 
-langButton.addEventListener("click", () => {
-  state.lang = state.lang === "en" ? "es" : "en";
-  applyLang();
+for (const button of langButtons) {
+  button.addEventListener("click", () => {
+    const lang = button.dataset["lang"];
+    if (lang !== "es" && lang !== "en") return;
+    state.lang = lang;
+    writePref(LANG_KEY, lang);
+    applyLang();
+  });
+}
+
+themeButton.addEventListener("click", () => {
+  state.theme = state.theme === "dark" ? "light" : "dark";
+  writePref(THEME_KEY, state.theme);
+  renderTheme();
+});
+
+prefersLight.addEventListener("change", () => {
+  if (readPref(THEME_KEY)) return;
+  state.theme = resolveTheme(null, prefersLight.matches);
+  renderTheme();
 });
 
 for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="scenario"]')) {
@@ -266,6 +349,6 @@ for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="sce
 
 reducedMotion.addEventListener("change", syncAnimation);
 
-slider.value = String(state.percent);
+byId<HTMLElement>("year").textContent = String(new Date().getFullYear());
 applyLang();
 syncAnimation();
