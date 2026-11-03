@@ -15,6 +15,7 @@
 | T-011 | M | Push `feat/visual-demo`, open the PR, merge, confirm the published URL | URL answers 200 |
 
 | T-013 | A | Visual redesign: Spanish default, light and dark themes, NainDev chrome, mode controls, components section, Open Graph card | `npm test` green, browser check in both themes and languages |
+| T-015 | A | Migration board from the gateway configuration, isotype draw-in, control panel Spanish-first with the brand mark | `npm test` green, panel rendered against a stub API |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | ADR status changed by the owner |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
 
@@ -45,4 +46,9 @@ Redesign session.
   motion hides the pause control and draws no packets; keyboard focus order starts at the skip link.
 - Not verified: screen reader walk-through, real phone hardware (phone width checked in Playwright),
   the live URL after the Pages deploy.
-- Next: T-014 (owner), T-012 if still pending.
+- Done and verified: T-015. `npm test` 27/27 green, `dist/` about 145 KB. The board is checked against
+  `appsettings.json` by `routes.test.ts`. The control panel was rendered in Playwright against a stub
+  of `/_modernizer/api/overview`: Spanish by default, brand logo, no console errors. `dotnet test` was
+  not run in this session (no .NET SDK available); the panel change is limited to its embedded
+  `index.html`, `app.js` and `logo.svg`.
+- Next: T-014 (owner), T-012 if still pending, `dotnet test` on a machine with the SDK.

@@ -29,7 +29,7 @@ Abre <http://127.0.0.1:8080/_modernizer>, pulsa **Enviar 50 peticiones** dos vec
 - **Panel de migración**: cada ruta en su etapa actual, con muestras, paridad, latencia heredada frente a moderna y etiqueta de preparación. Promueve con un clic cuando indique **Ready**; revierte con la misma rapidez.
 - **Auditorías de paridad**: cada petición en sombra comparada campo a campo. La demo incluye una diferencia de redondeo de IVA en `customers` para inspeccionar la comparativa en paralelo.
 - **Tráfico en vivo**: qué servicio atendió cada petición, estado y latencia, transmitidos vía SSE.
-- Temas claro y oscuro, español e inglés, sin paso de compilación pesado y sin recursos externos.
+- Temas claro y oscuro, español por defecto e inglés, sin paso de compilación y sin recursos externos.
 
 ## Cómo funciona
 

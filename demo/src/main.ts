@@ -1,6 +1,7 @@
 import { MODE_PERCENT, MODES, clampPercent, modeFor, routeStatus, targetFor, type Mode, type RouteStatus, type Target } from "./routing.ts";
 import { comparedFields, compare } from "./parity.ts";
 import { scenarios } from "./fixtures.ts";
+import { demoRoutes, progressOf, readinessOf, type Readiness } from "./routes.ts";
 import { resolveLang, t, type Key, type Lang } from "./i18n.ts";
 import { LANG_KEY, THEME_KEY, readPref, resolveTheme, writePref, type Theme } from "./prefs.ts";
 
@@ -42,6 +43,22 @@ const themeButton = byId<HTMLButtonElement>("theme");
 const modeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-mode]"));
 const langButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-lang]"));
 
+const modeKey: Record<Mode, Key> = { legacy: "stageLegacy", shadow: "stageShadow", canary: "stageCanary", modern: "stageModern" };
+const readinessKey: Record<Readiness, Key> = {
+  notStarted: "readyNotStarted",
+  verifying: "readyVerifying",
+  blocked: "readyBlocked",
+  live: "readyLive",
+  done: "readyDone",
+};
+const routeNameKey: Record<string, Key> = {
+  invoices: "routeInvoices",
+  orders: "routeOrders",
+  customers: "routeCustomers",
+  catalog: "routeCatalog",
+  pricing: "routePricing",
+};
+
 const statusKey: Record<RouteStatus, Key> = {
   legacy: "statusLegacy",
   transition: "statusTransition",
@@ -69,7 +86,78 @@ function applyLang(): void {
   renderRoute();
   renderMotionButton();
   renderTheme();
+  renderBoard();
   renderShadow();
+}
+
+/* ---------- migration board ---------- */
+
+function cell(...children: (Node | string)[]): HTMLTableCellElement {
+  const td = document.createElement("td");
+  td.append(...children);
+  return td;
+}
+
+function renderBoard(): void {
+  const progress = progressOf(demoRoutes);
+  const share = Math.round((progress.done / progress.total) * 100);
+  byId<SVGCircleElement>("ring-value").style.strokeDasharray = `${share} 100`;
+  byId<HTMLElement>("progress-value").textContent = t(state.lang, "progressOf", { done: progress.done, total: progress.total });
+  byId<HTMLElement>("stage-counts").replaceChildren(
+    ...MODES.map((mode) => {
+      const li = document.createElement("li");
+      const label = document.createElement("span");
+      label.textContent = t(state.lang, modeKey[mode]);
+      const count = document.createElement("strong");
+      count.textContent = String(progress.byMode[mode]);
+      li.append(label, count);
+      return li;
+    }),
+  );
+
+  const rows = demoRoutes.map((route) => {
+    const tr = document.createElement("tr");
+    const name = document.createElement("div");
+    name.className = "route-name";
+    const title = document.createElement("strong");
+    const key = routeNameKey[route.id];
+    title.textContent = key ? t(state.lang, key) : route.id;
+    const path = document.createElement("code");
+    path.textContent = route.pathPattern.replace("{**rest}", "*");
+    name.append(title, path);
+
+    const track = document.createElement("div");
+    track.className = "track";
+    track.dataset["mode"] = route.mode;
+    const position = MODES.indexOf(route.mode);
+    for (let i = 0; i < MODES.length; i++) {
+      const bar = document.createElement("i");
+      bar.className = i < position ? "on" : i === position ? "now" : "";
+      track.appendChild(bar);
+    }
+    const trackLabel = document.createElement("span");
+    trackLabel.className = "track-label";
+    trackLabel.textContent =
+      route.mode === "canary" && route.canaryPercent !== null
+        ? `${t(state.lang, modeKey[route.mode])} · ${t(state.lang, "canaryShare", { p: route.canaryPercent })}`
+        : t(state.lang, modeKey[route.mode]);
+    const trackWrap = document.createElement("div");
+    trackWrap.append(track, trackLabel);
+
+    const readiness = readinessOf(route);
+    const ready = document.createElement("span");
+    ready.className = `ready ready-${readiness}`;
+    ready.textContent = t(state.lang, readinessKey[readiness]);
+    if (route.finding === "rounding") {
+      const small = document.createElement("small");
+      small.textContent = t(state.lang, "findingRounding");
+      ready.appendChild(small);
+    }
+
+    tr.append(cell(name), cell(trackWrap), cell(ready));
+    return tr;
+  });
+  byId<HTMLElement>("board-rows").replaceChildren(...rows);
 }
 
 /* ---------- theme ---------- */

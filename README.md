@@ -31,7 +31,7 @@ Open <http://127.0.0.1:8080/_modernizer>, press **Send 50 requests** twice and w
 - **Parity audits**: each shadowed request compared field by field. The demo ships a VAT rounding difference on
   `customers` so you can open one and see the side-by-side diff.
 - **Live traffic**: who served each request, status and latency, streamed over SSE.
-- Light and dark themes, English and Spanish, no build step, no external assets.
+- Light and dark themes, Spanish by default and English, no build step, no external assets.
 
 ## How it works
 

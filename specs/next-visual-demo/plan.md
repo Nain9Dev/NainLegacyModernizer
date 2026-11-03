@@ -10,6 +10,7 @@ demo/
     routing.ts          deterministic target assignment, route status
     parity.ts           field comparer and ParityVerdict (mirrors ShadowAuditor semantics)
     fixtures.ts         synthetic scenarios copied from ShadowAuditorTests.cs
+    routes.ts           the five demo routes copied from the gateway appsettings.json, readiness wording
     i18n.ts             ES/EN strings, Spanish default, language resolution
     prefs.ts            persisted language and theme, theme resolution
     contrast.ts         WCAG contrast helper (used by tests only)

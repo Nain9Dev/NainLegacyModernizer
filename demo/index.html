@@ -31,9 +31,9 @@
     <div class="shell topbar-row">
       <a class="brand" href="https://www.naindev.com/" data-i18n-title="footerSite">
         <svg class="brand-mark" viewBox="91 91 818 818" aria-hidden="true" focusable="false">
-          <path d="M148 148V848" />
-          <path d="M308 288L686 738" />
-          <path d="M848 148V848" />
+          <path d="M148 148V848" pathLength="1" />
+          <path d="M308 288L686 738" pathLength="1" />
+          <path d="M848 148V848" pathLength="1" />
         </svg>
         <span class="brand-text">
           <strong>NainDev</strong>
@@ -193,9 +193,40 @@
       <p class="note" data-i18n="illustrationNote">Ilustración. La pasarela del repositorio enruta por ruta y modo; el porcentaje es el reparto canary.</p>
     </section>
 
-    <section id="shadow" class="shell panel" aria-labelledby="shadow-title">
+    <section id="board" class="shell panel" aria-labelledby="board-title">
       <div class="panel-head">
         <p class="eyebrow">02</p>
+        <h2 id="board-title" data-i18n="boardTitle">Tablero de migración</h2>
+        <p class="lead" data-i18n="boardIntro">Las cinco rutas de la demo del repositorio, cada una en su etapa.</p>
+      </div>
+      <div class="board">
+        <div class="progress">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-track" cx="60" cy="60" r="52"/>
+            <circle class="ring-value" id="ring-value" cx="60" cy="60" r="52" pathLength="100"/>
+          </svg>
+          <div class="ring-text">
+            <strong id="progress-value">1 de 5</strong>
+            <span data-i18n="progressLabel">Rutas migradas</span>
+          </div>
+          <ul class="stage-counts" id="stage-counts"></ul>
+        </div>
+        <table class="routes-table">
+          <thead>
+            <tr>
+              <th scope="col" data-i18n="routeLabel">Ruta</th>
+              <th scope="col" data-i18n="stageLabel">Etapa</th>
+              <th scope="col" data-i18n="readinessLabel">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="board-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="shadow" class="shell panel" aria-labelledby="shadow-title">
+      <div class="panel-head">
+        <p class="eyebrow">03</p>
         <h2 id="shadow-title" data-i18n="shadowTitle">Misma petición, dos respuestas</h2>
         <p class="lead" data-i18n="shadowIntro">En modo sombra responde el monolito. La API moderna recibe una copia y se comparan las respuestas.</p>
       </div>
@@ -244,7 +275,7 @@
 
     <section id="steps" class="shell panel" aria-labelledby="steps-title">
       <div class="panel-head">
-        <p class="eyebrow">03</p>
+        <p class="eyebrow">04</p>
         <h2 id="steps-title" data-i18n="stepsTitle">Cómo es una migración</h2>
       </div>
       <ol class="steps">
@@ -273,7 +304,7 @@
 
     <section id="parts" class="shell panel" aria-labelledby="parts-title">
       <div class="panel-head">
-        <p class="eyebrow">04</p>
+        <p class="eyebrow">05</p>
         <h2 id="parts-title" data-i18n="partsTitle">Qué incluye el repositorio</h2>
       </div>
       <ul class="parts">
