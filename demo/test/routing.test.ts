@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { clampPercent, routeStatus, targetFor } from "../src/routing.ts";
+import { MODES, MODE_PERCENT, clampPercent, modeFor, routeStatus, targetFor } from "../src/routing.ts";
 
 test("REQ-DEMO-05: exactly p of 100 consecutive requests go to the modern API", () => {
   for (let p = 0; p <= 100; p++) {
@@ -42,4 +42,19 @@ test("clampPercent rounds and bounds the slider value", () => {
   assert.equal(clampPercent(140), 100);
   assert.equal(clampPercent(42.6), 43);
   assert.equal(clampPercent(Number.NaN), 0);
+});
+
+test("REQ-DEMO-22: the four gateway modes map to the slider and back", () => {
+  assert.deepEqual(MODES, ["legacy", "shadow", "canary", "modern"]);
+  assert.equal(MODE_PERCENT.legacy, 0);
+  assert.equal(MODE_PERCENT.shadow, 0);
+  assert.equal(MODE_PERCENT.modern, 100);
+  assert.ok(MODE_PERCENT.canary > 0 && MODE_PERCENT.canary < 100);
+  assert.equal(modeFor(0, false), "legacy");
+  assert.equal(modeFor(0, true), "shadow");
+  assert.equal(modeFor(25, true), "canary");
+  assert.equal(modeFor(100, true), "modern");
+  for (const mode of MODES) {
+    assert.equal(modeFor(MODE_PERCENT[mode], mode === "shadow"), mode);
+  }
 });

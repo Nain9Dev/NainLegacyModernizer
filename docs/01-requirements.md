@@ -29,7 +29,8 @@ Requirements follow the **EARS** pattern. Each one is traced to a test in [50-tr
   - Numbers compare as decimals (NFR-02); a field present on one side only is a discrepancy.
   - A request failure or a non-JSON body is an `ExecutionError` for that route and the run continues.
   - An empty report is never ready (fail closed). Exit codes: `0` ready, `1` not ready, `2` invalid arguments.
-  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-16`: `specs/next-parity-report/spec.md`.
+  - `--header "Name: value"` (repeatable) sends the same header, for example a bearer token, to both systems.
+  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-17`: `specs/next-parity-report/spec.md`.
 
 ### Control panel
 
@@ -37,6 +38,7 @@ Requirements follow the **EARS** pattern. Each one is traced to a test in [50-tr
 - **REQ-CP-02 Live stream**: While a panel is connected to `/_modernizer/api/stream`, the gateway shall push each traffic sample and audit as a server-sent event.
 - **REQ-CP-03 Audit inspection**: When the panel requests an audit by id, the gateway shall return both observations (status, latency, body or error) and the field-level discrepancies.
 - **REQ-CP-04 Embedded panel**: When `/_modernizer` is requested, the gateway shall serve the control panel from resources embedded in its own assembly, with no build step or external asset.
+- **REQ-CP-06 Liveness**: When `/_modernizer/health` is requested, the gateway shall answer `200 Healthy` from the process itself, without calling either backend, so an orchestrator can restart it.
 - **REQ-CP-05 Demo traffic**: When the operator triggers demo traffic, the panel shall replay the configured sample requests through the gateway itself.
 
 ## 2. Non-functional requirements

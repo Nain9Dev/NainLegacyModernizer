@@ -19,9 +19,30 @@ All tests live in `tests/NainLegacyModernizer.Tests`. Run `dotnet test`.
 | REQ-CP-02 | `InMemoryAuditStoreTests.SubscribeAsync_*` (store side; the SSE endpoint is exercised manually in the demo) |
 | REQ-CP-03 | `GatewayRoutingTests.AuditsEndpoint_FiltersByVerdict_AndClears` |
 | REQ-CP-04 | `GatewayRoutingTests.Panel_IsServedFromEmbeddedResources` |
+| REQ-CP-06 | `GatewayRoutingTests.HealthEndpoint_AnswersHealthy_WithoutTouchingTheBackends` |
 | REQ-CP-05 | Manual: demo panel "Send 50 requests" (browser-only behaviour) |
-| REQ-PAR (REQ-PAR-01 to REQ-PAR-16) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*`, `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
+| REQ-PAR (REQ-PAR-01 to REQ-PAR-17) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*` (REQ-PAR-17: `TryParse_Headers_*`, `TryParse_MalformedHeader_Fails`), `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
 | NFR-02 | `DomainInvariantsTests.Order_CalculatesTotalAmount_WithDeterministicDecimalPrecision` |
 | NFR-03 | `GatewayFixture` (all hosts in memory, no sockets) |
 
 Open gaps: REQ-CP-02 end-to-end over HTTP and REQ-CP-05 have no automated test yet (candidate for a Playwright smoke test).
+
+## Static demo (`demo/`, run `npm test` in `demo/`)
+
+| Requirement | Test |
+| :--- | :--- |
+| REQ-DEMO-05 | `routing.test.ts` |
+| REQ-DEMO-06, 08 | `parity.test.ts` |
+| REQ-DEMO-09, 15, 20 | `i18n.test.ts` |
+| REQ-DEMO-21 | `prefs.test.ts`, `static-rules.test.ts` (both theme blocks equal) |
+| REQ-DEMO-22 | `routing.test.ts` (modes), `static-rules.test.ts` (mode controls present) |
+| REQ-DEMO-24 | `routes.test.ts` (routes equal `appsettings.json`, readiness wording) |
+| REQ-DEMO-25 | `layout.test.ts` (both layouts), browser check at 390 px |
+| REQ-DEMO-26 | `config.test.ts` (keys against `ModernizerOptions.cs`, options against the CLI usage, validation), browser check of the form |
+| REQ-DEMO-27 | `routes.test.ts` (cut-over rule equals `appsettings.json`) |
+| REQ-DEMO-28 | `tour.test.ts` (order and end of the tour), browser check with and without reduced motion |
+| REQ-DEMO-29 | Browser check (content) |
+| REQ-DEMO-30 | `static-rules.test.ts` (single allowed script, element present, placeholder rule), browser check online and offline |
+| REQ-DEMO-13 (build) | `build.test.ts` (CSS minifier keeps rules and strings) |
+| REQ-DEMO-10 to 14, 16, 17, 19, 23 | `static-rules.test.ts` |
+| REQ-DEMO-01 to 04, 07 | Browser check (Playwright script, both themes and languages) |

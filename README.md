@@ -16,7 +16,9 @@
 [![Reverse Proxy](https://img.shields.io/badge/YARP-2.3-blue)](https://microsoft.github.io/reverse-proxy/)
 [![Operating Cost](https://img.shields.io/badge/Cost-0.00_EUR-22c55e)](docs/00-charter.md)
 
-**[Live demo](https://modernizer.naindev.com/)**: an interactive, no-backend illustration of the Strangler Fig routing and the shadow run (source in [`demo/`](demo/)).
+**[Live demo](https://modernizer.naindev.com/)**: an interactive, no-backend illustration of the Strangler Fig routing and the shadow run, in Spanish by default and in English, light and dark themes (source in [`demo/`](demo/)).
+
+[![Demo: migrate a .NET monolith route by route](docs/images/demo-card.webp)](https://modernizer.naindev.com/)
 
 ## Try it in one command
 
@@ -31,7 +33,7 @@ Open <http://127.0.0.1:8080/_modernizer>, press **Send 50 requests** twice and w
 - **Parity audits**: each shadowed request compared field by field. The demo ships a VAT rounding difference on
   `customers` so you can open one and see the side-by-side diff.
 - **Live traffic**: who served each request, status and latency, streamed over SSE.
-- Light and dark themes, English and Spanish, no build step, no external assets.
+- Light and dark themes, Spanish by default and English, no build step, no external assets.
 
 ## How it works
 
@@ -57,13 +59,21 @@ flowchart LR
 
 Edit the `Modernizer` section of [appsettings.json](src/NainLegacyModernizer.Gateway/appsettings.json): the two base
 addresses and one entry per route (`PathPattern`, `Mode`, `CanaryPercent`, `FieldAliases` for renamed properties,
-`IgnoredFields` for generated metadata, `SampleRequests` for the demo traffic button). Then run the gateway alone:
+`IgnoredFields` for generated metadata, `SampleRequests` for the demo traffic button). The
+[live demo](https://modernizer.naindev.com/#setup) writes this section, the `nain-parity` command and a CI job from your
+addresses and route. Then run the gateway alone:
 
 ```bash
 dotnet run --project src/NainLegacyModernizer.Gateway
 ```
 
-Details, limits and failure modes: [docs/10-runbook.md](docs/10-runbook.md).
+Or in a container (`Dockerfile`, `compose.yaml`, configured by environment variables):
+
+```bash
+docker compose up --build
+```
+
+Details, limits, containers and an adoption checklist: [docs/10-runbook.md](docs/10-runbook.md).
 
 ## Parity report: is this route ready to cut over?
 
@@ -80,7 +90,8 @@ dotnet run --project src/NainLegacyModernizer.ParityCli -- \
 
 - Names match ignoring case, `_` and `-`. `--map old=new` aligns renamed fields. `--ignore` skips fields (the report lists them).
 - Numbers compare as decimals (`450.5` equals `450.50`), never as floating point.
-- Read-only: only `GET`. Authentication headers are not supported yet. Check that your `GET` endpoints have no side effects.
+- Read-only: only `GET`. Check that your `GET` endpoints have no side effects.
+- `--header "Authorization: Bearer $PARITY_TOKEN"` (repeatable) sends the same header to both systems; keep the secret in an environment variable.
 - Git Bash on Windows rewrites arguments that start with `/`. Use a `--paths` file or set `MSYS_NO_PATHCONV=1`.
 - Sample reports, generated from the in-repo services: [not ready](demo/samples/parity-report-not-ready.html), [ready](demo/samples/parity-report-ready.html).
 

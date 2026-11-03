@@ -12,7 +12,7 @@ run proves both answer the same before the cut-over.
 
 - One entry file (`demo/index.html`), CSS and TypeScript compiled to ES modules. No runtime dependencies.
 - Hosted on GitHub Pages from this repository.
-- Visible text in English and Spanish. Everything else in the repository is English.
+- Visible text in Spanish (default) and English. Everything else in the repository is English.
 
 ## Non-goals
 
@@ -59,12 +59,58 @@ run proves both answer the same before the cut-over.
   shall update statically. Animation shall have a visible pause control otherwise.
 - **REQ-DEMO-12** Text and UI component contrast shall meet WCAG 2.2 AA, verified by a test over the
   tokens in use.
-- **REQ-DEMO-13** The published folder shall weigh less than 150 KB in total, with no external fonts,
-  scripts, styles or images.
-- **REQ-DEMO-14** The CSS shall use the brandbook tokens (`Nain9Dev/brandbook`, `tokens.css` v1.5) and
-  no gradients.
-- **REQ-DEMO-15** The page shall carry `lang` set to the active language and every English string shall
-  have a Spanish counterpart.
+- **REQ-DEMO-13** The published folder shall weigh less than 200 KB in total (150 KB until the setup
+  generator was added), with no external fonts, styles or images and no external script other than
+  the shared NainDev ecosystem bar (REQ-DEMO-30). The brand typeface (Urbanist, SIL Open Font License) is self-hosted with its
+  licence file.
+- **REQ-DEMO-14** The CSS shall use the brandbook tokens (`Nain9Dev/brandbook`, `tokens.css` v1.6) and
+  no gradients beyond the one-pixel blueprint grid.
+- **REQ-DEMO-15** The page shall carry `lang` set to the active language and every Spanish string shall
+  have an English counterpart.
+
+### Language, theme and brand
+
+- **REQ-DEMO-20** The page shall open in Spanish (es-ES, professional register, short sentences). A
+  visible control shall switch to English; the choice shall persist for the visitor and a `lang=en` query
+  value shall open the English version directly. No visible string shall exceed 140 characters.
+- **REQ-DEMO-21** The page shall offer a light theme and a dark theme. The system preference applies
+  by default, a visible control switches it, and the choice persists. Both themes shall meet REQ-DEMO-12.
+- **REQ-DEMO-22** The page shall present the four route modes of the gateway (`Legacy`, `Shadow`,
+  `Canary`, `Modern`) as selectable states that drive the diagram: `Shadow` draws the replay to the
+  modern API, `Canary` sets the slider to a partial share, `Modern` to 100.
+- **REQ-DEMO-23** The page shall carry the NainDev mark, the author's name and links to naindev.com,
+  the repository and the brandbook, and no trace of any generator or assistant tool.
+- **REQ-DEMO-24** The page shall show a migration board with the routes of the repository demo exactly
+  as configured in the gateway's `appsettings.json` (id, pattern, mode, canary share), each on a
+  four-stage track, with a readiness wording derived from the mode and the documented finding. No
+  measured figure (samples, parity ratio, latency) shall be shown.
+- **REQ-DEMO-25** On screens narrower than 640 px the diagram shall switch to a top-to-bottom layout
+  that fits the viewport without horizontal scrolling; every node shall stay inside the view and each
+  wire shall start and end on a node edge in both layouts.
+
+### Adoption
+
+- **REQ-DEMO-26** The page shall let a visitor enter the two base addresses, one route, the initial
+  mode, the canary share and the ignored and renamed fields, and shall produce from them the
+  `Modernizer` section of the gateway's `appsettings.json`, the `nain-parity` command, a GitHub
+  Actions job and a Compose file (the same settings as environment variables), each copyable. Every generated property name shall exist in `ModernizerOptions.cs` and
+  every CLI option in the CLI usage text; invalid input shall be flagged next to the field and shall
+  disable copying. Nothing shall be sent anywhere.
+- **REQ-DEMO-27** The board shall state the cut-over rule with the values configured in the demo
+  (minimum samples, minimum parity ratio, zero execution errors), and the page shall list the known
+  limits of the harness (HTTP and JSON only, GET-only report without authentication headers,
+  in-memory audits, panel without login).
+- **REQ-DEMO-28** A control in the hero shall play a guided tour that walks the orders route through
+  the four modes in order with a one-sentence caption per step; any manual choice on the diagram shall
+  end it. While `prefers-reduced-motion: reduce` is set the same control shall advance one step per
+  activation instead of on a timer.
+- **REQ-DEMO-29** The page shall contrast a full rewrite with route-by-route migration on downtime,
+  rollback, evidence, delivery size and timing of risk, without figures, and answer the questions a
+  decision maker asks first (cost and licence, prerequisites, impact on code and data, data leaving the
+  network, failure of the new API in shadow, .NET Framework monoliths).
+- **REQ-DEMO-30** The page shall load the shared NainDev ecosystem bar from `www.naindev.com`
+  (deferred, naming this project) as its only external resource, and shall lay out correctly when that
+  script does not load (ADR `next-demo-ecosystem-bar`, Accepted).
 
 - **REQ-DEMO-19** The shadow run panel shall link to the two sample parity reports (not ready, ready)
   generated by `SampleReportTests` from the in-repo services (`specs/next-parity-report`, REQ-PAR-16),
@@ -80,5 +126,6 @@ run proves both answer the same before the cut-over.
 
 ## Verification
 
-Node tests in `demo/test/` (`npm test`) cover REQ-DEMO-05, 08, 12, 13, 14, 15 and static checks for 11
-and 16. Browser check by hand for 01 to 04, 06, 07, 09 to 11.
+Node tests in `demo/test/` (`npm test`) cover REQ-DEMO-05, 08, 12, 13, 14, 15, 20, 21, 22, 23, 24, 25, 26, 27, 28 and static
+checks for 11 and 16. Browser check (Playwright script, both themes, both languages, phone and desktop
+widths) for 01 to 04, 06, 07, 09 to 11.

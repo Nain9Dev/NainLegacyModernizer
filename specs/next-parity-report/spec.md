@@ -67,6 +67,10 @@ Verification". No new runtime dependency: the .NET base library only.
 
 - **REQ-PAR-16** The repository shall include a sample report produced by running the CLI against the
   in-repo `LegacyMonolith` and `ModernApi`, and the demo shall link to it.
+- **REQ-PAR-17** When `--header "Name: value"` is given (repeatable), the CLI shall send that header
+  with every request to both systems; a value without a name or a name without a value shall be
+  rejected as an invalid argument (exit code `2`). Secrets are expected from environment variables
+  on the command line, never from a file in the repository.
 
 ## Verification
 

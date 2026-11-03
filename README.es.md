@@ -16,7 +16,9 @@
 [![Proxy Inverso](https://img.shields.io/badge/YARP-2.3-blue)](https://microsoft.github.io/reverse-proxy/)
 [![Coste Operativo](https://img.shields.io/badge/Cost-0.00_EUR-22c55e)](docs/00-charter.md)
 
-**[Demostración en vivo](https://modernizer.naindev.com/)**: una ilustración interactiva sin backend del enrutamiento Strangler Fig y la ejecución en sombra (código fuente en [`demo/`](demo/)).
+**[Demostración en vivo](https://modernizer.naindev.com/)**: una ilustración interactiva sin backend del enrutamiento Strangler Fig y la ejecución en sombra, en español por defecto y en inglés, con tema claro y oscuro (código fuente en [`demo/`](demo/)).
+
+[![Demo: migra un monolito .NET ruta a ruta](docs/images/demo-card.webp)](https://modernizer.naindev.com/)
 
 ## Pruébalo en un solo comando
 
@@ -29,7 +31,7 @@ Abre <http://127.0.0.1:8080/_modernizer>, pulsa **Enviar 50 peticiones** dos vec
 - **Panel de migración**: cada ruta en su etapa actual, con muestras, paridad, latencia heredada frente a moderna y etiqueta de preparación. Promueve con un clic cuando indique **Ready**; revierte con la misma rapidez.
 - **Auditorías de paridad**: cada petición en sombra comparada campo a campo. La demo incluye una diferencia de redondeo de IVA en `customers` para inspeccionar la comparativa en paralelo.
 - **Tráfico en vivo**: qué servicio atendió cada petición, estado y latencia, transmitidos vía SSE.
-- Temas claro y oscuro, español e inglés, sin paso de compilación pesado y sin recursos externos.
+- Temas claro y oscuro, español por defecto e inglés, sin paso de compilación y sin recursos externos.
 
 ## Cómo funciona
 
@@ -53,10 +55,18 @@ flowchart LR
 
 ## Uso en tus propios sistemas
 
-Edita la sección `Modernizer` de [appsettings.json](src/NainLegacyModernizer.Gateway/appsettings.json): las dos direcciones base y una entrada por ruta (`PathPattern`, `Mode`, `CanaryPercent`, `FieldAliases` para propiedades renombradas, `IgnoredFields` para metadatos generados, `SampleRequests` para el generador de tráfico de prueba). Después, ejecuta la pasarela:
+Edita la sección `Modernizer` de [appsettings.json](src/NainLegacyModernizer.Gateway/appsettings.json): las dos direcciones base y una entrada por ruta (`PathPattern`, `Mode`, `CanaryPercent`, `FieldAliases` para propiedades renombradas, `IgnoredFields` para metadatos generados, `SampleRequests` para el generador de tráfico de prueba). La
+[demo](https://modernizer.naindev.com/#setup) genera esta sección, el comando `nain-parity` y un trabajo de CI a partir de
+tus direcciones y tu ruta. Después, ejecuta la pasarela:
 
 ```bash
 dotnet run --project src/NainLegacyModernizer.Gateway
+```
+
+O en un contenedor (`Dockerfile`, `compose.yaml`, configurado por variables de entorno):
+
+```bash
+docker compose up --build
 ```
 
 Detalles, límites y modos de fallo: [docs/10-runbook.md](docs/10-runbook.md).
@@ -77,6 +87,7 @@ dotnet run --project src/NainLegacyModernizer.ParityCli -- \
 - Comparación insensible a mayúsculas/minúsculas, `_` y `-`. `--map old=new` alinea campos renombrados. `--ignore` omite campos irrelevantes.
 - Los números se comparan como decimales de precisión fija (`450.5` equivale a `450.50`), nunca como coma flotante.
 - Solo lectura: únicamente peticiones `GET`. Verifica que tus puntos finales no tengan efectos secundarios.
+- `--header "Authorization: Bearer $PARITY_TOKEN"` (repetible) envía la misma cabecera a los dos sistemas; el secreto va en una variable de entorno.
 - Informes de muestra generados a partir de los servicios del repositorio: [no listo](demo/samples/parity-report-not-ready.html), [listo](demo/samples/parity-report-ready.html).
 
 ## Estructura de la solución

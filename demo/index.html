@@ -1,136 +1,517 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NainLegacyModernizer: replace a legacy system one route at a time</title>
-  <meta name="description" content="Interactive illustration of the Strangler Fig pattern with a YARP gateway and a shadow run.">
-  <link rel="icon" href="data:,">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#060D1A">
+  <title>NainLegacyModernizer: migra un monolito .NET ruta a ruta, sin paradas</title>
+  <meta name="description" content="Pasarela YARP, ejecución en sombra e informe de paridad: la migración de un sistema legado, ruta a ruta y sin paradas.">
+  <meta name="author" content="Aitor Nain Mendoza Vallejo">
+  <link rel="canonical" href="https://modernizer.naindev.com/">
+  <link rel="alternate" hreflang="es" href="https://modernizer.naindev.com/">
+  <link rel="alternate" hreflang="en" href="https://modernizer.naindev.com/?lang=en">
+  <link rel="alternate" hreflang="x-default" href="https://modernizer.naindev.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NainDev">
+  <meta property="og:title" content="NainLegacyModernizer: migra un monolito .NET ruta a ruta, sin paradas">
+  <meta property="og:description" content="Pasarela YARP, ejecución en sombra e informe de paridad: la migración de un sistema legado, ruta a ruta y sin paradas.">
+  <meta property="og:url" content="https://modernizer.naindev.com/">
+  <meta property="og:image" content="https://modernizer.naindev.com/card.webp">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='91 91 818 818'%3E%3Crect x='91' y='91' width='818' height='818' rx='120' fill='%23002B66'/%3E%3Cpath d='M228 228V772M348 348L652 772M772 228V772' fill='none' stroke='%2380FF00' stroke-width='114' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/urbanist-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://www.naindev.com/assets/js/ecosystem-bar.js?v=3.0.0" defer></script>
 </head>
 <body>
-  <a class="skip" href="#diagram" data-i18n="skip">Skip to content</a>
+  <nain-ecosystem-bar current-project="NainLegacyModernizer"></nain-ecosystem-bar>
+  <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
 
-  <header class="hero">
-    <div class="shell hero-row">
-      <div>
-        <h1 data-i18n="title">NainLegacyModernizer</h1>
-        <p class="tagline" data-i18n="tagline">Replace a legacy system one route at a time, with no downtime.</p>
+  <header class="topbar">
+    <div class="shell topbar-row">
+      <a class="brand" href="https://www.naindev.com/" data-i18n-title="footerSite">
+        <svg class="brand-mark" viewBox="91 91 818 818" aria-hidden="true" focusable="false">
+          <path d="M148 148V848" pathLength="1" />
+          <path d="M308 288L686 738" pathLength="1" />
+          <path d="M848 148V848" pathLength="1" />
+        </svg>
+        <span class="brand-text">
+          <strong>NainDev</strong>
+          <span data-i18n="brandProject">Legacy Modernizer</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Secciones" data-i18n-aria="navLabel">
+        <a href="#diagram"><span class="nav-num">01</span><span data-i18n="navTraffic">Tráfico</span></a>
+        <a href="#board"><span class="nav-num">02</span><span data-i18n="navBoard">Tablero</span></a>
+        <a href="#shadow"><span class="nav-num">03</span><span data-i18n="navShadow">Sombra</span></a>
+        <a href="#steps"><span class="nav-num">04</span><span data-i18n="navSteps">Pasos</span></a>
+        <a href="#parts"><span class="nav-num">05</span><span data-i18n="navParts">Incluye</span></a>
+        <a href="#setup"><span class="nav-num">06</span><span data-i18n="navSetup">Tu flujo</span></a>
+      </nav>
+      <div class="topbar-actions">
+        <div class="seg-group" role="group" id="lang-group" aria-label="Idioma" data-i18n-aria="langGroupLabel">
+          <button type="button" class="seg-btn" data-lang="es" lang="es" aria-pressed="true">ES</button>
+          <button type="button" class="seg-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button type="button" id="theme" class="icon-btn" aria-label="Cambiar tema" data-i18n-aria="themeToggle">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+        </button>
+        <a class="btn btn-ghost" href="https://github.com/Nain9Dev/NainLegacyModernizer">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 20l-4-4 4-4M16 4l4 4-4 4M14 3l-4 18"/></svg>
+          <span data-i18n="github">Código</span>
+        </a>
       </div>
-      <button type="button" id="lang" class="btn btn-on-dark" lang="es" data-i18n="langButton" data-i18n-aria="langButtonLabel">Español</button>
     </div>
   </header>
 
-  <main>
-    <section id="diagram" class="shell panel" aria-labelledby="diagram-title">
-      <h2 id="diagram-title" data-i18n="diagramTitle">Move traffic route by route</h2>
-      <p class="lead" data-i18n="diagramIntro">Slide to send the orders route from the old system to the new API.</p>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="heroEyebrow">Harness de modernización .NET</p>
+          <h1 id="hero-title"><span data-i18n="title">Migra un monolito .NET ruta a ruta.</span> <span class="accent" data-i18n="titleAccent">Sin paradas.</span></h1>
+          <p class="tagline" data-i18n="tagline">Una pasarela mueve cada ruta por cuatro etapas y solo corta cuando las dos respuestas coinciden.</p>
+          <div class="cta-row">
+            <button type="button" class="btn btn-primary" id="tour" aria-pressed="false">
+              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16l13-8z"/></svg>
+              <svg class="icon-stop" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              <span id="tour-label" data-i18n="ctaTour">Reproducir la migración</span>
+            </button>
+            <a class="btn btn-outline" href="#shadow" data-i18n="ctaShadow">Ver comparación</a>
+          </div>
+          <ul class="facts" aria-label="Datos">
+            <li><span class="fact-value">0</span><span data-i18n="factNoDowntime">paradas</span></li>
+            <li><span class="fact-value">1</span><span data-i18n="factRoutes">ruta cada vez</span></li>
+            <li><span class="fact-value">4</span><span data-i18n="factStages">etapas por ruta</span></li>
+          </ul>
+        </div>
 
-      <div class="controls">
-        <label for="migrated" class="control-label"><span data-i18n="sliderLabel">Migrated traffic</span>: <output id="migrated-out" for="migrated">50%</output></label>
-        <input id="migrated" type="range" min="0" max="100" step="1" value="50">
-        <button type="button" id="motion" class="btn" data-i18n="pause">Pause animation</button>
+        <ol class="stages" id="stages" aria-label="Etapas de cada ruta" data-i18n-aria="stagesLabel">
+          <li><button type="button" class="stage" data-mode="legacy" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="16" height="6" rx="1"/><rect x="4" y="14" width="16" height="6" rx="1"/><path d="M8 7h.01M8 17h.01"/></svg>
+            <strong data-i18n="stageLegacy">Legado</strong>
+            <span data-i18n="stageLegacyHint">Responde el monolito</span>
+          </button></li>
+          <li><button type="button" class="stage" data-mode="shadow" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="13" height="13" rx="1"/><path d="M8 8h13v13H8z"/></svg>
+            <strong data-i18n="stageShadow">Sombra</strong>
+            <span data-i18n="stageShadowHint">Los dos responden, se comparan</span>
+          </button></li>
+          <li><button type="button" class="stage" data-mode="canary" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h7l2-6 2 12 2-6h5"/></svg>
+            <strong data-i18n="stageCanary">Canary</strong>
+            <span data-i18n="stageCanaryHint">Parte del tráfico real</span>
+          </button></li>
+          <li><button type="button" class="stage" data-mode="modern" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
+            <strong data-i18n="stageModern">Moderna</strong>
+            <span data-i18n="stageModernHint">Solo la nueva API</span>
+          </button></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="shell why" aria-labelledby="why-title">
+      <h2 id="why-title" class="sr-only" data-i18n="whyTitle">Por qué</h2>
+      <ol class="why-list">
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="8" y="8" width="32" height="32" rx="3"/><path d="M8 20h32M8 30h32M20 8v32"/></svg>
+          <h3 data-i18n="why1Title">Un monolito que funciona</h3>
+          <p data-i18n="why1Text">Nadie quiere tocarlo y reescribirlo entero es un riesgo.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 24h14M28 24h14"/><rect x="20" y="16" width="8" height="16" rx="2"/><path d="M34 14l8 10-8 10"/></svg>
+          <h3 data-i18n="why2Title">Una ruta cada vez</h3>
+          <p data-i18n="why2Text">La pasarela mueve una familia de rutas; el resto sigue igual.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 26l10 10L40 14"/><path d="M8 14h12M8 40h32"/></svg>
+          <h3 data-i18n="why3Title">Pruebas con tráfico real</h3>
+          <p data-i18n="why3Text">Las dos respuestas se comparan antes de cortar. Vuelta atrás en un clic.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="diagram" class="shell panel" aria-labelledby="diagram-title">
+      <div class="panel-head">
+        <p class="eyebrow">01</p>
+        <h2 id="diagram-title" data-i18n="diagramTitle">Mueve el tráfico ruta a ruta</h2>
+        <p class="lead" data-i18n="diagramIntro">Elige el modo de la ruta de pedidos o desliza el porcentaje.</p>
       </div>
 
-      <svg id="stage" class="stage" viewBox="0 0 720 360" role="img" aria-labelledby="stage-label">
-        <title id="stage-label" data-i18n="diagramLabel">Diagram: a client sends requests through a gateway to the legacy monolith or the modern API.</title>
-        <line class="wire wire-in" x1="130" y1="180" x2="230" y2="180"/>
-        <line id="wire-modern" class="wire wire-legacy-state" x1="360" y1="180" x2="540" y2="75"/>
-        <line id="wire-legacy" class="wire wire-old" x1="360" y1="180" x2="540" y2="285"/>
+      <div class="controls">
+        <div class="seg-group modes" role="group" aria-label="Modo de la ruta de pedidos" data-i18n-aria="modeGroupLabel">
+          <button type="button" class="seg-btn" data-mode="legacy" aria-pressed="false" data-i18n="stageLegacy">Legado</button>
+          <button type="button" class="seg-btn" data-mode="shadow" aria-pressed="false" data-i18n="stageShadow">Sombra</button>
+          <button type="button" class="seg-btn" data-mode="canary" aria-pressed="false" data-i18n="stageCanary">Canary</button>
+          <button type="button" class="seg-btn" data-mode="modern" aria-pressed="false" data-i18n="stageModern">Moderna</button>
+        </div>
+        <label for="migrated" class="slider"><span class="control-label"><span data-i18n="sliderLabel">Tráfico migrado</span> <output id="migrated-out" for="migrated">25%</output></span>
+          <input id="migrated" type="range" min="0" max="100" step="1" value="25">
+        </label>
+        <button type="button" id="motion" class="btn btn-ghost" aria-pressed="false">
+          <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14M16 5v14"/></svg>
+          <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16l13-8z"/></svg>
+          <span id="motion-label" data-i18n="pause">Pausar</span>
+        </button>
+      </div>
+
+      <p class="tour-caption" id="tour-caption" role="status" aria-live="polite" hidden><span class="tour-step" id="tour-step"></span><span id="tour-text"></span></p>
+
+      <svg id="stage" class="stage-svg" viewBox="0 0 720 360" role="img" aria-labelledby="stage-label">
+        <title id="stage-label" data-i18n="diagramLabel">Diagrama: un cliente envía peticiones por una pasarela al monolito legado o a la API moderna.</title>
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" class="grid-line"/></pattern>
+        </defs>
+        <rect id="stage-bg" width="720" height="360" fill="url(#grid)"/>
+        <line id="wire-in" class="wire wire-in" x1="130" y1="180" x2="230" y2="180"/>
+        <line id="wire-modern" class="wire wire-legacy-state" x1="360" y1="180" x2="540" y2="70"/>
+        <line id="wire-legacy" class="wire wire-old" x1="360" y1="180" x2="540" y2="290"/>
+        <text id="wire-shadow-label" class="wire-label wire-label-shadow" x="400" y="186" data-i18n="shadowWireLabel" visibility="hidden">réplica en sombra</text>
         <g id="packets"></g>
-        <g class="node node-client">
-          <rect x="20" y="150" width="110" height="60" rx="4"/>
-          <text x="75" y="186" text-anchor="middle" data-i18n="nodeClient">Client</text>
+        <g class="node node-client" data-node="client" transform="translate(20 140)">
+          <rect width="110" height="80" rx="4"/>
+          <path class="node-icon" d="M42 12h26v16H42zM51 33h8M55 28v5"/>
+          <text x="55" y="63" text-anchor="middle" data-i18n="nodeClient">Cliente</text>
         </g>
-        <g class="node node-gateway">
-          <rect x="230" y="140" width="130" height="80" rx="4"/>
-          <text x="295" y="186" text-anchor="middle" data-i18n="nodeGateway">YARP gateway</text>
+        <g class="node node-gateway" data-node="gateway" transform="translate(230 130)">
+          <rect width="130" height="100" rx="4"/>
+          <path class="node-icon" d="M53 18h26M53 27h26M53 36h26M46 18h.01M46 27h.01M46 36h.01"/>
+          <text x="65" y="70" text-anchor="middle" data-i18n="nodeGateway">Pasarela YARP</text>
         </g>
-        <g class="node node-modern">
-          <rect x="540" y="40" width="170" height="70" rx="4"/>
-          <text x="625" y="80" text-anchor="middle" data-i18n="nodeModern">Modern API (.NET 10)</text>
+        <g class="node node-modern" data-node="modern" transform="translate(540 24)">
+          <rect width="170" height="92" rx="4"/>
+          <path class="node-icon" d="M67 28l6-12 5 9 5-16 5 12 6-5"/>
+          <text x="85" y="56" text-anchor="middle" data-i18n="nodeModern">API moderna</text>
+          <text class="node-sub" x="85" y="76" text-anchor="middle" data-i18n="nodeModernSub">.NET 10</text>
         </g>
-        <g class="node node-legacy">
-          <rect x="540" y="250" width="170" height="70" rx="4"/>
-          <text x="625" y="290" text-anchor="middle" data-i18n="nodeLegacy">Legacy monolith</text>
+        <g class="node node-legacy" data-node="legacy" transform="translate(540 244)">
+          <rect width="170" height="92" rx="4"/>
+          <path class="node-icon" d="M71 10h28v9H71zM71 23h28v9H71zM76 14.5h.01M76 27.5h.01"/>
+          <text x="85" y="56" text-anchor="middle" data-i18n="nodeLegacy">Monolito legado</text>
+          <text class="node-sub" x="85" y="76" text-anchor="middle" data-i18n="nodeLegacySub">.NET Framework</text>
         </g>
-        <text class="wire-label" x="372" y="88">/api/orders/*</text>
-        <text class="wire-label" x="372" y="294">/api/invoices/*</text>
+        <text id="label-orders" class="wire-label" x="372" y="96">/api/orders/*</text>
+        <text id="label-invoices" class="wire-label" x="372" y="304">/api/invoices/*</text>
       </svg>
 
-      <h3 data-i18n="routesHeading">Routes</h3>
-      <ul class="routes">
-        <li><code>/api/orders/*</code> <span id="orders-status" class="chip chip-legacy" data-i18n="statusLegacy">Legacy</span></li>
-        <li><code>/api/invoices/*</code> <span class="chip chip-legacy" data-i18n="statusNotMigrated">Legacy (not migrated)</span></li>
+      <ul class="legend" aria-label="Leyenda">
+        <li><i class="key key-circle"></i><code>/api/orders/*</code> <span data-i18n="legendOrders">pedidos</span></li>
+        <li><i class="key key-square"></i><code>/api/invoices/*</code> <span data-i18n="legendInvoices">facturas</span></li>
+        <li><i class="key key-modern"></i><span data-i18n="legendModern">a la API moderna</span></li>
+        <li><i class="key key-legacy"></i><span data-i18n="legendLegacy">al monolito</span></li>
       </ul>
-      <p class="note" data-i18n="illustrationNote">Illustration. The gateway in this repository routes by path; the percentage is only for this demo.</p>
+
+      <div class="route-grid">
+        <div class="route-card">
+          <h3 data-i18n="routesHeading">Rutas</h3>
+          <ul class="routes">
+            <li><code>/api/orders/*</code> <span id="orders-status" class="chip chip-legacy" data-i18n="statusLegacy">Legado</span></li>
+            <li><code>/api/invoices/*</code> <span class="chip chip-legacy" data-i18n="statusNotMigrated">Legado (sin migrar)</span></li>
+          </ul>
+        </div>
+        <div class="route-card">
+          <h3 data-i18n="servedHeading">Quién ha respondido</h3>
+          <div class="split" role="img" id="split" aria-label="">
+            <span class="split-legacy" id="split-legacy"></span>
+            <span class="split-modern" id="split-modern"></span>
+          </div>
+          <ul class="split-legend">
+            <li><i class="key key-legacy"></i><span data-i18n="servedLegacy">Monolito</span> <strong id="count-legacy">0</strong></li>
+            <li><i class="key key-modern"></i><span data-i18n="servedModern">API moderna</span> <strong id="count-modern">0</strong></li>
+          </ul>
+        </div>
+      </div>
+      <p class="note" data-i18n="illustrationNote">Ilustración. La pasarela del repositorio enruta por ruta y modo; el porcentaje es el reparto canary.</p>
+    </section>
+
+    <section id="board" class="shell panel" aria-labelledby="board-title">
+      <div class="panel-head">
+        <p class="eyebrow">02</p>
+        <h2 id="board-title" data-i18n="boardTitle">Tablero de migración</h2>
+        <p class="lead" data-i18n="boardIntro">Las cinco rutas de la demo del repositorio, cada una en su etapa.</p>
+      </div>
+      <div class="board">
+        <div class="progress">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-track" cx="60" cy="60" r="52"/>
+            <circle class="ring-value" id="ring-value" cx="60" cy="60" r="52" pathLength="100"/>
+          </svg>
+          <div class="ring-text">
+            <strong id="progress-value">1 de 5</strong>
+            <span data-i18n="progressLabel">Rutas migradas</span>
+          </div>
+          <ul class="stage-counts" id="stage-counts"></ul>
+        </div>
+        <table class="routes-table">
+          <thead>
+            <tr>
+              <th scope="col" data-i18n="routeLabel">Ruta</th>
+              <th scope="col" data-i18n="stageLabel">Etapa</th>
+              <th scope="col" data-i18n="readinessLabel">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="board-rows"></tbody>
+        </table>
+      </div>
+      <div class="rule">
+        <div class="rule-head">
+          <h3 data-i18n="ruleTitle">Regla de corte</h3>
+          <p data-i18n="ruleIntro">Una ruta está lista cuando cumple las tres a la vez.</p>
+        </div>
+        <ul class="rule-list">
+          <li><span class="rule-value" id="rule-samples">20</span><span class="rule-label"><small data-i18n="ruleSamplesMin">mínimo</small><span data-i18n="ruleSamples">muestras en sombra</span></span></li>
+          <li><span class="rule-value" id="rule-parity">99,5 %</span><span class="rule-label"><small data-i18n="ruleParityMin">mínimo</small><span data-i18n="ruleParity">de paridad</span></span></li>
+          <li><span class="rule-value" id="rule-errors">0</span><span class="rule-label"><small data-i18n="ruleErrorsMax">máximo</small><span data-i18n="ruleErrors">errores de ejecución</span></span></li>
+        </ul>
+        <p class="note" data-i18n="ruleNote">Valores de la configuración de la demo; cada cliente fija los suyos.</p>
+      </div>
     </section>
 
     <section id="shadow" class="shell panel" aria-labelledby="shadow-title">
-      <h2 id="shadow-title" data-i18n="shadowTitle">Shadow run: same request, two answers</h2>
-      <p class="lead" data-i18n="shadowIntro">Both systems receive the request. Only the answers are compared.</p>
+      <div class="panel-head">
+        <p class="eyebrow">03</p>
+        <h2 id="shadow-title" data-i18n="shadowTitle">Misma petición, dos respuestas</h2>
+        <p class="lead" data-i18n="shadowIntro">En modo sombra responde el monolito. La API moderna recibe una copia y se comparan las respuestas.</p>
+      </div>
+
+      <ol class="flow" aria-label="Flujo de la ejecución en sombra" data-i18n-aria="flowLabel">
+        <li class="flow-node"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="12" rx="1"/><path d="M9 20h6M12 17v3"/></svg><span data-i18n="nodeClient">Cliente</span></li>
+        <li class="flow-arrow" aria-hidden="true"></li>
+        <li class="flow-node flow-gateway"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7h10M8 12h10M8 17h10M5 7h.01M5 12h.01M5 17h.01"/></svg><span data-i18n="nodeGateway">Pasarela YARP</span></li>
+        <li class="flow-split">
+          <span class="flow-branch flow-legacy"><i class="key key-legacy"></i><span data-i18n="flowLegacy">Responde el monolito</span></span>
+          <span class="flow-branch flow-modern"><i class="key key-shadow"></i><span data-i18n="flowModern">Copia a la API moderna</span></span>
+        </li>
+        <li class="flow-arrow" aria-hidden="true"></li>
+        <li class="flow-node flow-compare"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 17h16M9 12h6"/></svg><span data-i18n="flowCompare">Comparador</span></li>
+      </ol>
 
       <fieldset class="scenarios">
-        <legend data-i18n="scenarioLabel">Scenario</legend>
-        <label class="seg"><input type="radio" name="scenario" value="ORD-001" checked><span><code>ORD-001</code> <span data-i18n="scenarioMatch">Equal totals</span></span></label>
-        <label class="seg"><input type="radio" name="scenario" value="ORD-002"><span><code>ORD-002</code> <span data-i18n="scenarioDiverge">Different totals</span></span></label>
+        <legend data-i18n="scenarioLabel">Escenario</legend>
+        <label class="seg"><input type="radio" name="scenario" value="ORD-001" checked><span><code>ORD-001</code> <span data-i18n="scenarioMatch">Totales iguales</span></span></label>
+        <label class="seg"><input type="radio" name="scenario" value="ORD-002"><span><code>ORD-002</code> <span data-i18n="scenarioDiverge">Totales distintos</span></span></label>
       </fieldset>
 
-      <p class="samples">
-        <a class="btn-link" href="samples/parity-report-not-ready.html" data-i18n="sampleNotReady">Sample report: not ready</a>
-        <a class="btn-link" href="samples/parity-report-ready.html" data-i18n="sampleReady">Sample report: ready</a>
-      </p>
+      <p class="request"><span data-i18n="requestLabel">Petición</span> <code>GET <span id="request-path">/api/orders/ORD-001</span></code></p>
 
       <div class="compare">
-        <section class="card" aria-labelledby="legacy-h">
-          <h3 id="legacy-h" data-i18n="legacyHeading">Legacy response</h3>
+        <section class="card card-legacy" aria-labelledby="legacy-h">
+          <h3 id="legacy-h"><i class="key key-legacy"></i><span data-i18n="legacyHeading">Monolito legado</span></h3>
           <dl id="legacy-rows" class="rows"></dl>
         </section>
-        <section class="card" aria-labelledby="modern-h">
-          <h3 id="modern-h" data-i18n="modernHeading">Modern response</h3>
+        <div class="verdict-col" role="status" aria-live="polite">
+          <span class="parity-label" data-i18n="parityLabel">Paridad</span>
+          <strong id="verdict" class="verdict verdict-matched">Coincide</strong>
+          <span id="summary" class="summary"></span>
+          <span id="ready-hint" class="ready-hint"></span>
+        </div>
+        <section class="card card-modern" aria-labelledby="modern-h">
+          <h3 id="modern-h"><i class="key key-modern"></i><span data-i18n="modernHeading">API moderna</span></h3>
           <dl id="modern-rows" class="rows"></dl>
         </section>
       </div>
 
-      <div class="parity" role="status" aria-live="polite">
-        <span class="parity-label" data-i18n="parityLabel">Parity</span>
-        <strong id="verdict" class="verdict verdict-matched">Matched</strong>
-        <span id="summary" class="summary"></span>
-      </div>
-      <h3 data-i18n="differencesHeading">Differences</h3>
+      <h3 data-i18n="differencesHeading">Diferencias</h3>
       <ul id="differences" class="differences"></ul>
-      <p class="note" data-i18n="syntheticNote">Synthetic data taken from the shadow auditor tests in this repository.</p>
+      <p class="note" data-i18n="syntheticNote">Datos sintéticos de los tests del auditor en sombra del repositorio.</p>
+
+      <h3 data-i18n="samplesHeading">Informes de paridad de ejemplo</h3>
+      <div class="samples">
+        <a class="sample sample-bad" href="samples/parity-report-not-ready.html">
+          <strong data-i18n="sampleNotReady">Informe: no listo</strong>
+          <span data-i18n="sampleNotReadySub">Un campo distinto, otro ausente</span>
+        </a>
+        <a class="sample sample-ok" href="samples/parity-report-ready.html">
+          <strong data-i18n="sampleReady">Informe: listo</strong>
+          <span data-i18n="sampleReadySub">Todas las rutas coinciden</span>
+        </a>
+      </div>
     </section>
 
     <section id="steps" class="shell panel" aria-labelledby="steps-title">
-      <h2 id="steps-title" data-i18n="stepsTitle">How a migration goes</h2>
+      <div class="panel-head">
+        <p class="eyebrow">04</p>
+        <h2 id="steps-title" data-i18n="stepsTitle">Cómo es una migración</h2>
+      </div>
       <ol class="steps">
         <li>
+          <a class="step" href="#diagram" data-step-mode="legacy">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="10" width="36" height="28" rx="3"/><path d="M6 24h14M28 24h14M24 14v7M24 27v7"/></svg>
-          <h3 data-i18n="step1Title">Carve out</h3>
-          <p data-i18n="step1Text">Pick one route and build it in .NET 10.</p>
+          <h3 data-i18n="step1Title">Aislar</h3>
+          <p data-i18n="step1Text">Elige una ruta y constrúyela en .NET 10.</p>
+          </a>
         </li>
         <li>
+          <a class="step" href="#diagram" data-step-mode="shadow">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="6" width="26" height="26" rx="3"/><rect x="16" y="16" width="26" height="26" rx="3"/></svg>
-          <h3 data-i18n="step2Title">Shadow run</h3>
-          <p data-i18n="step2Text">Send the same request to both systems.</p>
+          <h3 data-i18n="step2Title">Ejecutar en sombra</h3>
+          <p data-i18n="step2Text">Envía la misma petición a ambos sistemas.</p>
+          </a>
         </li>
         <li>
+          <a class="step" href="#shadow">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 14h32M8 34h32M16 24h16"/></svg>
-          <h3 data-i18n="step3Title">Compare</h3>
-          <p data-i18n="step3Text">Check that both answers match.</p>
+          <h3 data-i18n="step3Title">Comparar</h3>
+          <p data-i18n="step3Text">Comprueba que las dos respuestas coinciden.</p>
+          </a>
         </li>
         <li>
+          <a class="step" href="#diagram" data-step-mode="modern">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 24h26M24 14l10 10-10 10"/><rect x="36" y="10" width="6" height="28" rx="2"/></svg>
-          <h3 data-i18n="step4Title">Cut over</h3>
-          <p data-i18n="step4Text">Point the gateway at the new API.</p>
+          <h3 data-i18n="step4Title">Cortar</h3>
+          <p data-i18n="step4Text">Apunta la pasarela a la nueva API.</p>
+          </a>
         </li>
       </ol>
     </section>
+
+    <section id="parts" class="shell panel" aria-labelledby="parts-title">
+      <div class="panel-head">
+        <p class="eyebrow">05</p>
+        <h2 id="parts-title" data-i18n="partsTitle">Qué incluye el repositorio</h2>
+      </div>
+      <ul class="parts">
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="16" width="36" height="16" rx="3"/><path d="M14 24h.01M22 24h.01M30 24h.01M38 24h.01M24 32v10M12 42h24"/></svg>
+          <h3 data-i18n="partGatewayTitle">Pasarela YARP</h3>
+          <p data-i18n="partGatewayText">Enruta por ruta y modo. Cambia de modo sin reiniciar.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="8" width="36" height="28" rx="3"/><path d="M12 28l8-8 6 6 10-12M16 42h16"/></svg>
+          <h3 data-i18n="partPanelTitle">Panel de control</h3>
+          <p data-i18n="partPanelText">Tablero de migración, auditorías y tráfico en vivo.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M12 6h18l8 8v28H12z"/><path d="M30 6v8h8M18 24h12M18 32h12M18 40h6"/></svg>
+          <h3 data-i18n="partReportTitle">Informe de paridad</h3>
+          <p data-i18n="partReportText">CLI que compara las dos APIs y falla el CI si no están listas.</p>
+        </li>
+      </ul>
+      <p class="cta-row"><a class="btn btn-primary" href="https://github.com/Nain9Dev/NainLegacyModernizer" data-i18n="partCta">Ver en GitHub</a></p>
+    </section>
+    <section id="setup" class="shell panel" aria-labelledby="setup-title">
+      <div class="panel-head">
+        <p class="eyebrow">06</p>
+        <h2 id="setup-title" data-i18n="setupTitle">Incorpóralo a tu flujo</h2>
+        <p class="lead" data-i18n="setupIntro">Rellena tus datos y copia el bloque. Nada sale de tu navegador.</p>
+      </div>
+      <div class="setup">
+        <form class="setup-form" id="setup-form" autocomplete="off">
+          <label><span data-i18n="fieldLegacy">URL del sistema legado</span><input type="url" id="f-legacy" name="legacy" value="https://legacy.example.com" required spellcheck="false"><small class="field-error" id="e-legacy" hidden data-i18n="errLegacy">Escribe una URL http o https.</small></label>
+          <label><span data-i18n="fieldModern">URL de la API nueva</span><input type="url" id="f-modern" name="modern" value="https://new.example.com" required spellcheck="false"><small class="field-error" id="e-modern" hidden data-i18n="errModern">Escribe una URL http o https.</small></label>
+          <label><span data-i18n="fieldRoute">Ruta a migrar</span><input type="text" id="f-route" name="route" value="/api/orders" required spellcheck="false"><small class="field-error" id="e-routePath" hidden data-i18n="errRoutePath">Empieza por / y sin espacios.</small></label>
+          <label><span data-i18n="fieldMode">Modo inicial</span>
+            <select id="f-mode" name="mode">
+              <option value="legacy" data-i18n="stageLegacy">Legado</option>
+              <option value="shadow" selected data-i18n="stageShadow">Sombra</option>
+              <option value="canary" data-i18n="stageCanary">Canary</option>
+              <option value="modern" data-i18n="stageModern">Moderna</option>
+            </select>
+          </label>
+          <label id="l-canary" hidden><span data-i18n="fieldCanary">Porcentaje canary</span><input type="number" id="f-canary" name="canary" min="1" max="99" value="10"><small class="field-error" id="e-canaryPercent" hidden data-i18n="errCanaryPercent">Entre 1 y 99.</small></label>
+          <label><span data-i18n="fieldIgnored">Campos ignorados</span><input type="text" id="f-ignored" name="ignored" value="generatedAt" spellcheck="false"><small class="field-hint" data-i18n="fieldIgnoredHint">separados por comas</small></label>
+          <label><span data-i18n="fieldAliases">Campos renombrados</span><input type="text" id="f-aliases" name="aliases" value="OrderID=id" spellcheck="false"><small class="field-hint" data-i18n="fieldAliasesHint">antiguo=nuevo, separados por comas</small></label>
+          <label class="check"><input type="checkbox" id="f-auth" name="auth"><span data-i18n="fieldAuth">Las APIs piden cabecera Authorization</span><small class="field-hint" data-i18n="fieldAuthHint">El token se lee de la variable PARITY_TOKEN. No lo escribas aquí.</small></label>
+        </form>
+        <div class="setup-out">
+          <div class="out-bar">
+            <div class="seg-group outputs" role="group" aria-label="Salida">
+              <button type="button" class="seg-btn" data-out="settings" aria-pressed="true" data-i18n="outSettings">appsettings.json</button>
+              <button type="button" class="seg-btn" data-out="cli" aria-pressed="false" data-i18n="outCli">Comando</button>
+              <button type="button" class="seg-btn" data-out="paths" aria-pressed="false" data-i18n="outPaths">paths.txt</button>
+              <button type="button" class="seg-btn" data-out="workflow" aria-pressed="false" data-i18n="outWorkflow">GitHub Actions</button>
+              <button type="button" class="seg-btn" data-out="compose" aria-pressed="false" data-i18n="outCompose">Docker Compose</button>
+            </div>
+            <button type="button" class="btn btn-ghost" id="copy">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
+              <span id="copy-label" data-i18n="copy">Copiar</span>
+            </button>
+          </div>
+          <p class="out-hint" id="out-hint" data-i18n="outSettingsHint">Sección Modernizer de src/NainLegacyModernizer.Gateway/appsettings.json</p>
+          <pre class="out" tabindex="0"><code id="out-code"></code></pre>
+        </div>
+      </div>
+      <div class="adopt">
+        <div>
+          <h3 data-i18n="adoptTitle">Puesta en marcha</h3>
+          <ol class="adopt-list">
+            <li data-i18n="adopt1">Clona el repositorio y pega el bloque en appsettings.json.</li>
+            <li data-i18n="adopt2">Arranca la pasarela y apunta tus clientes a ella.</li>
+            <li data-i18n="adopt3">Abre /_modernizer y envía tráfico de prueba.</li>
+            <li data-i18n="adopt4">Cuando el tablero diga Lista, promociona la ruta.</li>
+          </ol>
+          <pre class="out out-small"><code>git clone https://github.com/Nain9Dev/NainLegacyModernizer
+dotnet run --project src/NainLegacyModernizer.Gateway
+# or: docker compose up --build</code></pre>
+        </div>
+        <div>
+          <h3 data-i18n="limitsTitle">Límites</h3>
+          <ul class="limits">
+            <li data-i18n="limit1">Solo HTTP con JSON. No toca tu código ni tu base de datos.</li>
+            <li data-i18n="limit2">El informe de paridad solo envía GET; sin cabeceras de autenticación aún.</li>
+            <li data-i18n="limit3">Auditorías en memoria: un reinicio vuelve a la configuración.</li>
+            <li data-i18n="limit4">El panel no tiene login: despliégalo dentro de tu red.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="compare" class="shell panel" aria-labelledby="compare-title">
+      <div class="panel-head">
+        <p class="eyebrow">07</p>
+        <h2 id="compare-title" data-i18n="compareTitle">Reescritura total o ruta a ruta</h2>
+      </div>
+      <table class="cmp">
+        <thead>
+          <tr><th scope="col"></th><th scope="col" class="cmp-rewrite" data-i18n="compareRewrite">Reescritura total</th><th scope="col" class="cmp-strangler" data-i18n="compareStrangler">Ruta a ruta con sombra</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" data-i18n="cmp1">Parada del servicio</th><td class="cmp-bad" data-i18n="cmp1a">Sí, el día del corte</td><td class="cmp-good" data-i18n="cmp1b">No</td></tr>
+          <tr><th scope="row" data-i18n="cmp2">Vuelta atrás</th><td class="cmp-bad" data-i18n="cmp2a">Difícil y lenta</td><td class="cmp-good" data-i18n="cmp2b">Un clic en el tablero</td></tr>
+          <tr><th scope="row" data-i18n="cmp3">Evidencia antes de cortar</th><td class="cmp-bad" data-i18n="cmp3a">Pruebas sintéticas</td><td class="cmp-good" data-i18n="cmp3b">Tráfico real comparado</td></tr>
+          <tr><th scope="row" data-i18n="cmp4">Tamaño de cada entrega</th><td class="cmp-bad" data-i18n="cmp4a">Todo el sistema</td><td class="cmp-good" data-i18n="cmp4b">Una ruta</td></tr>
+          <tr><th scope="row" data-i18n="cmp5">Cuándo se asume el riesgo</th><td class="cmp-bad" data-i18n="cmp5a">Todo al final</td><td class="cmp-good" data-i18n="cmp5b">Repartido, ruta a ruta</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="faq" class="shell panel" aria-labelledby="faq-title">
+      <div class="panel-head">
+        <p class="eyebrow">08</p>
+        <h2 id="faq-title" data-i18n="faqTitle">Preguntas frecuentes</h2>
+      </div>
+      <dl class="faq">
+        <div><dt data-i18n="faq1q">¿Qué cuesta?</dt><dd data-i18n="faq1a">Licencia MIT. Sin servicios de pago: corre en tu máquina o en tu red.</dd></div>
+        <div><dt data-i18n="faq2q">¿Qué necesito?</dt><dd data-i18n="faq2a">El SDK de .NET 10, o Docker. Nada más.</dd></div>
+        <div><dt data-i18n="faq3q">¿Toca mi código o mi base de datos?</dt><dd data-i18n="faq3a">No. Solo se pone delante, como un proxy HTTP.</dd></div>
+        <div><dt data-i18n="faq4q">¿Salen datos de mi red?</dt><dd data-i18n="faq4a">No. La pasarela, el panel y los informes son tuyos.</dd></div>
+        <div><dt data-i18n="faq5q">¿Y si la API nueva falla en sombra?</dt><dd data-i18n="faq5a">El cliente recibe la respuesta del monolito. El fallo queda auditado.</dd></div>
+        <div><dt data-i18n="faq6q">¿Vale para .NET Framework?</dt><dd data-i18n="faq6a">Sí. El monolito solo tiene que responder por HTTP; la API nueva es .NET 10.</dd></div>
+      </dl>
+    </section>
   </main>
 
-  <footer class="shell foot">
-    <a href="https://github.com/Nain9Dev/NainLegacyModernizer" data-i18n="sourceLink">Source code</a>
+  <footer class="foot">
+    <div class="shell foot-row">
+      <a class="brand brand-foot" href="https://www.naindev.com/">
+        <svg class="brand-mark" viewBox="91 91 818 818" aria-hidden="true" focusable="false">
+          <path d="M148 148V848" /><path d="M308 288L686 738" /><path d="M848 148V848" />
+        </svg>
+        <span class="brand-text"><strong>NainDev</strong><span data-i18n="footerAuthor">Aitor Nain Mendoza Vallejo</span></span>
+      </a>
+      <nav class="foot-links" aria-label="NainDev">
+        <a href="https://www.naindev.com/" data-i18n="footerSite">naindev.com</a>
+        <a href="https://github.com/Nain9Dev/NainLegacyModernizer" data-i18n="sourceLink">Código fuente</a>
+        <a href="https://brand.naindev.com/" data-i18n="footerBrand">Manual de marca</a>
+      </nav>
+      <p class="foot-legal">© <span id="year">2026</span> NainDev</p>
+    </div>
   </footer>
 
   <script type="module" src="main.js"></script>

@@ -26,6 +26,7 @@ public static class GatewayHost
 
         builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+        builder.Services.AddHealthChecks();
         builder.Services.AddHttpForwarder();
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddSingleton<IUpstreamHttpClient, SocketsUpstreamHttpClient>();
@@ -40,6 +41,8 @@ public static class GatewayHost
 
         var app = builder.Build();
 
+        // Liveness for orchestrators (Compose, Kubernetes): the process is up and its options validated.
+        app.MapHealthChecks("/_modernizer/health");
         app.MapControlPanel();
         app.Map("/{**path}", (HttpContext context, StranglerProxy proxy) => proxy.HandleAsync(context));
 

@@ -10,10 +10,18 @@ demo/
     routing.ts          deterministic target assignment, route status
     parity.ts           field comparer and ParityVerdict (mirrors ShadowAuditor semantics)
     fixtures.ts         synthetic scenarios copied from ShadowAuditorTests.cs
-    i18n.ts             EN/ES strings
+    routes.ts           the five demo routes copied from the gateway appsettings.json, readiness wording
+    layout.ts           diagram geometry for wide (left to right) and narrow (top to bottom) screens
+    config.ts           setup generator: appsettings section, nain-parity command, CI job, Compose file, validation
+    tour.ts             guided tour state machine over the four modes
+    i18n.ts             ES/EN strings, Spanish default, language resolution
+    prefs.ts            persisted language and theme, theme resolution
     contrast.ts         WCAG contrast helper (used by tests only)
-    main.ts             DOM wiring, SVG animation loop
-  scripts/build.ts      copies index.html and styles.css next to the compiled JS
+    main.ts             DOM wiring, mode and theme controls, SVG animation loop
+  fonts/                Urbanist variable subset (OFL) and its licence
+  card.webp             Open Graph image (1280x640)
+  scripts/build.ts      copies the entry files, fonts, card and sample reports next to the compiled JS
+  scripts/minify.ts     comment and whitespace stripping for the published CSS (strings untouched)
   test/*.test.ts        node:test, run with native type stripping
   dist/                 build output (ignored by git), uploaded to Pages
 ```
@@ -24,14 +32,20 @@ demo/
   Tests use `node:test` and Node's native type stripping, so no test framework is added.
 - `erasableSyntaxOnly` keeps sources runnable by Node unchanged; relative imports use `.ts` and are
   rewritten to `.js` by `tsc`.
-- Fonts: brandbook font stacks with system fallbacks. Urbanist and IBM Plex Mono are not shipped
-  (no external fonts, weight budget).
-- The brandbook logo is not used. The page uses a plain text title, so there is no logo to render
-  with a gradient.
+- Fonts: Urbanist is self-hosted as the same variable subset the owner site ships (about 25 KB, SIL
+  Open Font License, licence file next to it). The monospace stack is system-only.
+- The NainDev isotype (three strokes, one colour) is drawn inline; it follows the theme.
+- Themes: light (paper) and dark (blueprint) token sets; the deep blue band of the hero and footer is
+  the same in both, as on naindev.com.
+- Spanish first: `resolveLang` ignores the browser language and returns the stored choice, the
+  `lang` query value or `es`.
 - The slider is an illustration. Requests are assigned with an integer Bresenham-style rule so the
   animation is reproducible and testable.
-- Pages URL: the owner site has a custom domain, so the project page is served under
-  `https://www.naindev.com/NainLegacyModernizer/`. All asset paths are relative.
+- Pages URL: `https://modernizer.naindev.com/` (ADR `next-demo-hosting-subdomain`). All asset paths
+  are relative.
+- The ecosystem bar used by the other NainDev demos is loaded from www.naindev.com, the only external
+  resource (ADR `next-demo-ecosystem-bar`, Accepted). The custom element takes no room until defined,
+  so the page is identical when the script does not load.
 
 ## Risks
 

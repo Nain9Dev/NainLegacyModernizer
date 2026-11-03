@@ -1,0 +1,17 @@
+# Example: the gateway in front of your two systems. Replace the addresses and the route.
+# The control panel answers at http://127.0.0.1:8080/_modernizer; keep it inside your network (no login).
+services:
+  gateway:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      Modernizer__LegacyBaseAddress: https://legacy.example.com
+      Modernizer__ModernBaseAddress: https://new.example.com
+      Modernizer__Cutover__MinimumSamples: "20"
+      Modernizer__Cutover__MinimumParityRatio: "0.995"
+      Modernizer__Routes__0__Id: orders
+      Modernizer__Routes__0__PathPattern: /api/orders/{**rest}
+      Modernizer__Routes__0__Mode: Shadow
+      Modernizer__Routes__0__FieldAliases__OrderID: id
+      Modernizer__Routes__0__IgnoredFields__0: generatedAt

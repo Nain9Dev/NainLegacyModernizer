@@ -30,6 +30,8 @@ internal static class Program
 
         using var legacy = new HttpClient { BaseAddress = options.Legacy, Timeout = TimeSpan.FromSeconds(10) };
         using var modern = new HttpClient { BaseAddress = options.Modern, Timeout = TimeSpan.FromSeconds(10) };
+        options.Apply(legacy);
+        options.Apply(modern);
         var runner = new ParityRunner(legacy, modern, new JsonParityOptions(options.Ignore, options.Map));
 
         var report = await runner.RunAllAsync(

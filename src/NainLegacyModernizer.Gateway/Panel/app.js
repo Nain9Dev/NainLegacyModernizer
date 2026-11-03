@@ -94,7 +94,7 @@ const I18N = {
 };
 
 const state = {
-  lang: "en",
+  lang: "es",
   theme: "dark",
   overview: null,
   traffic: [],
@@ -642,7 +642,8 @@ function wireEvents() {
 async function boot() {
   const savedTheme = storage.get("modernizer.theme");
   applyTheme(savedTheme ?? (window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark"));
-  const savedLang = storage.get("modernizer.lang") ?? (navigator.language?.toLowerCase().startsWith("es") ? "es" : "en");
+  // Spanish first; the visitor's choice persists.
+  const savedLang = storage.get("modernizer.lang") ?? "es";
   state.lang = savedLang;
   wireEvents();
   applyLanguage(savedLang);
