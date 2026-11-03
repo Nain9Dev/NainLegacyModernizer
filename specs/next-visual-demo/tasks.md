@@ -25,6 +25,8 @@
 | T-024 | A | paths.txt output in the generator; gateway liveness endpoint `/_modernizer/health` (C#, test written, not compiled here) | `npm test` green; `dotnet test` on the owner's machine |
 | T-025 | A | `nain-parity --lang es` (Spanish report wording) and the generator adds it on the Spanish page | CI green on the pull request |
 | T-026 | A | `nain-parity --timeout`, CI actions pinned by commit, CI badges in the READMEs | CI green on the pull request |
+| T-027 | A | nain-parity packed as a dotnet tool artifact; runbook covers the tool and the JSON summary | CI green, artifact attached to the run |
+| T-028 | H | Decide whether CI publishes the gateway image to GitHub Container Registry (public package) | Owner decision |
 | T-020 | A | CI job builds the image and checks `/_modernizer/health` from the running container | Job green on the pull request |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | Done: owner chose the shared bar (2026-11-03) |
 | T-022 | A | Load the shared ecosystem bar; layout unaffected when the script does not load | `npm test` green, both states rendered in a browser |

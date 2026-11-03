@@ -58,6 +58,30 @@ precedence over `ASPNETCORE_URLS`, so a container must override `Urls` itself (C
 The control panel has no login: publish port 8080 inside your network only. CI builds the image and checks the
 liveness endpoint on every push and pull request (`ci.yml`, job "Container image").
 
+### `nain-parity` as a dotnet tool
+
+CI packs the CLI as a dotnet tool on every run (artifact `nain-parity-tool`, a `.nupkg`). Download it from the
+workflow run and install it from the folder that holds the package:
+
+```bash
+dotnet tool install --global nain-parity --add-source ./artifacts
+nain-parity --legacy https://legacy.example.com --modern https://new.example.com --paths paths.txt
+```
+
+### Reading the result in CI
+
+The exit code gates the pipeline: `0` ready to cut over, `1` not ready, `2` invalid arguments. With `--json <file>`
+the CLI also writes a summary for dashboards or scripts:
+
+| Field | Meaning |
+| :--- | :--- |
+| `generatedAtUtc`, `legacyBaseUrl`, `modernBaseUrl` | when and what was compared |
+| `routes[].path`, `routes[].verdict` | one entry per path; `Matched`, `Discrepancy` or `ExecutionError` |
+| `routes[].discrepancies[].field`, `legacyValue`, `modernValue`, `kind` | each differing field; a missing side is `null` |
+| `routes[].error` | why a path failed (timeout, non-JSON body, status mismatch) |
+| `ignoredFields` | the fields skipped on both sides |
+| `total`, `matched`, `discrepant`, `failed`, `isReadyToCut` | the counts behind the verdict; an empty report is never ready |
+
 ## 5. Adoption checklist
 
 1. Run the demo once (section 2) and walk through the board, an audit and a promotion.

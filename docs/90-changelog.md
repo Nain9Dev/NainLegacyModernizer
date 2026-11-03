@@ -35,7 +35,8 @@
 - `Dockerfile` (multi-stage, official .NET 10 images, port 8080) and `compose.yaml` example configured by
   environment variables; runbook gains a containers section and an adoption checklist. Not yet built
   with a Docker daemon.
-- CI builds the gateway image and smoke-tests its liveness endpoint from the running container.
+- CI builds the gateway image and smoke-tests its liveness endpoint from the running container; `nain-parity`
+  is packed as a dotnet tool artifact on every run. The runbook documents the tool and the `--json` summary.
 - Gateway liveness endpoint `GET /_modernizer/health` for orchestrators (REQ-CP-06).
 - `nain-parity --timeout <seconds>` bounds each request (REQ-PAR-19). CI actions pinned by commit.
 - `nain-parity --lang es` writes the report in Spanish (REQ-PAR-18); the demo generator adds it when the page is in

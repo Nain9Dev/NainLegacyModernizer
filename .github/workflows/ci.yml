@@ -28,6 +28,26 @@ jobs:
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity normal
 
+  tool:
+    name: Package nain-parity (dotnet tool)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup .NET
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: "10.0.x"
+      - name: Pack
+        run: dotnet pack src/NainLegacyModernizer.ParityCli --configuration Release --output artifacts
+      - name: Upload package
+        uses: actions/upload-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          name: nain-parity-tool
+          path: artifacts/*.nupkg
+          if-no-files-found: error
+
   container:
     name: Container image (gateway)
     runs-on: ubuntu-latest
