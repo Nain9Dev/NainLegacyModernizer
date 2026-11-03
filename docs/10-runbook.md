@@ -53,8 +53,8 @@ docker compose up --build
 ```
 
 `GET /_modernizer/health` answers `200 Healthy` from the process itself (no backend call) for liveness probes.
-The control panel has no login: publish port 8080 inside your network only. Not yet verified with a Docker daemon;
-first build is an owner task (see `specs/next-visual-demo/tasks.md`).
+The control panel has no login: publish port 8080 inside your network only. CI builds the image and checks the
+liveness endpoint on every push and pull request (`ci.yml`, job "Container image").
 
 ## 5. Adoption checklist
 

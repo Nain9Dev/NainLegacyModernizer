@@ -25,3 +25,30 @@ jobs:
         run: dotnet build --no-restore --configuration Release
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity normal
+
+  container:
+    name: Container image (gateway)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build image
+        run: docker build --tag nain-legacy-modernizer-gateway:ci .
+      - name: Smoke test the liveness endpoint
+        run: |
+          docker run --detach --name gateway --publish 8080:8080 \
+            --env Modernizer__LegacyBaseAddress=http://legacy.invalid:5000 \
+            --env Modernizer__ModernBaseAddress=http://modern.invalid:5001 \
+            nain-legacy-modernizer-gateway:ci
+          for i in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:8080/_modernizer/health | grep --quiet Healthy; then
+              echo "gateway healthy after ${i}s"
+              docker stop gateway > /dev/null
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "gateway did not report healthy in 30s" >&2
+          docker logs gateway
+          exit 1

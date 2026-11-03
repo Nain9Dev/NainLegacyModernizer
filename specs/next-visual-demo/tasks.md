@@ -23,7 +23,7 @@
 | T-021 | A | Guided tour from the hero, rewrite-versus-route comparison, FAQ for decision makers | `npm test` green, tour driven in a browser with and without reduced motion |
 | T-023 | A | `nain-parity --header` (C#, tests written, not compiled here) and the authentication option in the generator | `dotnet test` green on the owner's machine |
 | T-024 | A | paths.txt output in the generator; gateway liveness endpoint `/_modernizer/health` (C#, test written, not compiled here) | `npm test` green; `dotnet test` on the owner's machine |
-| T-020 | H | Build the image once (`docker compose up --build`) and open `/_modernizer` | Panel answers from the container |
+| T-020 | A | CI job builds the image and checks `/_modernizer/health` from the running container | Job green on the pull request |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | Done: owner chose the shared bar (2026-11-03) |
 | T-022 | A | Load the shared ecosystem bar; layout unaffected when the script does not load | `npm test` green, both states rendered in a browser |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
