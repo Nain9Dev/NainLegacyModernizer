@@ -17,7 +17,15 @@
      so YARP forwards into the other two servers in memory.
    - Every mode, the fallback, shadow replay (GET and POST), the intentional rounding bug, modern-down behaviour,
      mode changes from the API, overview, audits and the embedded panel (`GatewayRoutingTests`).
-3. **Manual gate before a client demo**
+3. **Static demo (`demo/`, Node 24, `npm test`)**
+   - Routing share, parity fixtures, Spanish-first language resolution, theme resolution, modes, diagram layouts,
+     migration board against `appsettings.json`, setup generator against `ModernizerOptions.cs`, the CLI usage and
+     `compose.yaml`, guided tour, contrast of both themes, static rules (no external asset but the ecosystem bar,
+     budget, workflow pinning) and the build-time minifiers.
+   - Browser checks with Playwright are run by hand in both themes and languages at desktop and phone widths.
+4. **Container (`ci.yml`, job "Container image")**
+   - Builds the gateway `Dockerfile` and waits for `GET /_modernizer/health` from the running container.
+5. **Manual gate before a client demo**
    - `dotnet run --project src/NainLegacyModernizer.Demo`, open the panel, send traffic, promote a route, open a
      discrepancy, toggle theme and language.
 
@@ -25,6 +33,10 @@
 
 ```bash
 dotnet test --configuration Release
+```
+
+```bash
+cd demo && npm ci && npm run typecheck && npm test
 ```
 
 Warnings are errors (`TreatWarningsAsErrors`), analyzers at `latest-recommended`.
