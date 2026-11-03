@@ -92,8 +92,8 @@ run proves both answer the same before the cut-over.
 
 - **REQ-DEMO-26** The page shall let a visitor enter the two base addresses, one route, the initial
   mode, the canary share and the ignored and renamed fields, and shall produce from them the
-  `Modernizer` section of the gateway's `appsettings.json`, the `nain-parity` command and a GitHub
-  Actions job, each copyable. Every generated property name shall exist in `ModernizerOptions.cs` and
+  `Modernizer` section of the gateway's `appsettings.json`, the `nain-parity` command, a GitHub
+  Actions job and a Compose file (the same settings as environment variables), each copyable. Every generated property name shall exist in `ModernizerOptions.cs` and
   every CLI option in the CLI usage text; invalid input shall be flagged next to the field and shall
   disable copying. Nothing shall be sent anywhere.
 - **REQ-DEMO-27** The board shall state the cut-over rule with the values configured in the demo

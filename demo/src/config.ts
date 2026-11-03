@@ -143,3 +143,30 @@ export function parseAliases(value: string): Record<string, string> {
   }
   return map;
 }
+
+/** The same settings as ASP.NET Core environment variables: nested keys joined with "__", lists by index. */
+export function flattenSettings(value: unknown, prefix = ""): [string, string][] {
+  if (Array.isArray(value)) return value.flatMap((item, i) => flattenSettings(item, `${prefix}__${i}`));
+  if (value && typeof value === "object") {
+    return Object.entries(value).flatMap(([k, v]) => flattenSettings(v, prefix ? `${prefix}__${k}` : k));
+  }
+  return [[prefix, String(value)]];
+}
+
+function yamlValue(value: string): string {
+  return /^[0-9.]+$/.test(value) || /[:#{}[\],&*?|<>=!%@`'"]/.test(value) ? `"${value.replace(/"/g, '\\"')}"` : value;
+}
+
+/** A Compose file that builds the repository's Dockerfile and configures the gateway by environment. */
+export function composeYaml(setup: ClientSetup): string {
+  const lines = [
+    "services:",
+    "  gateway:",
+    "    build: .",
+    "    ports:",
+    '      - "8080:8080"',
+    "    environment:",
+  ];
+  for (const [key, value] of flattenSettings(buildSettings(setup))) lines.push(`      ${key}: ${yamlValue(value)}`);
+  return lines.join("\n");
+}

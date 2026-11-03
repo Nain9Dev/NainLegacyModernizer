@@ -67,7 +67,13 @@ addresses and route. Then run the gateway alone:
 dotnet run --project src/NainLegacyModernizer.Gateway
 ```
 
-Details, limits and failure modes: [docs/10-runbook.md](docs/10-runbook.md).
+Or in a container (`Dockerfile`, `compose.yaml`, configured by environment variables):
+
+```bash
+docker compose up --build
+```
+
+Details, limits, containers and an adoption checklist: [docs/10-runbook.md](docs/10-runbook.md).
 
 ## Parity report: is this route ready to cut over?
 

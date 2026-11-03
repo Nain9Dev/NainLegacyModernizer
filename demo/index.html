@@ -417,6 +417,7 @@
               <button type="button" class="seg-btn" data-out="settings" aria-pressed="true" data-i18n="outSettings">appsettings.json</button>
               <button type="button" class="seg-btn" data-out="cli" aria-pressed="false" data-i18n="outCli">Comando</button>
               <button type="button" class="seg-btn" data-out="workflow" aria-pressed="false" data-i18n="outWorkflow">GitHub Actions</button>
+              <button type="button" class="seg-btn" data-out="compose" aria-pressed="false" data-i18n="outCompose">Docker Compose</button>
             </div>
             <button type="button" class="btn btn-ghost" id="copy">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
@@ -437,7 +438,8 @@
             <li data-i18n="adopt4">Cuando el tablero diga Lista, promociona la ruta.</li>
           </ol>
           <pre class="out out-small"><code>git clone https://github.com/Nain9Dev/NainLegacyModernizer
-dotnet run --project src/NainLegacyModernizer.Gateway</code></pre>
+dotnet run --project src/NainLegacyModernizer.Gateway
+# or: docker compose up --build</code></pre>
         </div>
         <div>
           <h3 data-i18n="limitsTitle">Límites</h3>

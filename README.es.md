@@ -63,6 +63,12 @@ tus direcciones y tu ruta. Después, ejecuta la pasarela:
 dotnet run --project src/NainLegacyModernizer.Gateway
 ```
 
+O en un contenedor (`Dockerfile`, `compose.yaml`, configurado por variables de entorno):
+
+```bash
+docker compose up --build
+```
+
 Detalles, límites y modos de fallo: [docs/10-runbook.md](docs/10-runbook.md).
 
 ## Informe de paridad: ¿está la ruta lista para el corte definitivo?

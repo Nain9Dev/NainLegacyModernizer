@@ -28,7 +28,10 @@
   a setup generator that writes the `Modernizer` section, the `nain-parity` command and a GitHub
   Actions job from the visitor's addresses and route (validated against `ModernizerOptions.cs` and
   the CLI usage by tests), getting-started steps and the known limits (REQ-DEMO-26, 27). The size
-  budget is now 200 KB.
+  budget is now 200 KB. The generator also writes a Compose file.
+- `Dockerfile` (multi-stage, official .NET 10 images, port 8080) and `compose.yaml` example configured by
+  environment variables; runbook gains a containers section and an adoption checklist. Not yet built
+  with a Docker daemon.
 - Parity report (`nain-parity` and the sample reports): stylesheet aligned with the brandbook v1.6
   tokens, dark mode by system preference, print-safe. Markup and wording unchanged; the committed
   samples carry the same stylesheet.

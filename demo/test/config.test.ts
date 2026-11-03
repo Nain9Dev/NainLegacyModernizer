@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
-  buildSettings, defaultSetup, parityCommand, parseAliases, parseList, pathPatternFrom, routeIdFrom, settingsJson, validate, workflowYaml,
+  buildSettings, composeYaml, defaultSetup, flattenSettings, parityCommand, parseAliases, parseList, pathPatternFrom, routeIdFrom, settingsJson, validate, workflowYaml,
 } from "../src/config.ts";
 
 const options = readFileSync(new URL("../../src/NainLegacyModernizer.Gateway/ModernizerOptions.cs", import.meta.url), "utf8");
@@ -85,4 +85,25 @@ test("REQ-DEMO-26: the workflow embeds the same command and fails on a non-zero 
 test("REQ-DEMO-26: list and alias parsing is forgiving", () => {
   assert.deepEqual(parseList(" a, b ,,c "), ["a", "b", "c"]);
   assert.deepEqual(parseAliases("OrderID=id, Qty = quantity, broken, =x"), { OrderID: "id", Qty: "quantity" });
+});
+
+test("REQ-DEMO-26: Compose environment keys mirror the settings block and the repository example", () => {
+  const env = Object.fromEntries(flattenSettings(buildSettings(defaultSetup)));
+  assert.deepEqual(env, {
+    Modernizer__LegacyBaseAddress: "https://legacy.example.com",
+    Modernizer__ModernBaseAddress: "https://new.example.com",
+    Modernizer__Cutover__MinimumSamples: "20",
+    Modernizer__Cutover__MinimumParityRatio: "0.995",
+    Modernizer__Routes__0__Id: "orders",
+    Modernizer__Routes__0__PathPattern: "/api/orders/{**rest}",
+    Modernizer__Routes__0__Mode: "Shadow",
+    Modernizer__Routes__0__FieldAliases__OrderID: "id",
+    Modernizer__Routes__0__IgnoredFields__0: "generatedAt",
+  });
+  const yaml = composeYaml(defaultSetup);
+  assert.match(yaml, /^services:\n {2}gateway:\n {4}build: \.\n/);
+  assert.ok(yaml.includes('Modernizer__Routes__0__PathPattern: "/api/orders/{**rest}"'));
+  assert.ok(yaml.includes('Modernizer__Cutover__MinimumSamples: "20"'));
+  const example = readFileSync(new URL("../../compose.yaml", import.meta.url), "utf8");
+  for (const key of Object.keys(env)) assert.ok(example.includes(`${key}:`), `compose.yaml example lacks ${key}`);
 });

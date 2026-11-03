@@ -42,14 +42,38 @@ Everything lives in the `Modernizer` section of `src/NainLegacyModernizer.Gatewa
 Run the gateway alone with `dotnet run --project src/NainLegacyModernizer.Gateway` once the addresses point at the
 client's systems.
 
-## 4. Standard commands
+## 4. Containers
+
+`Dockerfile` publishes the gateway on the official .NET 10 images and listens on port 8080; `compose.yaml` is a
+starting point that configures it with environment variables (`Modernizer__LegacyBaseAddress`,
+`Modernizer__Routes__0__Id`, ...). The live demo writes a Compose file from your addresses and route.
+
+```bash
+docker compose up --build
+```
+
+The control panel has no login: publish port 8080 inside your network only. Not yet verified with a Docker daemon;
+first build is an owner task (see `specs/next-visual-demo/tasks.md`).
+
+## 5. Adoption checklist
+
+1. Run the demo once (section 2) and walk through the board, an audit and a promotion.
+2. Generate your `Modernizer` section at <https://modernizer.naindev.com/#setup> or edit `appsettings.json` by hand.
+3. Start the gateway (section 3 or 4) and point one client or a test harness at it. Every route is `Legacy` by default.
+4. Put one route in `Shadow`. Confirm with the owner of that route that a replayed request has no side effects.
+5. Watch the board until the route is `Ready` (cut-over rule), inspect any discrepancy, add `FieldAliases` or
+   `IgnoredFields` when the difference is a naming or metadata matter, fix the modern service when it is not.
+6. Promote to `Canary` with a small share, then to `Modern`. Roll back from the board at any time.
+7. Add the `nain-parity` job to CI so a regression blocks the pull request.
+
+## 6. Standard commands
 
 ```bash
 dotnet build --configuration Release
 dotnet test --configuration Release
 ```
 
-## 5. Static demo hosting
+## 7. Static demo hosting
 
 The static demo (`demo/`) is deployed by `.github/workflows/pages.yml` to GitHub Pages and served at
 `https://modernizer.naindev.com/`, the same pattern as the other NainDev projects:
