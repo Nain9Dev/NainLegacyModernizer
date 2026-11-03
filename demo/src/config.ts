@@ -177,3 +177,15 @@ export function composeYaml(setup: ClientSetup): string {
   for (const [key, value] of flattenSettings(buildSettings(setup))) lines.push(`      ${key}: ${yamlValue(value)}`);
   return lines.join("\n");
 }
+
+/** The paths file the command reads: one request path per line, comments allowed. */
+export function pathsFile(setup: ClientSetup): string {
+  const base = setup.routePath.replace(/\/+$/, "");
+  return [
+    "# One GET path per line. Lines starting with # are ignored.",
+    "# Use real identifiers from your data: the same request is sent to both systems.",
+    `${base}/1001`,
+    `${base}/1002`,
+    `${base}?page=1`,
+  ].join("\n");
+}

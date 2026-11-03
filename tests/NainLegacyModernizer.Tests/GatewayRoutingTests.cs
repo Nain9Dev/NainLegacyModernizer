@@ -175,6 +175,18 @@ public sealed class GatewayRoutingTests
     }
 
     [Fact]
+    public async Task HealthEndpoint_AnswersHealthy_WithoutTouchingTheBackends()
+    {
+        await using var fixture = new GatewayFixture();
+
+        var response = await fixture.Client.GetAsync("/_modernizer/health");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("Healthy", await response.Content.ReadAsStringAsync());
+        Assert.False(response.Headers.Contains("X-Modernizer-Mode"));
+    }
+
+    [Fact]
     public async Task Panel_IsServedFromEmbeddedResources()
     {
         await using var fixture = new GatewayFixture();

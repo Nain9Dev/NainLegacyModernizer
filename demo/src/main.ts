@@ -2,7 +2,7 @@ import { MODE_PERCENT, MODES, clampPercent, modeFor, routeStatus, targetFor, typ
 import { comparedFields, compare } from "./parity.ts";
 import { scenarios } from "./fixtures.ts";
 import { cutoverPolicy, demoRoutes, progressOf, readinessOf, type Readiness } from "./routes.ts";
-import { composeYaml, defaultSetup, parityCommand, parseAliases, parseList, settingsJson, validate, workflowYaml, type ClientSetup, type SetupError } from "./config.ts";
+import { composeYaml, defaultSetup, parityCommand, pathsFile, parseAliases, parseList, settingsJson, validate, workflowYaml, type ClientSetup, type SetupError } from "./config.ts";
 import { resolveLang, t, type Key, type Lang } from "./i18n.ts";
 import { LANG_KEY, THEME_KEY, readPref, resolveTheme, writePref, type Theme } from "./prefs.ts";
 import { layoutFor, type Layout, type NodeBox } from "./layout.ts";
@@ -154,9 +154,9 @@ function renderRule(): void {
 
 /* ---------- setup generator ---------- */
 
-type Output = "settings" | "cli" | "workflow" | "compose";
+type Output = "settings" | "cli" | "paths" | "workflow" | "compose";
 let output: Output = "settings";
-const outputHint: Record<Output, Key> = { settings: "outSettingsHint", cli: "outCliHint", workflow: "outWorkflowHint", compose: "outComposeHint" };
+const outputHint: Record<Output, Key> = { settings: "outSettingsHint", cli: "outCliHint", paths: "outPathsHint", workflow: "outWorkflowHint", compose: "outComposeHint" };
 const outputButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-out]"));
 const copyButton = byId<HTMLButtonElement>("copy");
 let copyTimer = 0;
@@ -188,7 +188,12 @@ function renderSetup(): void {
   }
   for (const button of outputButtons) button.setAttribute("aria-pressed", String(button.dataset["out"] === output));
   byId<HTMLElement>("out-hint").textContent = t(state.lang, outputHint[output]);
-  const text = output === "settings" ? settingsJson(setup) : output === "cli" ? parityCommand(setup) : output === "workflow" ? workflowYaml(setup) : composeYaml(setup);
+  const text =
+    output === "settings" ? settingsJson(setup)
+    : output === "cli" ? parityCommand(setup)
+    : output === "paths" ? pathsFile(setup)
+    : output === "workflow" ? workflowYaml(setup)
+    : composeYaml(setup);
   byId<HTMLElement>("out-code").textContent = text;
   copyButton.disabled = errors.length > 0;
 }

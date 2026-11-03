@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
-  buildSettings, composeYaml, defaultSetup, flattenSettings, parityCommand, parseAliases, parseList, pathPatternFrom, routeIdFrom, settingsJson, validate, workflowYaml,
+  buildSettings, composeYaml, defaultSetup, flattenSettings, parityCommand, pathsFile, parseAliases, parseList, pathPatternFrom, routeIdFrom, settingsJson, validate, workflowYaml,
 } from "../src/config.ts";
 
 const options = readFileSync(new URL("../../src/NainLegacyModernizer.Gateway/ModernizerOptions.cs", import.meta.url), "utf8");
@@ -116,4 +116,11 @@ test("REQ-DEMO-26: Compose environment keys mirror the settings block and the re
   assert.ok(yaml.includes('Modernizer__Cutover__MinimumSamples: "20"'));
   const example = readFileSync(new URL("../../compose.yaml", import.meta.url), "utf8");
   for (const key of Object.keys(env)) assert.ok(example.includes(`${key}:`), `compose.yaml example lacks ${key}`);
+});
+
+test("REQ-DEMO-26: the paths file matches what the CLI reads (one path per line, # comments)", () => {
+  const text = pathsFile({ ...defaultSetup, routePath: "/api/orders/" });
+  const paths = text.split("\n").map((l) => l.trim()).filter((l) => l.length > 0 && !l.startsWith("#"));
+  assert.deepEqual(paths, ["/api/orders/1001", "/api/orders/1002", "/api/orders?page=1"]);
+  for (const p of paths) assert.ok(p.startsWith("/"), p);
 });

@@ -52,6 +52,7 @@ starting point that configures it with environment variables (`Modernizer__Legac
 docker compose up --build
 ```
 
+`GET /_modernizer/health` answers `200 Healthy` from the process itself (no backend call) for liveness probes.
 The control panel has no login: publish port 8080 inside your network only. Not yet verified with a Docker daemon;
 first build is an owner task (see `specs/next-visual-demo/tasks.md`).
 
