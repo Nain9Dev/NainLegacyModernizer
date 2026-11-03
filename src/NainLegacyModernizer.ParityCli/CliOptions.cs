@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using NainLegacyModernizer.ShadowRunner;
 
 namespace NainLegacyModernizer.ParityCli;
@@ -12,9 +13,14 @@ public sealed record CliOptions(
     string OutputPath,
     string? JsonPath,
     IReadOnlyList<KeyValuePair<string, string>> Headers,
-    ReportLanguage Language)
+    ReportLanguage Language,
+    int TimeoutSeconds)
 {
     public const string DefaultOutputPath = "parity-report.html";
+
+    public const int DefaultTimeoutSeconds = 10;
+
+    public const int MaximumTimeoutSeconds = 600;
 
     public const string Usage = """
         nain-parity --legacy <url> --modern <url> --paths <file|/a,/b> [options]
@@ -29,6 +35,7 @@ public sealed record CliOptions(
           --header <n: v>    Header sent with every request to both systems (repeatable); keep secrets in
                              environment variables, e.g. --header "Authorization: Bearer $PARITY_TOKEN"
           --lang <en|es>     Wording of the HTML report (default: en)
+          --timeout <s>      Seconds to wait for each response, 1 to 600 (default: 10)
 
         Only GET requests are sent. Exit code: 0 ready to cut over, 1 not ready, 2 invalid arguments.
         """;
@@ -57,6 +64,7 @@ public sealed record CliOptions(
         string? json = null;
         var headers = new List<KeyValuePair<string, string>>();
         var language = ReportLanguage.English;
+        var timeout = DefaultTimeoutSeconds;
 
         for (var i = 0; i < args.Length; i += 2)
         {
@@ -118,6 +126,14 @@ public sealed record CliOptions(
                     }
 
                     break;
+                case "--timeout":
+                    if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out timeout) || timeout < 1 || timeout > MaximumTimeoutSeconds)
+                    {
+                        error = $"Option --timeout expects a whole number of seconds from 1 to {MaximumTimeoutSeconds}, got '{value}'.";
+                        return false;
+                    }
+
+                    break;
                 default:
                     error = $"Unknown option {name}.";
                     return false;
@@ -144,7 +160,7 @@ public sealed record CliOptions(
             return false;
         }
 
-        options = new CliOptions(legacyUri, modernUri, list, ignore, map, output, json, headers, language);
+        options = new CliOptions(legacyUri, modernUri, list, ignore, map, output, json, headers, language, timeout);
         error = null;
         return true;
     }

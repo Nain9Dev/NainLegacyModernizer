@@ -14,9 +14,11 @@ jobs:
     name: Build & Test (.NET 10)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: "10.0.x"
       - name: Restore
@@ -25,6 +27,26 @@ jobs:
         run: dotnet build --no-restore --configuration Release
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity normal
+
+  tool:
+    name: Package nain-parity (dotnet tool)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup .NET
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: "10.0.x"
+      - name: Pack
+        run: dotnet pack src/NainLegacyModernizer.ParityCli --configuration Release --output artifacts
+      - name: Upload package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: nain-parity-tool
+          path: artifacts/*.nupkg
+          if-no-files-found: error
 
   container:
     name: Container image (gateway)

@@ -15,6 +15,8 @@
 [![Target](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/)
 [![Reverse Proxy](https://img.shields.io/badge/YARP-2.3-blue)](https://microsoft.github.io/reverse-proxy/)
 [![Operating Cost](https://img.shields.io/badge/Cost-0.00_EUR-22c55e)](docs/00-charter.md)
+[![CI](https://github.com/Nain9Dev/NainLegacyModernizer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Nain9Dev/NainLegacyModernizer/actions/workflows/ci.yml)
+[![Demo Pages](https://github.com/Nain9Dev/NainLegacyModernizer/actions/workflows/pages.yml/badge.svg?branch=main)](https://modernizer.naindev.com/)
 
 **[Live demo](https://modernizer.naindev.com/)**: an interactive, no-backend illustration of the Strangler Fig routing and the shadow run, in Spanish by default and in English, light and dark themes (source in [`demo/`](demo/)).
 
@@ -92,6 +94,7 @@ dotnet run --project src/NainLegacyModernizer.ParityCli -- \
 - Numbers compare as decimals (`450.5` equals `450.50`), never as floating point.
 - Read-only: only `GET`. Check that your `GET` endpoints have no side effects.
 - `--lang es` writes the report in Spanish.
+- `--timeout 60` waits up to 60 s per request (default 10 s).
 - `--header "Authorization: Bearer $PARITY_TOKEN"` (repeatable) sends the same header to both systems; keep the secret in an environment variable.
 - Git Bash on Windows rewrites arguments that start with `/`. Use a `--paths` file or set `MSYS_NO_PATHCONV=1`.
 - Sample reports, generated from the in-repo services: [not ready](demo/samples/parity-report-not-ready.html), [ready](demo/samples/parity-report-ready.html).

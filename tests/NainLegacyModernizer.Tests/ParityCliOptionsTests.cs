@@ -24,6 +24,28 @@ public sealed class ParityCliOptionsTests
         Assert.Empty(options.Map);
         Assert.Empty(options.Headers);
         Assert.Equal(ReportLanguage.English, options.Language);
+        Assert.Equal(CliOptions.DefaultTimeoutSeconds, options.TimeoutSeconds);
+    }
+
+    [Theory]
+    [InlineData("45", 45)]
+    [InlineData("600", 600)]
+    public void TryParse_Timeout_IsReadInSeconds(string value, int expected)
+    {
+        Assert.True(CliOptions.TryParse([.. Required, "--timeout", value], out var options, out var error), error);
+        Assert.Equal(expected, options!.TimeoutSeconds);
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("601")]
+    [InlineData("-5")]
+    [InlineData("ten")]
+    [InlineData("2.5")]
+    public void TryParse_TimeoutOutOfRange_Fails(string value)
+    {
+        Assert.False(CliOptions.TryParse([.. Required, "--timeout", value], out _, out var error));
+        Assert.Contains("--timeout", error, StringComparison.Ordinal);
     }
 
     [Fact]

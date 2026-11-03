@@ -31,7 +31,8 @@ Requirements follow the **EARS** pattern. Each one is traced to a test in [50-tr
   - An empty report is never ready (fail closed). Exit codes: `0` ready, `1` not ready, `2` invalid arguments.
   - `--header "Name: value"` (repeatable) sends the same header, for example a bearer token, to both systems.
   - `--lang es` writes the report wording in Spanish; the default is English.
-  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-18`: `specs/next-parity-report/spec.md`.
+  - `--timeout <seconds>` bounds each request (default 10 s) for slow legacy systems.
+  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-19`: `specs/next-parity-report/spec.md`.
 
 ### Control panel
 

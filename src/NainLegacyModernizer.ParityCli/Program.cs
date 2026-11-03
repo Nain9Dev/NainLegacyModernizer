@@ -28,8 +28,9 @@ internal static class Program
             return 2;
         }
 
-        using var legacy = new HttpClient { BaseAddress = options.Legacy, Timeout = TimeSpan.FromSeconds(10) };
-        using var modern = new HttpClient { BaseAddress = options.Modern, Timeout = TimeSpan.FromSeconds(10) };
+        var timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+        using var legacy = new HttpClient { BaseAddress = options.Legacy, Timeout = timeout };
+        using var modern = new HttpClient { BaseAddress = options.Modern, Timeout = timeout };
         options.Apply(legacy);
         options.Apply(modern);
         var runner = new ParityRunner(legacy, modern, new JsonParityOptions(options.Ignore, options.Map));
