@@ -18,6 +18,8 @@
 
 **[Demostración en vivo](https://modernizer.naindev.com/)**: una ilustración interactiva sin backend del enrutamiento Strangler Fig y la ejecución en sombra, en español por defecto y en inglés, con tema claro y oscuro (código fuente en [`demo/`](demo/)).
 
+[![Demo: migra un monolito .NET ruta a ruta](docs/images/demo-card.webp)](https://modernizer.naindev.com/)
+
 ## Pruébalo en un solo comando
 
 ```bash

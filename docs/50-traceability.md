@@ -36,5 +36,7 @@ Open gaps: REQ-CP-02 end-to-end over HTTP and REQ-CP-05 have no automated test y
 | REQ-DEMO-21 | `prefs.test.ts`, `static-rules.test.ts` (both theme blocks equal) |
 | REQ-DEMO-22 | `routing.test.ts` (modes), `static-rules.test.ts` (mode controls present) |
 | REQ-DEMO-24 | `routes.test.ts` (routes equal `appsettings.json`, readiness wording) |
+| REQ-DEMO-25 | `layout.test.ts` (both layouts), browser check at 390 px |
+| REQ-DEMO-13 (build) | `build.test.ts` (CSS minifier keeps rules and strings) |
 | REQ-DEMO-10 to 14, 16, 17, 19, 23 | `static-rules.test.ts` |
 | REQ-DEMO-01 to 04, 07 | Browser check (Playwright script, both themes and languages) |

@@ -18,6 +18,8 @@
 
 **[Live demo](https://modernizer.naindev.com/)**: an interactive, no-backend illustration of the Strangler Fig routing and the shadow run, in Spanish by default and in English, light and dark themes (source in [`demo/`](demo/)).
 
+[![Demo: migrate a .NET monolith route by route](docs/images/demo-card.webp)](https://modernizer.naindev.com/)
+
 ## Try it in one command
 
 ```bash

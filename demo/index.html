@@ -40,6 +40,13 @@
           <span data-i18n="brandProject">Legacy Modernizer</span>
         </span>
       </a>
+      <nav class="site-nav" aria-label="Secciones" data-i18n-aria="navLabel">
+        <a href="#diagram"><span class="nav-num">01</span><span data-i18n="navTraffic">Tráfico</span></a>
+        <a href="#board"><span class="nav-num">02</span><span data-i18n="navBoard">Tablero</span></a>
+        <a href="#shadow"><span class="nav-num">03</span><span data-i18n="navShadow">Sombra</span></a>
+        <a href="#steps"><span class="nav-num">04</span><span data-i18n="navSteps">Pasos</span></a>
+        <a href="#parts"><span class="nav-num">05</span><span data-i18n="navParts">Incluye</span></a>
+      </nav>
       <div class="topbar-actions">
         <div class="seg-group" role="group" id="lang-group" aria-label="Idioma" data-i18n-aria="langGroupLabel">
           <button type="button" class="seg-btn" data-lang="es" lang="es" aria-pressed="true">ES</button>
@@ -124,44 +131,42 @@
         </button>
       </div>
 
-      <div class="stage-wrap">
       <svg id="stage" class="stage-svg" viewBox="0 0 720 360" role="img" aria-labelledby="stage-label">
         <title id="stage-label" data-i18n="diagramLabel">Diagrama: un cliente envía peticiones por una pasarela al monolito legado o a la API moderna.</title>
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" class="grid-line"/></pattern>
         </defs>
-        <rect width="720" height="360" fill="url(#grid)"/>
-        <line class="wire wire-in" x1="130" y1="180" x2="230" y2="180"/>
+        <rect id="stage-bg" width="720" height="360" fill="url(#grid)"/>
+        <line id="wire-in" class="wire wire-in" x1="130" y1="180" x2="230" y2="180"/>
         <line id="wire-modern" class="wire wire-legacy-state" x1="360" y1="180" x2="540" y2="70"/>
         <line id="wire-legacy" class="wire wire-old" x1="360" y1="180" x2="540" y2="290"/>
         <text id="wire-shadow-label" class="wire-label wire-label-shadow" x="400" y="186" data-i18n="shadowWireLabel" visibility="hidden">réplica en sombra</text>
         <g id="packets"></g>
-        <g class="node node-client">
-          <rect x="20" y="140" width="110" height="80" rx="4"/>
-          <path class="node-icon" d="M62 152h26v16H62zM71 173h8M75 168v5"/>
-          <text x="75" y="203" text-anchor="middle" data-i18n="nodeClient">Cliente</text>
+        <g class="node node-client" data-node="client" transform="translate(20 140)">
+          <rect width="110" height="80" rx="4"/>
+          <path class="node-icon" d="M42 12h26v16H42zM51 33h8M55 28v5"/>
+          <text x="55" y="63" text-anchor="middle" data-i18n="nodeClient">Cliente</text>
         </g>
-        <g class="node node-gateway">
-          <rect x="230" y="130" width="130" height="100" rx="4"/>
-          <path class="node-icon" d="M283 148h26M283 157h26M283 166h26M276 148h.01M276 157h.01M276 166h.01"/>
-          <text x="295" y="200" text-anchor="middle" data-i18n="nodeGateway">Pasarela YARP</text>
+        <g class="node node-gateway" data-node="gateway" transform="translate(230 130)">
+          <rect width="130" height="100" rx="4"/>
+          <path class="node-icon" d="M53 18h26M53 27h26M53 36h26M46 18h.01M46 27h.01M46 36h.01"/>
+          <text x="65" y="70" text-anchor="middle" data-i18n="nodeGateway">Pasarela YARP</text>
         </g>
-        <g class="node node-modern">
-          <rect x="540" y="24" width="170" height="92" rx="4"/>
-          <path class="node-icon" d="M607 52l6-12 5 9 5-16 5 12 6-5"/>
-          <text x="625" y="80" text-anchor="middle" data-i18n="nodeModern">API moderna</text>
-          <text class="node-sub" x="625" y="100" text-anchor="middle" data-i18n="nodeModernSub">.NET 10</text>
+        <g class="node node-modern" data-node="modern" transform="translate(540 24)">
+          <rect width="170" height="92" rx="4"/>
+          <path class="node-icon" d="M67 28l6-12 5 9 5-16 5 12 6-5"/>
+          <text x="85" y="56" text-anchor="middle" data-i18n="nodeModern">API moderna</text>
+          <text class="node-sub" x="85" y="76" text-anchor="middle" data-i18n="nodeModernSub">.NET 10</text>
         </g>
-        <g class="node node-legacy">
-          <rect x="540" y="244" width="170" height="92" rx="4"/>
-          <path class="node-icon" d="M611 254h28v9h-28zM611 267h28v9h-28zM616 258.5h.01M616 271.5h.01"/>
-          <text x="625" y="300" text-anchor="middle" data-i18n="nodeLegacy">Monolito legado</text>
-          <text class="node-sub" x="625" y="320" text-anchor="middle" data-i18n="nodeLegacySub">.NET Framework</text>
+        <g class="node node-legacy" data-node="legacy" transform="translate(540 244)">
+          <rect width="170" height="92" rx="4"/>
+          <path class="node-icon" d="M71 10h28v9H71zM71 23h28v9H71zM76 14.5h.01M76 27.5h.01"/>
+          <text x="85" y="56" text-anchor="middle" data-i18n="nodeLegacy">Monolito legado</text>
+          <text class="node-sub" x="85" y="76" text-anchor="middle" data-i18n="nodeLegacySub">.NET Framework</text>
         </g>
-        <text class="wire-label" x="372" y="96">/api/orders/*</text>
-        <text class="wire-label" x="372" y="304">/api/invoices/*</text>
+        <text id="label-orders" class="wire-label" x="372" y="96">/api/orders/*</text>
+        <text id="label-invoices" class="wire-label" x="372" y="304">/api/invoices/*</text>
       </svg>
-      </div>
 
       <ul class="legend" aria-label="Leyenda">
         <li><i class="key key-circle"></i><code>/api/orders/*</code> <span data-i18n="legendOrders">pedidos</span></li>
@@ -280,24 +285,32 @@
       </div>
       <ol class="steps">
         <li>
+          <a class="step" href="#diagram" data-step-mode="legacy">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="10" width="36" height="28" rx="3"/><path d="M6 24h14M28 24h14M24 14v7M24 27v7"/></svg>
           <h3 data-i18n="step1Title">Aislar</h3>
           <p data-i18n="step1Text">Elige una ruta y constrúyela en .NET 10.</p>
+          </a>
         </li>
         <li>
+          <a class="step" href="#diagram" data-step-mode="shadow">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="6" width="26" height="26" rx="3"/><rect x="16" y="16" width="26" height="26" rx="3"/></svg>
           <h3 data-i18n="step2Title">Ejecutar en sombra</h3>
           <p data-i18n="step2Text">Envía la misma petición a ambos sistemas.</p>
+          </a>
         </li>
         <li>
+          <a class="step" href="#shadow">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 14h32M8 34h32M16 24h16"/></svg>
           <h3 data-i18n="step3Title">Comparar</h3>
           <p data-i18n="step3Text">Comprueba que las dos respuestas coinciden.</p>
+          </a>
         </li>
         <li>
+          <a class="step" href="#diagram" data-step-mode="modern">
           <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 24h26M24 14l10 10-10 10"/><rect x="36" y="10" width="6" height="28" rx="2"/></svg>
           <h3 data-i18n="step4Title">Cortar</h3>
           <p data-i18n="step4Text">Apunta la pasarela a la nueva API.</p>
+          </a>
         </li>
       </ol>
     </section>

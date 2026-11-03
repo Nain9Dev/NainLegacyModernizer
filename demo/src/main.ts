@@ -4,18 +4,17 @@ import { scenarios } from "./fixtures.ts";
 import { demoRoutes, progressOf, readinessOf, type Readiness } from "./routes.ts";
 import { resolveLang, t, type Key, type Lang } from "./i18n.ts";
 import { LANG_KEY, THEME_KEY, readPref, resolveTheme, writePref, type Theme } from "./prefs.ts";
+import { layoutFor, type Layout, type NodeBox } from "./layout.ts";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-// Coordinates match the viewBox in index.html.
-const CLIENT = { x: 130, y: 180 };
-const GATEWAY = { x: 295, y: 180 };
-const DEST = { modern: { x: 540, y: 70 }, legacy: { x: 540, y: 290 } } as const;
 const SPEED = 0.22; // px per ms
 const SPAWN_MS = 600;
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const prefersLight = window.matchMedia("(prefers-color-scheme: light)");
+const narrowScreen = window.matchMedia("(max-width: 640px)");
+let layout: Layout = layoutFor(narrowScreen.matches);
 
 function byId<T extends Element>(id: string): T {
   const el = document.getElementById(id);
@@ -170,6 +169,47 @@ function renderTheme(): void {
 
 /* ---------- route diagram ---------- */
 
+function moveNode(name: keyof Layout["nodes"], box: NodeBox): void {
+  const g = document.querySelector<SVGGElement>(`[data-node="${name}"]`);
+  if (!g) return;
+  g.setAttribute("transform", `translate(${box.x} ${box.y})`);
+}
+
+function setLine(id: string, from: { x: number; y: number }, to: { x: number; y: number }): void {
+  const line = byId<SVGLineElement>(id);
+  line.setAttribute("x1", String(from.x));
+  line.setAttribute("y1", String(from.y));
+  line.setAttribute("x2", String(to.x));
+  line.setAttribute("y2", String(to.y));
+}
+
+function setText(id: string, at: { x: number; y: number }): void {
+  const text = byId<SVGTextElement>(id);
+  text.setAttribute("x", String(at.x));
+  text.setAttribute("y", String(at.y));
+}
+
+function applyLayout(): void {
+  layout = layoutFor(narrowScreen.matches);
+  const stage = byId<SVGSVGElement>("stage");
+  stage.setAttribute("viewBox", layout.viewBox);
+  const bg = byId<SVGRectElement>("stage-bg");
+  bg.setAttribute("width", String(layout.width));
+  bg.setAttribute("height", String(layout.height));
+  for (const [name, box] of Object.entries(layout.nodes) as [keyof Layout["nodes"], NodeBox][]) moveNode(name, box);
+  const g = layout.nodes.gateway;
+  const gatewayIn = narrowScreen.matches ? { x: layout.gateway.x, y: g.y } : { x: g.x, y: layout.gateway.y };
+  const gatewayOut = narrowScreen.matches ? { x: layout.gateway.x, y: g.y + g.height } : { x: g.x + g.width, y: layout.gateway.y };
+  setLine("wire-in", layout.client, gatewayIn);
+  setLine("wire-modern", gatewayOut, layout.dest.modern);
+  setLine("wire-legacy", gatewayOut, layout.dest.legacy);
+  setText("label-orders", layout.labels.orders);
+  setText("label-invoices", layout.labels.invoices);
+  setText("wire-shadow-label", layout.labels.shadow);
+  for (const p of packets) p.el.remove();
+  packets.length = 0;
+}
+
 function renderRoute(): void {
   const status = routeStatus(state.percent);
   const mode = modeFor(state.percent, state.shadow);
@@ -245,7 +285,7 @@ function packetElement(isOrders: boolean, className: string): SVGGElement {
 }
 
 function push(el: SVGGElement, target: Target, age = 0): void {
-  packets.push({ el, target, age, first: distance(CLIENT, GATEWAY), second: distance(GATEWAY, DEST[target]) });
+  packets.push({ el, target, age, first: distance(layout.client, layout.gateway), second: distance(layout.gateway, layout.dest[target]) });
 }
 
 function spawn(): void {
@@ -267,15 +307,16 @@ function place(p: Packet): void {
   const travelled = Math.max(0, p.age) * SPEED;
   let x: number;
   let y: number;
+  const { client, gateway } = layout;
   if (travelled <= p.first) {
     const k = travelled / p.first;
-    x = CLIENT.x + (GATEWAY.x - CLIENT.x) * k;
-    y = CLIENT.y + (GATEWAY.y - CLIENT.y) * k;
+    x = client.x + (gateway.x - client.x) * k;
+    y = client.y + (gateway.y - client.y) * k;
   } else {
     const k = Math.min(1, (travelled - p.first) / p.second);
-    const to = DEST[p.target];
-    x = GATEWAY.x + (to.x - GATEWAY.x) * k;
-    y = GATEWAY.y + (to.y - GATEWAY.y) * k;
+    const to = layout.dest[p.target];
+    x = gateway.x + (to.x - gateway.x) * k;
+    y = gateway.y + (to.y - gateway.y) * k;
   }
   p.el.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
 }
@@ -399,6 +440,35 @@ for (const button of modeButtons) {
   });
 }
 
+for (const step of document.querySelectorAll<HTMLAnchorElement>("[data-step-mode]")) {
+  step.addEventListener("click", () => {
+    const mode = step.dataset["stepMode"];
+    if (MODES.includes(mode as Mode)) selectMode(mode as Mode);
+  });
+}
+
+if (!reducedMotion.matches && "IntersectionObserver" in window) {
+  document.documentElement.classList.add("reveal");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { rootMargin: "0px 0px -10% 0px" },
+  );
+  const panels = document.querySelectorAll(".panel");
+  for (const panel of panels) observer.observe(panel);
+  // Nothing stays hidden: whatever the observer has not reached shows after a short wait.
+  window.setTimeout(() => {
+    for (const panel of panels) panel.classList.add("is-visible");
+    observer.disconnect();
+  }, 1200);
+}
+
 motionButton.addEventListener("click", () => {
   state.paused = !state.paused;
   syncAnimation();
@@ -436,7 +506,9 @@ for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="sce
 }
 
 reducedMotion.addEventListener("change", syncAnimation);
+narrowScreen.addEventListener("change", applyLayout);
 
 byId<HTMLElement>("year").textContent = String(new Date().getFullYear());
+applyLayout();
 applyLang();
 syncAnimation();

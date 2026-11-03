@@ -11,6 +11,7 @@ demo/
     parity.ts           field comparer and ParityVerdict (mirrors ShadowAuditor semantics)
     fixtures.ts         synthetic scenarios copied from ShadowAuditorTests.cs
     routes.ts           the five demo routes copied from the gateway appsettings.json, readiness wording
+    layout.ts           diagram geometry for wide (left to right) and narrow (top to bottom) screens
     i18n.ts             ES/EN strings, Spanish default, language resolution
     prefs.ts            persisted language and theme, theme resolution
     contrast.ts         WCAG contrast helper (used by tests only)
@@ -18,6 +19,7 @@ demo/
   fonts/                Urbanist variable subset (OFL) and its licence
   card.webp             Open Graph image (1280x640)
   scripts/build.ts      copies the entry files, fonts, card and sample reports next to the compiled JS
+  scripts/minify.ts     comment and whitespace stripping for the published CSS (strings untouched)
   test/*.test.ts        node:test, run with native type stripping
   dist/                 build output (ignored by git), uploaded to Pages
 ```

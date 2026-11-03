@@ -1,12 +1,14 @@
-import { copyFileSync, mkdirSync, readdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { minifyCss } from "./minify.ts";
 
 // tsc already wrote the JavaScript into dist/; add the static entry files next to it.
 const demo = new URL("../", import.meta.url);
 const dist = new URL("dist/", demo);
 mkdirSync(dist, { recursive: true });
-for (const file of ["index.html", "styles.css", "card.webp"]) {
+for (const file of ["index.html", "card.webp"]) {
   copyFileSync(new URL(file, demo), new URL(file, dist));
 }
+writeFileSync(new URL("styles.css", dist), minifyCss(readFileSync(new URL("styles.css", demo), "utf8")));
 
 // Self-hosted brand typeface (Urbanist, SIL Open Font License) and its licence.
 mkdirSync(new URL("fonts/", dist), { recursive: true });

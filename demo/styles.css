@@ -268,6 +268,11 @@ svg { display: block; }
 }
 .topbar-row { display: flex; align-items: center; justify-content: space-between; gap: var(--nain-s4); min-height: 64px; }
 .topbar-actions { display: flex; align-items: center; gap: var(--nain-s2); }
+.site-nav { display: flex; gap: var(--nain-s1); margin-inline: auto; }
+.site-nav a { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--nain-s3); border-radius: var(--nain-radius); color: var(--ink); font-weight: 700; font-size: 0.9375rem; text-decoration: none; }
+.site-nav a:hover { background: var(--surface); }
+.site-nav .nav-num { font-family: var(--nain-font-mono); font-size: 0.6875rem; font-weight: 700; color: var(--ink-soft); letter-spacing: 0.08em; }
+@media (max-width: 1000px) { .site-nav { display: none; } }
 .topbar .seg-group { flex-wrap: nowrap; }
 .brand { display: inline-flex; align-items: center; gap: var(--nain-s3); color: inherit; text-decoration: none; }
 .brand-mark { width: 34px; height: 34px; fill: none; stroke: var(--heading); stroke-width: 114; stroke-linecap: round; stroke-linejoin: round; }
@@ -349,8 +354,7 @@ svg { display: block; }
 #motion[aria-pressed="true"] .icon-play { display: block; }
 #motion[aria-pressed="true"] .icon-pause { display: none; }
 
-.stage-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.stage-svg { width: 100%; min-width: 560px; height: auto; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--nain-radius); }
+.stage-svg { width: 100%; height: auto; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--nain-radius); }
 .stage-svg .grid-line { fill: none; stroke: var(--grid); stroke-width: 1; }
 .stage-svg text { font-family: var(--nain-font-sans); font-size: 15px; font-weight: 700; fill: var(--ink); }
 .stage-svg .node-sub { font-size: 12px; font-weight: 600; fill: var(--ink-soft); }
@@ -444,6 +448,12 @@ svg { display: block; }
 .ready-done { color: var(--modern); }
 .ready small { flex-basis: 100%; font-weight: 500; color: var(--ink-soft); }
 
+/* Panels rise into place as they enter the view; only once the script runs and motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal .panel { opacity: 0; transform: translateY(18px); transition: opacity 480ms var(--nain-ease-out), transform 480ms var(--nain-ease-out), box-shadow var(--nain-duration-fast); }
+  .reveal .panel.is-visible { opacity: 1; transform: none; }
+}
+
 /* The isotype draws its three strokes once, one after another, when motion is allowed. */
 @media (prefers-reduced-motion: no-preference) {
   .topbar .brand-mark path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 600ms var(--nain-ease-out) forwards; }
@@ -503,9 +513,12 @@ svg { display: block; }
 /* ---------- Steps and parts ---------- */
 .steps, .parts { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--nain-s4); }
 .steps li, .parts li { position: relative; background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--nain-radius); padding: var(--nain-s4); }
-.steps li { counter-increment: step; }
-.steps li::before { content: counter(step, decimal-leading-zero); font-family: var(--nain-font-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: var(--nain-track-label); color: var(--ink-soft); }
+.steps li { counter-increment: step; padding: 0; }
+.step { display: block; height: 100%; padding: var(--nain-s4); color: inherit; text-decoration: none; border-radius: var(--nain-radius); transition: transform var(--nain-duration-fast) var(--nain-ease-out), box-shadow var(--nain-duration-fast) var(--nain-ease-out); }
+.step:hover, .step:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--shadow-ink); }
+.step::before { content: counter(step, decimal-leading-zero); font-family: var(--nain-font-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: var(--nain-track-label); color: var(--ink-soft); }
 .steps li:not(:last-child)::after { content: ""; position: absolute; right: -13px; top: 50%; width: 10px; border-top: 2px dashed var(--line-strong); }
+.step h3::after { content: " \2192"; color: var(--ink-soft); }
 .steps svg, .parts svg { width: 48px; height: 48px; margin: var(--nain-s3) 0; fill: none; stroke: var(--heading); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .steps h3, .parts h3 { margin: 0 0 var(--nain-s1); font-size: 1.0625rem; letter-spacing: 0; text-transform: none; color: var(--heading); }
 .steps p, .parts p { margin: 0; color: var(--ink-soft); font-size: 0.9375rem; }
@@ -538,6 +551,7 @@ svg { display: block; }
   .routes-table td { padding: 0; border: 0; }
   .routes-table td:first-child { grid-column: 1 / -1; }
   .routes-table tr:last-child td { border: 0; }
+  .stage-svg { max-width: 420px; margin-inline: auto; }
   .modes { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
   .modes .seg-btn { min-width: 0; padding-inline: 6px; font-size: 0.9375rem; }
   .topbar-actions .btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

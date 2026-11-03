@@ -21,7 +21,9 @@
   controls that drive the diagram (shadow replay drawn), a components section, a self-hosted brand
   typeface and an Open Graph card. Language and theme persist for the visitor. Tests cover the new
   requirements (REQ-DEMO-20 to 23) and the contrast of both themes. A migration board shows the five
-  demo routes as configured in the gateway, each on its stage (REQ-DEMO-24).
+  demo routes as configured in the gateway, each on its stage (REQ-DEMO-24). On phones the diagram
+  turns vertical instead of scrolling sideways (REQ-DEMO-25); section navigation in the top bar; the
+  four steps select the matching mode; panels rise into view; CSS is minified at build time.
 - Control panel: Spanish by default (the visitor's choice persists) and the NainDev isotype as its logo,
   replacing the previous gradient mark.
 - Gateway routing moved from static YARP configuration to per-request forwarding (ADR: per-request routing over

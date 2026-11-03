@@ -16,6 +16,7 @@
 
 | T-013 | A | Visual redesign: Spanish default, light and dark themes, NainDev chrome, mode controls, components section, Open Graph card | `npm test` green, browser check in both themes and languages |
 | T-015 | A | Migration board from the gateway configuration, isotype draw-in, control panel Spanish-first with the brand mark | `npm test` green, panel rendered against a stub API |
+| T-016 | A | Vertical diagram on phones, section navigation, steps linked to the modes, scroll reveal with a fallback, CSS minified at build time, README preview | `npm test` green, Lighthouse run on the built folder |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | ADR status changed by the owner |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
 
@@ -51,4 +52,8 @@ Redesign session.
   of `/_modernizer/api/overview`: Spanish by default, brand logo, no console errors. `dotnet test` was
   not run in this session (no .NET SDK available); the panel change is limited to its embedded
   `index.html`, `app.js` and `logo.svg`.
+- Done and verified: T-016. `npm test` 31/31 green, `dist/` about 147 KB. Lighthouse 12 (mobile
+  preset, Chromium, local server without compression): performance 99, accessibility 100, best
+  practices 100, SEO 100; LCP 1.8 s, CLS 0, TBT 30 ms. The items it flags (text compression, cache
+  headers) are served by GitHub Pages, not by the files.
 - Next: T-014 (owner), T-012 if still pending, `dotnet test` on a machine with the SDK.
