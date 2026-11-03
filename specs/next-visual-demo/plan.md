@@ -43,8 +43,9 @@ demo/
   animation is reproducible and testable.
 - Pages URL: `https://modernizer.naindev.com/` (ADR `next-demo-hosting-subdomain`). All asset paths
   are relative.
-- The ecosystem bar used by the other NainDev demos is not loaded: it is an external script and would
-  break REQ-DEMO-13 (ADR `next-demo-ecosystem-bar`, Proposed).
+- The ecosystem bar used by the other NainDev demos is loaded from www.naindev.com, the only external
+  resource (ADR `next-demo-ecosystem-bar`, Accepted). The custom element takes no room until defined,
+  so the page is identical when the script does not load.
 
 ## Risks
 

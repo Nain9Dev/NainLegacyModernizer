@@ -1,6 +1,6 @@
 # ADR (number pending): Ecosystem bar on the static demo
 
-- Status: Proposed
+- Status: Accepted (owner decision, 2026-11-03)
 - Date: 2026-11-03
 
 ## Context
@@ -13,20 +13,23 @@ projects from the demo.
 
 ## Decision
 
-Keep the demo self-contained. The top bar and the footer carry the NainDev mark and links to
-naindev.com, the repository and the brandbook, which covers the navigation need without a runtime
-dependency.
+Load the shared bar from `www.naindev.com` (`ecosystem-bar.js`, deferred), like the other NainDev
+demos, with `current-project="NainLegacyModernizer"`. It is the only external resource of the page;
+REQ-DEMO-13 and its test allow that one script origin and nothing else. The page lays out without
+it: the custom element takes no room until the script defines it, and the top bar and the footer keep
+their own links to naindev.com, the repository and the brandbook.
 
 ## Alternatives
 
-- Load `ecosystem-bar.js` from `www.naindev.com`: full catalogue navigation and the same chrome as the
-  other demos, at the cost of a third-party request on every visit, a dependency on the site's deploy
-  cadence and a change to REQ-DEMO-13 and its test.
+- Keep the demo self-contained: no third-party request, but no catalogue navigation and a chrome that
+  differs from the rest of the ecosystem.
 - Vendor a copy of the bar into `demo/`: no runtime dependency, but the catalogue would drift from the
   canonical one and the published folder would grow by about 30 KB.
 
 ## Consequences
 
-- No change to the Pages workflow or to the budget test.
-- If the owner prefers the shared bar, REQ-DEMO-13 and `static-rules.test.ts` must allow that one
-  script origin, and the bar's catalogue should list this demo (it does since ECO-024 on the site).
+- A request to `www.naindev.com` on every visit; if it fails the page is unchanged.
+- The bar's catalogue already lists this demo (site spec ECO-024). Its architecture drawer reads a
+  profile from the site's `ecosystem.v1.json`; there is none for this project yet, so the drawer falls
+  back to the NainOrder profile. Adding a `nainlegacymodernizer` profile is a change on the site
+  repository.

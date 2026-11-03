@@ -87,8 +87,9 @@ test("REQ-DEMO-14: brandbook tokens are present, no gradients, no external fetch
   assert.equal(light.get("nain-blue"), "#0047AB");
   assert.equal(light.get("nain-blue-deep"), "#002B66");
   assert.equal(light.get("nain-dark-bg"), "#060D1A");
-  // Outbound links (<a href>), canonical and Open Graph metadata and code samples are not fetches.
-  const htmlWithoutLinks = html.replace(/<a\s[^>]*>/g, "<a>").replace(/<code>[^<]*<\/code>/g, "<code></code>").replace(/<link rel="(canonical|alternate)"[^>]*>/g, "").replace(/<meta property="og:[^>]*>/g, "");
+  // Outbound links (<a href>), canonical and Open Graph metadata, code samples and the one allowed script
+  // (the shared NainDev ecosystem bar, ADR next-demo-ecosystem-bar) are not counted as fetches.
+  const htmlWithoutLinks = html.replace(/<a\s[^>]*>/g, "<a>").replace(/<script src="https:\/\/www\.naindev\.com\/assets\/js\/ecosystem-bar\.js[^"]*" defer><\/script>/, "").replace(/<code>[^<]*<\/code>/g, "<code></code>").replace(/<link rel="(canonical|alternate)"[^>]*>/g, "").replace(/<meta property="og:[^>]*>/g, "");
   for (const file of [{ name: "styles.css", text: css }, { name: "index.html", text: htmlWithoutLinks }, ...sources]) {
     assert.ok(!/gradient\(/i.test(file.text.replace(/linear-gradient\(to (right|bottom), var\(--[a-z-]+\) 1px, transparent 1px\)/g, "")), `${file.name} must not use gradients beyond the 1px blueprint grid`);
     // The SVG namespace identifier and RFC 2606 example addresses (form defaults) are not network references.
@@ -109,13 +110,18 @@ test("REQ-DEMO-11: reduced motion and focus styles exist", () => {
   assert.match(main, /prefers-reduced-motion: reduce/);
 });
 
-test("REQ-DEMO-10/15/20: Spanish document, viewport and a single module entry", () => {
+test("REQ-DEMO-10/15/20: Spanish document, viewport, one module entry and the ecosystem bar", () => {
   assert.match(html, /<html lang="es"/);
   assert.match(html, /<meta name="viewport"/);
   assert.match(html, /<meta name="color-scheme" content="dark light">/);
+  // REQ-DEMO-30: the shared bar is the only external script, deferred, and names this project.
+  const scripts = html.match(/<script[^>]*>/g) ?? [];
+  assert.equal(scripts.length, 2);
+  assert.match(html, /<script src="https:\/\/www\.naindev\.com\/assets\/js\/ecosystem-bar\.js\?v=[0-9.]+" defer><\/script>/);
+  assert.match(html, /<nain-ecosystem-bar current-project="NainLegacyModernizer"><\/nain-ecosystem-bar>/);
+  assert.match(css, /nain-ecosystem-bar:defined \{ height: 38px; \}/);
   assert.match(html, /<link rel="alternate" hreflang="es" href="https:\/\/modernizer\.naindev\.com\/">/);
   assert.match(html, /<link rel="alternate" hreflang="en" href="https:\/\/modernizer\.naindev\.com\/\?lang=en">/);
-  assert.equal((html.match(/<script/g) ?? []).length, 1);
   assert.match(html, /<script type="module" src="main\.js"><\/script>/);
   assert.ok(!/<style/i.test(html), "no inline styles");
   assert.ok(!/\son[a-z]+=/i.test(html), "no inline event handlers");

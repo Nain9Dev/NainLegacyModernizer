@@ -30,7 +30,8 @@
   the CLI usage by tests), getting-started steps and the known limits (REQ-DEMO-26, 27). The size
   budget is now 200 KB. The generator also writes a Compose file. A guided tour plays the four modes
   with a caption each (REQ-DEMO-28); a rewrite-versus-route comparison and a FAQ for decision makers
-  (REQ-DEMO-29).
+  (REQ-DEMO-29). The shared NainDev ecosystem bar is loaded from www.naindev.com as the only external
+  resource; the page lays out without it (REQ-DEMO-30, ADR accepted by the owner).
 - `Dockerfile` (multi-stage, official .NET 10 images, port 8080) and `compose.yaml` example configured by
   environment variables; runbook gains a containers section and an adoption checklist. Not yet built
   with a Docker daemon.

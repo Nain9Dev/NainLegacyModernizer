@@ -137,7 +137,11 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 5rem; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(5rem + var(--eco-top, 0px)); -webkit-text-size-adjust: 100%; }
+/* The shared NainDev ecosystem bar (38px, fixed) only takes room once its script has defined it. */
+nain-ecosystem-bar { display: block; height: 0; }
+nain-ecosystem-bar:defined { height: 38px; }
+html:has(nain-ecosystem-bar:defined) { --eco-top: 38px; }
 
 body {
   margin: 0;
@@ -259,7 +263,7 @@ svg { display: block; }
 /* ---------- Top bar ---------- */
 .topbar {
   position: sticky;
-  top: 0;
+  top: var(--eco-top, 0px);
   z-index: 20;
   background: color-mix(in srgb, var(--bg) 85%, transparent);
   backdrop-filter: blur(12px);
@@ -653,7 +657,7 @@ svg { display: block; }
 
 @media print {
   body { background: #fff; color: #000; }
-  .topbar, .skip, .controls, .cta-row, .scenarios, #motion, .out-bar, .setup-form { display: none !important; }
+  .topbar, .skip, .controls, .cta-row, .scenarios, #motion, .out-bar, .setup-form, nain-ecosystem-bar { display: none !important; }
   .hero { background: #fff; color: #000; border: 1px solid #000; }
   .hero h1, .hero .accent, .hero .eyebrow, .tagline, .fact-value, .facts li { color: #000; }
   .panel, .card, .route-card, .sample, .steps li, .parts li, .progress { box-shadow: none; border-color: #000; break-inside: avoid; }

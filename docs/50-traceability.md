@@ -41,6 +41,7 @@ Open gaps: REQ-CP-02 end-to-end over HTTP and REQ-CP-05 have no automated test y
 | REQ-DEMO-27 | `routes.test.ts` (cut-over rule equals `appsettings.json`) |
 | REQ-DEMO-28 | `tour.test.ts` (order and end of the tour), browser check with and without reduced motion |
 | REQ-DEMO-29 | Browser check (content) |
+| REQ-DEMO-30 | `static-rules.test.ts` (single allowed script, element present, placeholder rule), browser check online and offline |
 | REQ-DEMO-13 (build) | `build.test.ts` (CSS minifier keeps rules and strings) |
 | REQ-DEMO-10 to 14, 16, 17, 19, 23 | `static-rules.test.ts` |
 | REQ-DEMO-01 to 04, 07 | Browser check (Playwright script, both themes and languages) |

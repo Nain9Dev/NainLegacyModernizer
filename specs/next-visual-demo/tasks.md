@@ -22,7 +22,8 @@
 | T-019 | A | Dockerfile, compose.yaml, Compose output in the generator, runbook containers section and adoption checklist | `npm test` green |
 | T-021 | A | Guided tour from the hero, rewrite-versus-route comparison, FAQ for decision makers | `npm test` green, tour driven in a browser with and without reduced motion |
 | T-020 | H | Build the image once (`docker compose up --build`) and open `/_modernizer` | Panel answers from the container |
-| T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | ADR status changed by the owner |
+| T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | Done: owner chose the shared bar (2026-11-03) |
+| T-022 | A | Load the shared ecosystem bar; layout unaffected when the script does not load | `npm test` green, both states rendered in a browser |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
 
 ## Blockers
@@ -75,4 +76,8 @@ Redesign session.
 - Done and verified: T-021. `npm test` 43/43 green, `dist/` about 185 KB. Playwright: the tour steps
   Legacy, Shadow, Canary, Modern every 3.5 s with its caption, a manual mode click ends it, and with
   reduced motion the same button advances one step per activation.
-- Next: T-020 and `dotnet test` (owner, first thing), T-014, T-012 if still pending.
+- Done and verified: T-022. The bar was rendered in Playwright from a local copy of the site's script and
+  data (online) and with the request blocked (offline): the top bar sits at 38 px or at 0 accordingly,
+  no console errors either way. PR opened: Nain9Dev/NainLegacyModernizer#5.
+- Next: T-020 and `dotnet test` (owner, first thing), T-012 if still pending; a `nainlegacymodernizer`
+  profile in the site's `ecosystem.v1.json` so the bar's architecture drawer stops falling back to NainOrder.
