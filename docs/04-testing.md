@@ -23,6 +23,8 @@
      `compose.yaml`, guided tour, contrast of both themes, static rules (no external asset but the ecosystem bar,
      budget, workflow pinning) and the build-time minifiers.
    - Browser checks with Playwright are run by hand in both themes and languages at desktop and phone widths.
+   - Lighthouse gate in `pages.yml` on every pull request and push: performance at least 90, accessibility 100,
+     best practices at least 95, SEO 100 (`scripts/lighthouse-gate.ts`).
 4. **Container (`ci.yml`, job "Container image")**
    - Builds the gateway `Dockerfile` and waits for `GET /_modernizer/health` from the running container.
 5. **Manual gate before a client demo**

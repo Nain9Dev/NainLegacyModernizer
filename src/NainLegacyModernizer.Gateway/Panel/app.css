@@ -138,8 +138,8 @@ button { font: inherit; color: inherit; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
 .brand img { border-radius: 10px; box-shadow: var(--shadow-1); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
-.brand-text strong { font-size: 15px; letter-spacing: -0.01em; }
-.brand-text span { font-size: 12px; color: var(--muted); }
+.brand-text strong { font-size: 15px; letter-spacing: -0.01em; white-space: nowrap; }
+.brand-text span { font-size: 12px; color: var(--muted); white-space: nowrap; }
 
 .hosts { display: flex; align-items: center; gap: 10px; color: var(--faint); margin-left: 8px; }
 .host {
@@ -185,7 +185,8 @@ button { font: inherit; color: inherit; }
 .btn-icon { padding: 7px 9px; }
 
 /* ---------- Layout ---------- */
-main { max-width: 1480px; margin: 0 auto; padding: 24px 24px 48px; display: grid; gap: 24px; }
+main { max-width: 1480px; margin: 0 auto; padding: 24px 24px 48px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+main > * { min-width: 0; }
 
 .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
 .section-head p { margin-top: 4px; max-width: 70ch; }
@@ -427,13 +428,13 @@ td.req .path { color: var(--text); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1200px) {
+  .hosts { display: none; }
+  .topbar { flex-wrap: wrap; row-gap: 10px; }
+  .toolbar { flex-wrap: wrap; justify-content: flex-end; }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .column-head::after { display: none; }
   .split { grid-template-columns: 1fr; }
-}
-@media (max-width: 900px) {
-  .hosts { display: none; }
 }
 @media (max-width: 720px) {
   .topbar { flex-wrap: wrap; gap: 10px; padding: 10px 16px; }
@@ -444,4 +445,8 @@ td.req .path { color: var(--text); }
   .side-by-side { grid-template-columns: 1fr; }
   .section-head { flex-direction: column; align-items: flex-start; }
   .policy { text-align: left; white-space: normal; }
+}
+@media (max-width: 380px) {
+  .stages { grid-template-columns: repeat(2, 1fr); }
+  .brand-text span { display: none; }
 }

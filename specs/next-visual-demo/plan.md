@@ -22,6 +22,7 @@ demo/
   card.webp             Open Graph image (1280x640)
   scripts/build.ts      copies the entry files, fonts, card and sample reports next to the compiled JS
   scripts/minify.ts     comment and whitespace stripping for the published CSS (strings untouched)
+  scripts/lighthouse-gate.ts  category floors checked against a Lighthouse JSON report in CI
   test/*.test.ts        node:test, run with native type stripping
   dist/                 build output (ignored by git), uploaded to Pages
 ```
