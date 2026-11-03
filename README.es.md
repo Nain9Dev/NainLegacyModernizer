@@ -15,6 +15,8 @@
 [![Objetivo](https://img.shields.io/badge/.NET-10.0-512BD4)](https://dotnet.microsoft.com/)
 [![Proxy Inverso](https://img.shields.io/badge/YARP-2.3-blue)](https://microsoft.github.io/reverse-proxy/)
 [![Coste Operativo](https://img.shields.io/badge/Cost-0.00_EUR-22c55e)](docs/00-charter.md)
+[![CI](https://github.com/Nain9Dev/NainLegacyModernizer/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Nain9Dev/NainLegacyModernizer/actions/workflows/ci.yml)
+[![Demo Pages](https://github.com/Nain9Dev/NainLegacyModernizer/actions/workflows/pages.yml/badge.svg?branch=main)](https://modernizer.naindev.com/)
 
 **[Demostración en vivo](https://modernizer.naindev.com/)**: una ilustración interactiva sin backend del enrutamiento Strangler Fig y la ejecución en sombra, en español por defecto y en inglés, con tema claro y oscuro (código fuente en [`demo/`](demo/)).
 
@@ -88,6 +90,7 @@ dotnet run --project src/NainLegacyModernizer.ParityCli -- \
 - Los números se comparan como decimales de precisión fija (`450.5` equivale a `450.50`), nunca como coma flotante.
 - Solo lectura: únicamente peticiones `GET`. Verifica que tus puntos finales no tengan efectos secundarios.
 - `--lang es` genera el informe en español.
+- `--timeout 60` espera hasta 60 s por petición (10 s por defecto).
 - `--header "Authorization: Bearer $PARITY_TOKEN"` (repetible) envía la misma cabecera a los dos sistemas; el secreto va en una variable de entorno.
 - Informes de muestra generados a partir de los servicios del repositorio: [no listo](demo/samples/parity-report-not-ready.html), [listo](demo/samples/parity-report-ready.html).
 

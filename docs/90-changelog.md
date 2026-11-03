@@ -37,6 +37,7 @@
   with a Docker daemon.
 - CI builds the gateway image and smoke-tests its liveness endpoint from the running container.
 - Gateway liveness endpoint `GET /_modernizer/health` for orchestrators (REQ-CP-06).
+- `nain-parity --timeout <seconds>` bounds each request (REQ-PAR-19). CI actions pinned by commit.
 - `nain-parity --lang es` writes the report in Spanish (REQ-PAR-18); the demo generator adds it when the page is in
   Spanish, and the demo links Spanish sample reports when the page is in Spanish.
 - `nain-parity --header "Name: value"` (repeatable) sends a header to both systems, so authenticated APIs can

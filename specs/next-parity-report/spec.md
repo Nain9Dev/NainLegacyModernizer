@@ -74,6 +74,9 @@ Verification". No new runtime dependency: the .NET base library only.
 - **REQ-PAR-18** When `--lang es` is given, the HTML report shall carry its wording in Spanish (verdict,
   counts, states, column headers) with the same markup and data; the default stays English and any
   other value is an invalid argument.
+- **REQ-PAR-19** When `--timeout <seconds>` is given, each request to either system shall wait at most
+  that long (1 to 600, default 10); a value outside that range or not a whole number is an invalid
+  argument.
 
 ## Verification
 
