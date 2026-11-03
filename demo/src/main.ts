@@ -1,7 +1,8 @@
 import { MODE_PERCENT, MODES, clampPercent, modeFor, routeStatus, targetFor, type Mode, type RouteStatus, type Target } from "./routing.ts";
 import { comparedFields, compare } from "./parity.ts";
 import { scenarios } from "./fixtures.ts";
-import { demoRoutes, progressOf, readinessOf, type Readiness } from "./routes.ts";
+import { cutoverPolicy, demoRoutes, progressOf, readinessOf, type Readiness } from "./routes.ts";
+import { defaultSetup, parityCommand, parseAliases, parseList, settingsJson, validate, workflowYaml, type ClientSetup, type SetupError } from "./config.ts";
 import { resolveLang, t, type Key, type Lang } from "./i18n.ts";
 import { LANG_KEY, THEME_KEY, readPref, resolveTheme, writePref, type Theme } from "./prefs.ts";
 import { layoutFor, type Layout, type NodeBox } from "./layout.ts";
@@ -86,7 +87,79 @@ function applyLang(): void {
   renderMotionButton();
   renderTheme();
   renderBoard();
+  renderRule();
   renderShadow();
+  renderSetup();
+}
+
+/* ---------- cut-over rule ---------- */
+
+function renderRule(): void {
+  const locale = state.lang === "es" ? "es-ES" : "en-GB";
+  byId<HTMLElement>("rule-samples").textContent = String(cutoverPolicy.minimumSamples);
+  byId<HTMLElement>("rule-parity").textContent = new Intl.NumberFormat(locale, { style: "percent", minimumFractionDigits: 1 }).format(cutoverPolicy.minimumParityRatio);
+  byId<HTMLElement>("rule-errors").textContent = String(cutoverPolicy.maximumErrors);
+}
+
+/* ---------- setup generator ---------- */
+
+type Output = "settings" | "cli" | "workflow";
+let output: Output = "settings";
+const outputHint: Record<Output, Key> = { settings: "outSettingsHint", cli: "outCliHint", workflow: "outWorkflowHint" };
+const outputButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-out]"));
+const copyButton = byId<HTMLButtonElement>("copy");
+let copyTimer = 0;
+
+function readSetup(): ClientSetup {
+  const mode = byId<HTMLSelectElement>("f-mode").value as Mode;
+  return {
+    legacy: byId<HTMLInputElement>("f-legacy").value.trim(),
+    modern: byId<HTMLInputElement>("f-modern").value.trim(),
+    routePath: byId<HTMLInputElement>("f-route").value.trim(),
+    mode: MODES.includes(mode) ? mode : defaultSetup.mode,
+    canaryPercent: Number(byId<HTMLInputElement>("f-canary").value),
+    ignoredFields: parseList(byId<HTMLInputElement>("f-ignored").value),
+    aliases: parseAliases(byId<HTMLInputElement>("f-aliases").value),
+  };
+}
+
+const errorField: Record<SetupError, string> = { legacy: "f-legacy", modern: "f-modern", routePath: "f-route", canaryPercent: "f-canary" };
+
+function renderSetup(): void {
+  const setup = readSetup();
+  byId<HTMLElement>("l-canary").hidden = setup.mode !== "canary";
+  const errors = validate(setup).filter((e) => e !== "canaryPercent" || setup.mode === "canary");
+  for (const key of Object.keys(errorField) as SetupError[]) {
+    const invalid = errors.includes(key);
+    byId<HTMLElement>(`e-${key}`).hidden = !invalid;
+    byId<HTMLInputElement>(errorField[key]).setAttribute("aria-invalid", String(invalid));
+  }
+  for (const button of outputButtons) button.setAttribute("aria-pressed", String(button.dataset["out"] === output));
+  byId<HTMLElement>("out-hint").textContent = t(state.lang, outputHint[output]);
+  const text = output === "settings" ? settingsJson(setup) : output === "cli" ? parityCommand(setup) : workflowYaml(setup);
+  byId<HTMLElement>("out-code").textContent = text;
+  copyButton.disabled = errors.length > 0;
+}
+
+async function copyOutput(): Promise<void> {
+  const text = byId<HTMLElement>("out-code").textContent ?? "";
+  let state_: "copied" | "failed" = "failed";
+  try {
+    await navigator.clipboard.writeText(text);
+    state_ = "copied";
+  } catch {
+    const range = document.createRange();
+    range.selectNodeContents(byId<HTMLElement>("out-code"));
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+  }
+  copyButton.dataset["state"] = state_;
+  byId<HTMLElement>("copy-label").textContent = t(state.lang, state_ === "copied" ? "copied" : "copyFailed");
+  window.clearTimeout(copyTimer);
+  copyTimer = window.setTimeout(() => {
+    delete copyButton.dataset["state"];
+    byId<HTMLElement>("copy-label").textContent = t(state.lang, "copy");
+  }, 2000);
 }
 
 /* ---------- migration board ---------- */
@@ -468,6 +541,16 @@ if (!reducedMotion.matches && "IntersectionObserver" in window) {
     observer.disconnect();
   }, 1200);
 }
+
+byId<HTMLFormElement>("setup-form").addEventListener("input", renderSetup);
+byId<HTMLFormElement>("setup-form").addEventListener("submit", (event) => event.preventDefault());
+for (const button of outputButtons) {
+  button.addEventListener("click", () => {
+    output = button.dataset["out"] as Output;
+    renderSetup();
+  });
+}
+copyButton.addEventListener("click", () => void copyOutput());
 
 motionButton.addEventListener("click", () => {
   state.paused = !state.paused;

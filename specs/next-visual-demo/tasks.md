@@ -18,6 +18,7 @@
 | T-015 | A | Migration board from the gateway configuration, isotype draw-in, control panel Spanish-first with the brand mark | `npm test` green, panel rendered against a stub API |
 | T-016 | A | Vertical diagram on phones, section navigation, steps linked to the modes, scroll reveal with a fallback, CSS minified at build time, README preview | `npm test` green, Lighthouse run on the built folder |
 | T-017 | A | Shadow flow strip, print styles, hreflang links, JavaScript compaction at build time, parity report stylesheet aligned with the brand (renderer and samples) | `npm test` green; `dotnet test` pending (SampleReportTests compares the samples with the renderer) |
+| T-018 | A | Adoption: why strip, cut-over rule, setup generator (settings, command, CI job), getting-started steps and limits; budget raised to 200 KB | `npm test` green, generator driven in a browser |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | ADR status changed by the owner |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
 
@@ -61,4 +62,8 @@ Redesign session.
   only inside the `Style` constant of `ParityHtmlRenderer.cs` and copied verbatim into the two
   samples, so `SampleReportTests` should still match; this could not be run here (no .NET SDK).
   Report screenshots in `docs/images` regenerated from the samples.
+- Done and verified: T-018. `npm test` 40/40 green, `dist/` about 172 KB (budget raised to 200 KB in
+  REQ-DEMO-13 to make room for the generator; still no external asset). Playwright: generator edited,
+  canary field appears with the mode, JSON parses with the expected route block, command and workflow
+  switch, copy writes the clipboard, an invalid URL shows its error and disables copying.
 - Next: T-014 (owner), T-012 if still pending, `dotnet test` on a machine with the SDK (first thing).

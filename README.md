@@ -59,7 +59,9 @@ flowchart LR
 
 Edit the `Modernizer` section of [appsettings.json](src/NainLegacyModernizer.Gateway/appsettings.json): the two base
 addresses and one entry per route (`PathPattern`, `Mode`, `CanaryPercent`, `FieldAliases` for renamed properties,
-`IgnoredFields` for generated metadata, `SampleRequests` for the demo traffic button). Then run the gateway alone:
+`IgnoredFields` for generated metadata, `SampleRequests` for the demo traffic button). The
+[live demo](https://modernizer.naindev.com/#setup) writes this section, the `nain-parity` command and a CI job from your
+addresses and route. Then run the gateway alone:
 
 ```bash
 dotnet run --project src/NainLegacyModernizer.Gateway

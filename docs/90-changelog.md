@@ -24,6 +24,11 @@
   demo routes as configured in the gateway, each on its stage (REQ-DEMO-24). On phones the diagram
   turns vertical instead of scrolling sideways (REQ-DEMO-25); section navigation in the top bar; the
   four steps select the matching mode; panels rise into view; CSS is minified at build time.
+- Static demo, adoption: a "why" strip under the hero, the cut-over rule with the configured values,
+  a setup generator that writes the `Modernizer` section, the `nain-parity` command and a GitHub
+  Actions job from the visitor's addresses and route (validated against `ModernizerOptions.cs` and
+  the CLI usage by tests), getting-started steps and the known limits (REQ-DEMO-26, 27). The size
+  budget is now 200 KB.
 - Parity report (`nain-parity` and the sample reports): stylesheet aligned with the brandbook v1.6
   tokens, dark mode by system preference, print-safe. Markup and wording unchanged; the committed
   samples carry the same stylesheet.

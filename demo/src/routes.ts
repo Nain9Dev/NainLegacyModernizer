@@ -44,3 +44,6 @@ export function progressOf(routes: readonly DemoRoute[]): Progress {
   for (const r of routes) byMode[r.mode]++;
   return { total: routes.length, done: byMode.modern, byMode };
 }
+
+/** Readiness rule from the same appsettings.json: what "Ready" means on the board. */
+export const cutoverPolicy = { minimumSamples: 20, minimumParityRatio: 0.995, maximumErrors: 0 } as const;

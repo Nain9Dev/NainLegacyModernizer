@@ -49,6 +49,7 @@
         <a href="#shadow"><span class="nav-num">03</span><span data-i18n="navShadow">Sombra</span></a>
         <a href="#steps"><span class="nav-num">04</span><span data-i18n="navSteps">Pasos</span></a>
         <a href="#parts"><span class="nav-num">05</span><span data-i18n="navParts">Incluye</span></a>
+        <a href="#setup"><span class="nav-num">06</span><span data-i18n="navSetup">Tu flujo</span></a>
       </nav>
       <div class="topbar-actions">
         <div class="seg-group" role="group" id="lang-group" aria-label="Idioma" data-i18n-aria="langGroupLabel">
@@ -108,6 +109,27 @@
           </button></li>
         </ol>
       </div>
+    </section>
+
+    <section class="shell why" aria-labelledby="why-title">
+      <h2 id="why-title" class="sr-only" data-i18n="whyTitle">Por qué</h2>
+      <ol class="why-list">
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="8" y="8" width="32" height="32" rx="3"/><path d="M8 20h32M8 30h32M20 8v32"/></svg>
+          <h3 data-i18n="why1Title">Un monolito que funciona</h3>
+          <p data-i18n="why1Text">Nadie quiere tocarlo y reescribirlo entero es un riesgo.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 24h14M28 24h14"/><rect x="20" y="16" width="8" height="16" rx="2"/><path d="M34 14l8 10-8 10"/></svg>
+          <h3 data-i18n="why2Title">Una ruta cada vez</h3>
+          <p data-i18n="why2Text">La pasarela mueve una familia de rutas; el resto sigue igual.</p>
+        </li>
+        <li>
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M8 26l10 10L40 14"/><path d="M8 14h12M8 40h32"/></svg>
+          <h3 data-i18n="why3Title">Pruebas con tráfico real</h3>
+          <p data-i18n="why3Text">Las dos respuestas se comparan antes de cortar. Vuelta atrás en un clic.</p>
+        </li>
+      </ol>
     </section>
 
     <section id="diagram" class="shell panel" aria-labelledby="diagram-title">
@@ -229,6 +251,18 @@
           </thead>
           <tbody id="board-rows"></tbody>
         </table>
+      </div>
+      <div class="rule">
+        <div class="rule-head">
+          <h3 data-i18n="ruleTitle">Regla de corte</h3>
+          <p data-i18n="ruleIntro">Una ruta está lista cuando cumple las tres a la vez.</p>
+        </div>
+        <ul class="rule-list">
+          <li><span class="rule-value" id="rule-samples">20</span><span class="rule-label"><small data-i18n="ruleSamplesMin">mínimo</small><span data-i18n="ruleSamples">muestras en sombra</span></span></li>
+          <li><span class="rule-value" id="rule-parity">99,5 %</span><span class="rule-label"><small data-i18n="ruleParityMin">mínimo</small><span data-i18n="ruleParity">de paridad</span></span></li>
+          <li><span class="rule-value" id="rule-errors">0</span><span class="rule-label"><small data-i18n="ruleErrorsMax">máximo</small><span data-i18n="ruleErrors">errores de ejecución</span></span></li>
+        </ul>
+        <p class="note" data-i18n="ruleNote">Valores de la configuración de la demo; cada cliente fija los suyos.</p>
       </div>
     </section>
 
@@ -353,6 +387,68 @@
         </li>
       </ul>
       <p class="cta-row"><a class="btn btn-primary" href="https://github.com/Nain9Dev/NainLegacyModernizer" data-i18n="partCta">Ver en GitHub</a></p>
+    </section>
+    <section id="setup" class="shell panel" aria-labelledby="setup-title">
+      <div class="panel-head">
+        <p class="eyebrow">06</p>
+        <h2 id="setup-title" data-i18n="setupTitle">Incorpóralo a tu flujo</h2>
+        <p class="lead" data-i18n="setupIntro">Rellena tus datos y copia el bloque. Nada sale de tu navegador.</p>
+      </div>
+      <div class="setup">
+        <form class="setup-form" id="setup-form" autocomplete="off">
+          <label><span data-i18n="fieldLegacy">URL del sistema legado</span><input type="url" id="f-legacy" name="legacy" value="https://legacy.example.com" required spellcheck="false"><small class="field-error" id="e-legacy" hidden data-i18n="errLegacy">Escribe una URL http o https.</small></label>
+          <label><span data-i18n="fieldModern">URL de la API nueva</span><input type="url" id="f-modern" name="modern" value="https://new.example.com" required spellcheck="false"><small class="field-error" id="e-modern" hidden data-i18n="errModern">Escribe una URL http o https.</small></label>
+          <label><span data-i18n="fieldRoute">Ruta a migrar</span><input type="text" id="f-route" name="route" value="/api/orders" required spellcheck="false"><small class="field-error" id="e-routePath" hidden data-i18n="errRoutePath">Empieza por / y sin espacios.</small></label>
+          <label><span data-i18n="fieldMode">Modo inicial</span>
+            <select id="f-mode" name="mode">
+              <option value="legacy" data-i18n="stageLegacy">Legado</option>
+              <option value="shadow" selected data-i18n="stageShadow">Sombra</option>
+              <option value="canary" data-i18n="stageCanary">Canary</option>
+              <option value="modern" data-i18n="stageModern">Moderna</option>
+            </select>
+          </label>
+          <label id="l-canary" hidden><span data-i18n="fieldCanary">Porcentaje canary</span><input type="number" id="f-canary" name="canary" min="1" max="99" value="10"><small class="field-error" id="e-canaryPercent" hidden data-i18n="errCanaryPercent">Entre 1 y 99.</small></label>
+          <label><span data-i18n="fieldIgnored">Campos ignorados</span><input type="text" id="f-ignored" name="ignored" value="generatedAt" spellcheck="false"><small class="field-hint" data-i18n="fieldIgnoredHint">separados por comas</small></label>
+          <label><span data-i18n="fieldAliases">Campos renombrados</span><input type="text" id="f-aliases" name="aliases" value="OrderID=id" spellcheck="false"><small class="field-hint" data-i18n="fieldAliasesHint">antiguo=nuevo, separados por comas</small></label>
+        </form>
+        <div class="setup-out">
+          <div class="out-bar">
+            <div class="seg-group outputs" role="group" aria-label="Salida">
+              <button type="button" class="seg-btn" data-out="settings" aria-pressed="true" data-i18n="outSettings">appsettings.json</button>
+              <button type="button" class="seg-btn" data-out="cli" aria-pressed="false" data-i18n="outCli">Comando</button>
+              <button type="button" class="seg-btn" data-out="workflow" aria-pressed="false" data-i18n="outWorkflow">GitHub Actions</button>
+            </div>
+            <button type="button" class="btn btn-ghost" id="copy">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
+              <span id="copy-label" data-i18n="copy">Copiar</span>
+            </button>
+          </div>
+          <p class="out-hint" id="out-hint" data-i18n="outSettingsHint">Sección Modernizer de src/NainLegacyModernizer.Gateway/appsettings.json</p>
+          <pre class="out" tabindex="0"><code id="out-code"></code></pre>
+        </div>
+      </div>
+      <div class="adopt">
+        <div>
+          <h3 data-i18n="adoptTitle">Puesta en marcha</h3>
+          <ol class="adopt-list">
+            <li data-i18n="adopt1">Clona el repositorio y pega el bloque en appsettings.json.</li>
+            <li data-i18n="adopt2">Arranca la pasarela y apunta tus clientes a ella.</li>
+            <li data-i18n="adopt3">Abre /_modernizer y envía tráfico de prueba.</li>
+            <li data-i18n="adopt4">Cuando el tablero diga Lista, promociona la ruta.</li>
+          </ol>
+          <pre class="out out-small"><code>git clone https://github.com/Nain9Dev/NainLegacyModernizer
+dotnet run --project src/NainLegacyModernizer.Gateway</code></pre>
+        </div>
+        <div>
+          <h3 data-i18n="limitsTitle">Límites</h3>
+          <ul class="limits">
+            <li data-i18n="limit1">Solo HTTP con JSON. No toca tu código ni tu base de datos.</li>
+            <li data-i18n="limit2">El informe de paridad solo envía GET; sin cabeceras de autenticación aún.</li>
+            <li data-i18n="limit3">Auditorías en memoria: un reinicio vuelve a la configuración.</li>
+            <li data-i18n="limit4">El panel no tiene login: despliégalo dentro de tu red.</li>
+          </ul>
+        </div>
+      </div>
     </section>
   </main>
 

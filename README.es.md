@@ -55,7 +55,9 @@ flowchart LR
 
 ## Uso en tus propios sistemas
 
-Edita la sección `Modernizer` de [appsettings.json](src/NainLegacyModernizer.Gateway/appsettings.json): las dos direcciones base y una entrada por ruta (`PathPattern`, `Mode`, `CanaryPercent`, `FieldAliases` para propiedades renombradas, `IgnoredFields` para metadatos generados, `SampleRequests` para el generador de tráfico de prueba). Después, ejecuta la pasarela:
+Edita la sección `Modernizer` de [appsettings.json](src/NainLegacyModernizer.Gateway/appsettings.json): las dos direcciones base y una entrada por ruta (`PathPattern`, `Mode`, `CanaryPercent`, `FieldAliases` para propiedades renombradas, `IgnoredFields` para metadatos generados, `SampleRequests` para el generador de tráfico de prueba). La
+[demo](https://modernizer.naindev.com/#setup) genera esta sección, el comando `nain-parity` y un trabajo de CI a partir de
+tus direcciones y tu ruta. Después, ejecuta la pasarela:
 
 ```bash
 dotnet run --project src/NainLegacyModernizer.Gateway
