@@ -674,7 +674,8 @@ svg { display: block; }
   .topbar, .skip, .controls, .cta-row, .scenarios, #motion, .out-bar, .setup-form, nain-ecosystem-bar { display: none !important; }
   .hero { background: #fff; color: #000; border: 1px solid #000; }
   .hero h1, .hero .accent, .hero .eyebrow, .tagline, .fact-value, .facts li { color: #000; }
-  .stage, .stage strong, .stage span { color: #000; background: #fff; border-color: #000; }
+  .stage { color: #000; background: #fff; border-color: #000; }
+  .stage strong, .stage span { color: #000; background: transparent; }
   .stage svg { background: #fff; color: #000; }
   .stage[aria-pressed="true"] { background: #eef3ff; }
   .stage[aria-pressed="true"]::after, .stages::before { display: none; }
