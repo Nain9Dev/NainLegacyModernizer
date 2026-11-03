@@ -4,32 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Legacy Modernizer · Control Panel</title>
+  <title>Legacy Modernizer · Panel de control</title>
   <link rel="icon" type="image/svg+xml" href="/_modernizer/logo.svg">
   <link rel="stylesheet" href="/_modernizer/app.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/_modernizer" aria-label="Legacy Modernizer">
+    <a class="brand" href="/_modernizer">
       <img src="/_modernizer/logo.svg" alt="" width="36" height="36">
       <span class="brand-text">
         <strong>Legacy Modernizer</strong>
-        <span data-i18n="subtitle">Strangler-fig control panel</span>
+        <span data-i18n="subtitle">Panel de control strangler-fig</span>
       </span>
     </a>
 
     <div class="hosts" aria-label="Backends">
       <span class="host host-legacy"><i class="dot"></i><span class="host-label" data-i18n="legacy">Legacy</span><code id="legacyHost">…</code></span>
       <svg class="arrow" width="28" height="12" viewBox="0 0 28 12" aria-hidden="true"><path d="M0 6h24M19 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="host host-modern"><i class="dot"></i><span class="host-label" data-i18n="modern">Modern</span><code id="modernHost">…</code></span>
+      <span class="host host-modern"><i class="dot"></i><span class="host-label" data-i18n="modern">Moderno</span><code id="modernHost">…</code></span>
     </div>
 
     <div class="toolbar">
-      <span class="live" id="live" data-state="connecting"><i class="dot"></i><span id="liveLabel" data-i18n="connecting">Connecting</span></span>
+      <span class="live" id="live" data-state="connecting"><i class="dot"></i><span id="liveLabel" data-i18n="connecting">Conectando</span></span>
       <div class="demo-group" role="group" aria-label="Demo traffic">
         <button class="btn btn-primary" id="btnTraffic">
           <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>
-          <span data-i18n="sendTraffic">Send 50 requests</span>
+          <span data-i18n="sendTraffic">Enviar 50 peticiones</span>
         </button>
         <button class="btn btn-ghost" id="btnAuto" aria-pressed="false" data-i18n-title="autoTitle">
           <span data-i18n="auto">Auto</span>
@@ -38,11 +38,11 @@
           <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 1 1.6 3.9M2.5 13V9.5H6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
-      <button class="btn btn-ghost" id="btnExport" data-i18n-title="exportTitle" aria-label="Export Dossier">
+      <button class="btn btn-ghost" id="btnExport" data-i18n-title="exportTitle">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v9M4 7l4 4 4-4M2 13h12"/></svg>
-        <span data-i18n="export">Export</span>
+        <span data-i18n="export">Exportar</span>
       </button>
-      <button class="btn btn-ghost" id="btnLang" aria-label="Switch language">ES</button>
+      <button class="btn btn-ghost" id="btnLang" aria-label="ES: cambiar a español">ES</button>
       <button class="btn btn-ghost btn-icon" id="btnTheme" aria-label="Toggle theme">
         <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 2a6 6 0 1 0 4.5 9.6A6.5 6.5 0 0 1 9.5 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
       </button>
@@ -52,7 +52,7 @@
   <main>
     <section class="kpis" aria-label="Key indicators">
       <article class="tile tile-progress">
-        <header><h3 data-i18n="kpiProgress">Migration progress</h3></header>
+        <header><h3 data-i18n="kpiProgress">Progreso de migración</h3></header>
         <div class="tile-body">
           <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
             <circle class="ring-track" cx="60" cy="60" r="50"/>
@@ -67,7 +67,7 @@
       </article>
 
       <article class="tile tile-parity">
-        <header><h3 data-i18n="kpiParity">Parity</h3><span class="tile-hint" data-i18n="kpiParityHint">legacy vs modern on shadowed traffic</span></header>
+        <header><h3 data-i18n="kpiParity">Paridad</h3><span class="tile-hint" data-i18n="kpiParityHint">legacy vs moderno en tráfico sombra</span></header>
         <div class="tile-body">
           <strong class="hero" id="kpiParity">—</strong>
           <div class="stack" id="parityStack" role="img"></div>
@@ -76,7 +76,7 @@
       </article>
 
       <article class="tile tile-latency">
-        <header><h3 data-i18n="kpiLatency">Latency · p50</h3><span class="tile-hint" data-i18n="kpiLatencyHint">who answers faster</span></header>
+        <header><h3 data-i18n="kpiLatency">Latencia · p50</h3><span class="tile-hint" data-i18n="kpiLatencyHint">quién responde antes</span></header>
         <div class="tile-body">
           <strong class="hero" id="kpiLatencyDelta">—</strong>
           <div class="bars" id="latencyBars"></div>
@@ -84,11 +84,11 @@
       </article>
 
       <article class="tile tile-traffic">
-        <header><h3 data-i18n="kpiTraffic">Traffic observed</h3><span class="tile-hint" data-i18n="kpiTrafficHint">requests through the gateway</span></header>
+        <header><h3 data-i18n="kpiTraffic">Tráfico observado</h3><span class="tile-hint" data-i18n="kpiTrafficHint">peticiones a través del gateway</span></header>
         <div class="tile-body">
           <strong class="hero" id="kpiRequests">0</strong>
           <svg class="spark" id="spark" viewBox="0 0 240 56" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <span class="muted small" id="sparkLabel" data-i18n="sparkLabel">last 2 minutes</span>
+          <span class="muted small" id="sparkLabel" data-i18n="sparkLabel">últimos 2 minutos</span>
         </div>
       </article>
     </section>
@@ -96,8 +96,8 @@
     <section class="board" aria-labelledby="boardTitle">
       <header class="section-head">
         <div>
-          <h2 id="boardTitle" data-i18n="boardTitle">Migration board</h2>
-          <p class="muted" data-i18n="boardHint">Each route moves left to right. Promote when the badge says Ready; roll back with one click at any time.</p>
+          <h2 id="boardTitle" data-i18n="boardTitle">Tablero de migración</h2>
+          <p class="muted" data-i18n="boardHint">Cada ruta avanza de izquierda a derecha. Promociona cuando la etiqueta diga Lista; vuelve atrás con un clic en cualquier momento.</p>
         </div>
         <div class="policy muted small" id="policy"></div>
       </header>
@@ -107,7 +107,7 @@
     <section class="split">
       <article class="panel" aria-labelledby="trafficTitle">
         <header class="panel-head">
-          <h2 id="trafficTitle" data-i18n="trafficTitle">Live traffic</h2>
+          <h2 id="trafficTitle" data-i18n="trafficTitle">Tráfico en vivo</h2>
           <span class="muted small" id="trafficCount"></span>
         </header>
         <div class="table-wrap">
@@ -117,31 +117,31 @@
             </colgroup>
             <thead>
               <tr>
-                <th data-i18n="colTime">Time</th>
-                <th data-i18n="colRequest">Request</th>
-                <th data-i18n="colMode">Mode</th>
-                <th data-i18n="colServedBy">Served by</th>
-                <th data-i18n="colStatus">Status</th>
-                <th data-i18n="colLatency">Latency</th>
+                <th data-i18n="colTime">Hora</th>
+                <th data-i18n="colRequest">Petición</th>
+                <th data-i18n="colMode">Modo</th>
+                <th data-i18n="colServedBy">Servida por</th>
+                <th data-i18n="colStatus">Estado</th>
+                <th data-i18n="colLatency">Latencia</th>
               </tr>
             </thead>
             <tbody id="trafficBody"></tbody>
           </table>
-          <p class="empty" id="trafficEmpty" data-i18n="trafficEmpty">No requests yet. Send demo traffic or point a client at the gateway.</p>
+          <p class="empty" id="trafficEmpty" data-i18n="trafficEmpty">Aún no hay peticiones. Envía tráfico de demo o apunta un cliente al gateway.</p>
         </div>
       </article>
 
       <article class="panel" aria-labelledby="auditsTitle">
         <header class="panel-head">
-          <h2 id="auditsTitle" data-i18n="auditsTitle">Parity audits</h2>
+          <h2 id="auditsTitle" data-i18n="auditsTitle">Auditorías de paridad</h2>
           <div class="chips" role="tablist" id="auditFilters">
-            <button class="chip is-active" role="tab" data-filter="all" data-i18n="filterAll">All</button>
-            <button class="chip" role="tab" data-filter="Discrepancy" data-i18n="filterDiscrepancy">Discrepancies</button>
-            <button class="chip" role="tab" data-filter="ExecutionError" data-i18n="filterErrors">Errors</button>
+            <button class="chip is-active" role="tab" data-filter="all" data-i18n="filterAll">Todas</button>
+            <button class="chip" role="tab" data-filter="Discrepancy" data-i18n="filterDiscrepancy">Discrepancias</button>
+            <button class="chip" role="tab" data-filter="ExecutionError" data-i18n="filterErrors">Errores</button>
           </div>
         </header>
         <ul class="audits" id="auditList"></ul>
-        <p class="empty" id="auditEmpty" data-i18n="auditEmpty">Shadow routes record an audit for every request. Nothing audited yet.</p>
+        <p class="empty" id="auditEmpty" data-i18n="auditEmpty">Las rutas en sombra registran una auditoría por petición. Nada auditado todavía.</p>
       </article>
     </section>
   </main>

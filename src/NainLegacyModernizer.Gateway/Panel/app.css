@@ -14,7 +14,7 @@
   --border-strong: #9CB2CE;
   --text: #002B66;
   --muted: #3C5F94;
-  --faint: #64748B;
+  --faint: #44607F;
 
   /* Series colors: Legacy (Amber) vs Modern (Signature Blue) */
   --legacy: #c97a08;
@@ -60,7 +60,7 @@
   --border-strong: #2D5284;
   --text: #EDF1F6;
   --muted: #94A3B8;
-  --faint: #64748B;
+  --faint: #8A9BB5;
 
   /* Series colors: Legacy vs Modern */
   --legacy: #E0921B;
@@ -196,6 +196,7 @@ main > * { min-width: 0; }
 
 .tile {
   position: relative;
+  min-height: 210px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -215,9 +216,9 @@ main > * { min-width: 0; }
 .ring circle { fill: none; stroke-width: 10; }
 .ring-track { stroke: var(--surface-3); }
 .ring-value { stroke: var(--modern); stroke-linecap: round; stroke-dasharray: 0 100; transition: stroke-dasharray 0.6s cubic-bezier(.2,.8,.2,1); }
-.ring-text { display: flex; flex-direction: column; gap: 4px; }
+.ring-text { min-height: 78px; display: flex; flex-direction: column; gap: 4px; }
 .ring-text strong { font-size: 30px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
-.stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: auto; }
+.stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: auto; min-height: 60px; }
 .stage { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; border-radius: var(--radius-sm); background: var(--surface-2); font-size: 11px; color: var(--muted); }
 .stage strong { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
 .stage i { width: 100%; height: 3px; border-radius: 2px; }

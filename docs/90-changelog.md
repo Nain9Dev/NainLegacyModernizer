@@ -52,6 +52,9 @@
   samples carry the same stylesheet.
 - The Pages workflow runs Lighthouse against the built demo and fails under performance 90, accessibility 100,
   best practices 95 or SEO 100.
+- Control panel audited with Lighthouse against a stub API: accessibility 100 (secondary text contrast,
+  accessible names of the language and export buttons), no layout shift at load (the embedded markup now
+  ships the Spanish strings, tiles and counters reserve their height), document title per language.
 - Control panel layout checked on the same device matrix with stub data: the top bar wraps instead of
   overflowing below 1200 px, nothing exceeds the viewport on 320 px phones, stage counters in two columns there.
 - Control panel: Spanish by default (the visitor's choice persists) and the NainDev isotype as its logo,
