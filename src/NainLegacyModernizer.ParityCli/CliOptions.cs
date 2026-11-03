@@ -9,7 +9,8 @@ public sealed record CliOptions(
     IReadOnlySet<string> Ignore,
     IReadOnlyDictionary<string, string> Map,
     string OutputPath,
-    string? JsonPath)
+    string? JsonPath,
+    IReadOnlyList<KeyValuePair<string, string>> Headers)
 {
     public const string DefaultOutputPath = "parity-report.html";
 
@@ -23,11 +24,23 @@ public sealed record CliOptions(
           --map <old=new>    Treat a legacy field name as a modern one (repeatable)
           --out <file>       HTML report (default: parity-report.html)
           --json <file>      Also write a machine-readable summary
+          --header <n: v>    Header sent with every request to both systems (repeatable); keep secrets in
+                             environment variables, e.g. --header "Authorization: Bearer $PARITY_TOKEN"
 
         Only GET requests are sent. Exit code: 0 ready to cut over, 1 not ready, 2 invalid arguments.
         """;
 
     public static int ExitCodeFor(bool readyToCut) => readyToCut ? 0 : 1;
+
+    /// <summary>Adds every <c>--header</c> to the client, so both systems receive the same credentials.</summary>
+    public void Apply(HttpClient client)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+        foreach (var header in Headers)
+        {
+            client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+        }
+    }
 
     public static bool TryParse(string[] args, [NotNullWhen(true)] out CliOptions? options, [NotNullWhen(false)] out string? error)
     {
@@ -39,6 +52,7 @@ public sealed record CliOptions(
         var map = new Dictionary<string, string>(StringComparer.Ordinal);
         var output = DefaultOutputPath;
         string? json = null;
+        var headers = new List<KeyValuePair<string, string>>();
 
         for (var i = 0; i < args.Length; i += 2)
         {
@@ -74,6 +88,16 @@ public sealed record CliOptions(
 
                     map[parts[0]] = parts[1];
                     break;
+                case "--header":
+                    var header = value.Split(':', 2, StringSplitOptions.TrimEntries);
+                    if (header.Length != 2 || header[0].Length == 0 || header[1].Length == 0)
+                    {
+                        error = $"Option --header expects 'Name: value', got '{value}'.";
+                        return false;
+                    }
+
+                    headers.Add(new KeyValuePair<string, string>(header[0], header[1]));
+                    break;
                 default:
                     error = $"Unknown option {name}.";
                     return false;
@@ -100,7 +124,7 @@ public sealed record CliOptions(
             return false;
         }
 
-        options = new CliOptions(legacyUri, modernUri, list, ignore, map, output, json);
+        options = new CliOptions(legacyUri, modernUri, list, ignore, map, output, json, headers);
         error = null;
         return true;
     }

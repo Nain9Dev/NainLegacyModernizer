@@ -73,6 +73,16 @@ test("REQ-DEMO-26: the CLI command only uses documented options", () => {
   assert.match(parityCommand({ ...defaultSetup, legacy: "https://legacy.example.com/a b" }), /'https:\/\/legacy\.example\.com\/a b'/);
 });
 
+test("REQ-DEMO-26: the authentication header reads the token from an environment variable", () => {
+  const command = parityCommand({ ...defaultSetup, authHeader: true });
+  assert.ok(command.includes('--header "Authorization: Bearer $PARITY_TOKEN"'));
+  assert.ok(usage.includes("--header"));
+  assert.ok(!parityCommand(defaultSetup).includes("--header"));
+  const yaml = workflowYaml({ ...defaultSetup, authHeader: true });
+  assert.ok(yaml.includes("        env:\n          PARITY_TOKEN: ${{ secrets.PARITY_TOKEN }}\n        run: |"));
+  assert.ok(!workflowYaml(defaultSetup).includes("secrets."));
+});
+
 test("REQ-DEMO-26: the workflow embeds the same command and fails on a non-zero exit", () => {
   const yaml = workflowYaml(defaultSetup);
   assert.match(yaml, /^name: Parity gate/);

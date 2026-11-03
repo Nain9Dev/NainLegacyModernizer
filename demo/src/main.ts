@@ -171,6 +171,7 @@ function readSetup(): ClientSetup {
     canaryPercent: Number(byId<HTMLInputElement>("f-canary").value),
     ignoredFields: parseList(byId<HTMLInputElement>("f-ignored").value),
     aliases: parseAliases(byId<HTMLInputElement>("f-aliases").value),
+    authHeader: byId<HTMLInputElement>("f-auth").checked,
   };
 }
 

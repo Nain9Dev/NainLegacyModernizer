@@ -35,6 +35,8 @@
 - `Dockerfile` (multi-stage, official .NET 10 images, port 8080) and `compose.yaml` example configured by
   environment variables; runbook gains a containers section and an adoption checklist. Not yet built
   with a Docker daemon.
+- `nain-parity --header "Name: value"` (repeatable) sends a header to both systems, so authenticated APIs can
+  be compared; malformed values are rejected (REQ-PAR-17).
 - Parity report (`nain-parity` and the sample reports): stylesheet aligned with the brandbook v1.6
   tokens, dark mode by system preference, print-safe. Markup and wording unchanged; the committed
   samples carry the same stylesheet.

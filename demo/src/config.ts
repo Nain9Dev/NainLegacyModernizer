@@ -13,6 +13,8 @@ export interface ClientSetup {
   canaryPercent: number;
   ignoredFields: string[];
   aliases: Record<string, string>;
+  /** Both systems need an Authorization header; the token comes from the PARITY_TOKEN variable, never from the page. */
+  authHeader: boolean;
 }
 
 export const defaultSetup: ClientSetup = {
@@ -23,7 +25,10 @@ export const defaultSetup: ClientSetup = {
   canaryPercent: 10,
   ignoredFields: ["generatedAt"],
   aliases: { OrderID: "id" },
+  authHeader: false,
 };
+
+export const TOKEN_VARIABLE = "PARITY_TOKEN";
 
 export type SetupError = "legacy" | "modern" | "routePath" | "canaryPercent";
 
@@ -97,6 +102,7 @@ export function parityCommand(setup: ClientSetup): string {
   ];
   for (const [legacyName, modernName] of Object.entries(setup.aliases)) parts.push(`--map ${shellQuote(`${legacyName}=${modernName}`)}`);
   if (setup.ignoredFields.length > 0) parts.push(`--ignore ${shellQuote(setup.ignoredFields.join(","))}`);
+  if (setup.authHeader) parts.push(`--header "Authorization: Bearer $${TOKEN_VARIABLE}"`);
   parts.push("--out parity-report.html");
   return parts.join(" \\\n  ");
 }
@@ -117,6 +123,7 @@ export function workflowYaml(setup: ClientSetup): string {
     "        with:",
     '          dotnet-version: "10.0.x"',
     "      - name: Compare legacy and modern",
+    ...(setup.authHeader ? ["        env:", `          ${TOKEN_VARIABLE}: \${{ secrets.${TOKEN_VARIABLE} }}`] : []),
     "        run: |",
     ...parityCommand(setup)
       .split("\n")

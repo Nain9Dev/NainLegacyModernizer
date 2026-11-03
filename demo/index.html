@@ -418,6 +418,7 @@
           <label id="l-canary" hidden><span data-i18n="fieldCanary">Porcentaje canary</span><input type="number" id="f-canary" name="canary" min="1" max="99" value="10"><small class="field-error" id="e-canaryPercent" hidden data-i18n="errCanaryPercent">Entre 1 y 99.</small></label>
           <label><span data-i18n="fieldIgnored">Campos ignorados</span><input type="text" id="f-ignored" name="ignored" value="generatedAt" spellcheck="false"><small class="field-hint" data-i18n="fieldIgnoredHint">separados por comas</small></label>
           <label><span data-i18n="fieldAliases">Campos renombrados</span><input type="text" id="f-aliases" name="aliases" value="OrderID=id" spellcheck="false"><small class="field-hint" data-i18n="fieldAliasesHint">antiguo=nuevo, separados por comas</small></label>
+          <label class="check"><input type="checkbox" id="f-auth" name="auth"><span data-i18n="fieldAuth">Las APIs piden cabecera Authorization</span><small class="field-hint" data-i18n="fieldAuthHint">El token se lee de la variable PARITY_TOKEN. No lo escribas aquí.</small></label>
         </form>
         <div class="setup-out">
           <div class="out-bar">

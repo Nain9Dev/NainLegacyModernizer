@@ -521,6 +521,9 @@ svg { display: block; }
 .setup-form select { font-family: var(--nain-font-sans); }
 .setup-form input:focus-visible, .setup-form select:focus-visible { outline-offset: 1px; }
 .setup-form input[aria-invalid="true"] { border-color: var(--bad); }
+.setup-form .check { grid-template-columns: auto 1fr; align-items: center; column-gap: var(--nain-s2); }
+.setup-form .check input { width: 22px; height: 22px; min-height: 0; margin: 0; padding: 0; accent-color: var(--cta); }
+.setup-form .check .field-hint { grid-column: 2; }
 .field-hint { font-weight: 500; color: var(--ink-soft); font-size: 0.8125rem; }
 .field-error { font-weight: 700; color: var(--bad); font-size: 0.8125rem; }
 .setup-out { display: grid; gap: var(--nain-s2); min-width: 0; }

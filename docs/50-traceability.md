@@ -20,7 +20,7 @@ All tests live in `tests/NainLegacyModernizer.Tests`. Run `dotnet test`.
 | REQ-CP-03 | `GatewayRoutingTests.AuditsEndpoint_FiltersByVerdict_AndClears` |
 | REQ-CP-04 | `GatewayRoutingTests.Panel_IsServedFromEmbeddedResources` |
 | REQ-CP-05 | Manual: demo panel "Send 50 requests" (browser-only behaviour) |
-| REQ-PAR (REQ-PAR-01 to REQ-PAR-16) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*`, `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
+| REQ-PAR (REQ-PAR-01 to REQ-PAR-17) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*` (REQ-PAR-17: `TryParse_Headers_*`, `TryParse_MalformedHeader_Fails`), `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
 | NFR-02 | `DomainInvariantsTests.Order_CalculatesTotalAmount_WithDeterministicDecimalPrecision` |
 | NFR-03 | `GatewayFixture` (all hosts in memory, no sockets) |
 

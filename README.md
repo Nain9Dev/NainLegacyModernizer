@@ -90,7 +90,8 @@ dotnet run --project src/NainLegacyModernizer.ParityCli -- \
 
 - Names match ignoring case, `_` and `-`. `--map old=new` aligns renamed fields. `--ignore` skips fields (the report lists them).
 - Numbers compare as decimals (`450.5` equals `450.50`), never as floating point.
-- Read-only: only `GET`. Authentication headers are not supported yet. Check that your `GET` endpoints have no side effects.
+- Read-only: only `GET`. Check that your `GET` endpoints have no side effects.
+- `--header "Authorization: Bearer $PARITY_TOKEN"` (repeatable) sends the same header to both systems; keep the secret in an environment variable.
 - Git Bash on Windows rewrites arguments that start with `/`. Use a `--paths` file or set `MSYS_NO_PATHCONV=1`.
 - Sample reports, generated from the in-repo services: [not ready](demo/samples/parity-report-not-ready.html), [ready](demo/samples/parity-report-ready.html).
 

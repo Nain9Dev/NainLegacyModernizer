@@ -21,6 +21,35 @@ public sealed class ParityCliOptionsTests
         Assert.Null(options.JsonPath);
         Assert.Empty(options.Ignore);
         Assert.Empty(options.Map);
+        Assert.Empty(options.Headers);
+    }
+
+    [Fact]
+    public void TryParse_Headers_AreRepeatableAndAppliedToBothClients()
+    {
+        string[] args = [.. Required, "--header", "Authorization: Bearer abc", "--header", "X-Tenant:acme"];
+
+        Assert.True(CliOptions.TryParse(args, out var options, out var error), error);
+
+        KeyValuePair<string, string>[] expected = [new("Authorization", "Bearer abc"), new("X-Tenant", "acme")];
+        Assert.Equal(expected, options!.Headers);
+        using var client = new HttpClient();
+        options.Apply(client);
+        Assert.Equal("Bearer abc", Assert.Single(client.DefaultRequestHeaders.GetValues("Authorization")));
+        Assert.Equal("acme", Assert.Single(client.DefaultRequestHeaders.GetValues("X-Tenant")));
+    }
+
+    [Theory]
+    [InlineData("Authorization")]
+    [InlineData(": value")]
+    [InlineData("Authorization:   ")]
+    public void TryParse_MalformedHeader_Fails(string header)
+    {
+        string[] args = [.. Required, "--header", header];
+
+        Assert.False(CliOptions.TryParse(args, out _, out var error));
+
+        Assert.Contains("--header", error, StringComparison.Ordinal);
     }
 
     [Fact]

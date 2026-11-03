@@ -87,6 +87,7 @@ dotnet run --project src/NainLegacyModernizer.ParityCli -- \
 - Comparación insensible a mayúsculas/minúsculas, `_` y `-`. `--map old=new` alinea campos renombrados. `--ignore` omite campos irrelevantes.
 - Los números se comparan como decimales de precisión fija (`450.5` equivale a `450.50`), nunca como coma flotante.
 - Solo lectura: únicamente peticiones `GET`. Verifica que tus puntos finales no tengan efectos secundarios.
+- `--header "Authorization: Bearer $PARITY_TOKEN"` (repetible) envía la misma cabecera a los dos sistemas; el secreto va en una variable de entorno.
 - Informes de muestra generados a partir de los servicios del repositorio: [no listo](demo/samples/parity-report-not-ready.html), [listo](demo/samples/parity-report-ready.html).
 
 ## Estructura de la solución

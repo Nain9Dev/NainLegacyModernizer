@@ -29,7 +29,8 @@ Requirements follow the **EARS** pattern. Each one is traced to a test in [50-tr
   - Numbers compare as decimals (NFR-02); a field present on one side only is a discrepancy.
   - A request failure or a non-JSON body is an `ExecutionError` for that route and the run continues.
   - An empty report is never ready (fail closed). Exit codes: `0` ready, `1` not ready, `2` invalid arguments.
-  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-16`: `specs/next-parity-report/spec.md`.
+  - `--header "Name: value"` (repeatable) sends the same header, for example a bearer token, to both systems.
+  - Detailed requirements `REQ-PAR-01` to `REQ-PAR-17`: `specs/next-parity-report/spec.md`.
 
 ### Control panel
 
