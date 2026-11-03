@@ -50,6 +50,8 @@
 - Parity report (`nain-parity` and the sample reports): stylesheet aligned with the brandbook v1.6
   tokens, dark mode by system preference, print-safe. Markup and wording unchanged; the committed
   samples carry the same stylesheet.
+- Control panel layout checked on the same device matrix with stub data: the top bar wraps instead of
+  overflowing below 1200 px, nothing exceeds the viewport on 320 px phones, stage counters in two columns there.
 - Control panel: Spanish by default (the visitor's choice persists) and the NainDev isotype as its logo,
   replacing the previous gradient mark.
 - Gateway routing moved from static YARP configuration to per-request forwarding (ADR: per-request routing over
