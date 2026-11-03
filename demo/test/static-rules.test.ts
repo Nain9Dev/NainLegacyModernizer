@@ -114,9 +114,14 @@ test("REQ-DEMO-10/15/20: Spanish document, viewport, one module entry and the ec
   assert.match(html, /<html lang="es"/);
   assert.match(html, /<meta name="viewport"/);
   assert.match(html, /<meta name="color-scheme" content="dark light">/);
-  // REQ-DEMO-30: the shared bar is the only external script, deferred, and names this project.
+  // REQ-DEMO-30: the shared bar is the only external script, deferred, and names this project. The one inline
+  // script applies the stored theme before the first paint (REQ-DEMO-21) and touches nothing else.
   const scripts = html.match(/<script[^>]*>/g) ?? [];
-  assert.equal(scripts.length, 2);
+  assert.equal(scripts.length, 3);
+  const inline = html.match(/<script>([\s\S]*?)<\/script>/);
+  assert.ok(inline, "inline theme script");
+  assert.match(inline[1] as string, /^try\{var t=localStorage\.getItem\("modernizer\.theme"\);/);
+  assert.ok(!/fetch|XMLHttpRequest|import|src=/.test(inline[1] as string), "the inline script loads nothing");
   assert.match(html, /<script src="https:\/\/www\.naindev\.com\/assets\/js\/ecosystem-bar\.js\?v=[0-9.]+" defer><\/script>/);
   assert.match(html, /<nain-ecosystem-bar current-project="NainLegacyModernizer"><\/nain-ecosystem-bar>/);
   assert.match(css, /nain-ecosystem-bar:defined \{ height: 38px; \}/);
