@@ -1,5 +1,5 @@
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { minifyCss } from "./minify.ts";
+import { compactJs, minifyCss } from "./minify.ts";
 
 // tsc already wrote the JavaScript into dist/; add the static entry files next to it.
 const demo = new URL("../", import.meta.url);
@@ -9,6 +9,11 @@ for (const file of ["index.html", "card.webp"]) {
   copyFileSync(new URL(file, demo), new URL(file, dist));
 }
 writeFileSync(new URL("styles.css", dist), minifyCss(readFileSync(new URL("styles.css", demo), "utf8")));
+for (const file of readdirSync(dist)) {
+  if (!file.endsWith(".js")) continue;
+  const target = new URL(file, dist);
+  writeFileSync(target, compactJs(readFileSync(target, "utf8")));
+}
 
 // Self-hosted brand typeface (Urbanist, SIL Open Font License) and its licence.
 mkdirSync(new URL("fonts/", dist), { recursive: true });

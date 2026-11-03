@@ -464,6 +464,20 @@ svg { display: block; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
 /* ---------- Shadow run ---------- */
+.flow { list-style: none; margin: 0 0 var(--nain-s6); padding: var(--nain-s3) var(--nain-s4); display: flex; flex-wrap: wrap; align-items: center; gap: var(--nain-s3); background: var(--bg); border: 1px solid var(--line); border-radius: var(--nain-radius); }
+.flow-node { display: inline-flex; align-items: center; gap: var(--nain-s2); padding: 6px 12px; border: 1px solid var(--line-strong); border-radius: var(--nain-radius); background: var(--surface); font-weight: 700; font-size: 0.9375rem; }
+.flow-node svg { width: 20px; height: 20px; fill: none; stroke: var(--ink-soft); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.flow-gateway { border-color: var(--heading); }
+.flow-compare { border-color: var(--shadow-mode); }
+.flow-compare svg { stroke: var(--shadow-mode); }
+.flow-arrow { width: 28px; height: 2px; background: var(--line-strong); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border: 5px solid transparent; border-left-color: var(--line-strong); border-right: 0; }
+.flow-split { display: grid; gap: 4px; font-size: 0.875rem; }
+.flow-branch { display: inline-flex; align-items: center; gap: var(--nain-s2); }
+.flow-legacy { color: var(--legacy); font-weight: 700; }
+.flow-modern { color: var(--shadow-mode); font-weight: 700; }
+.key-shadow { border-radius: 50%; background: transparent; border: 2px dashed var(--shadow-mode); }
+
 .scenarios { border: 0; padding: 0; margin: 0 0 var(--nain-s4); display: flex; flex-wrap: wrap; gap: var(--nain-s2); align-items: center; }
 .scenarios legend { float: left; margin-right: var(--nain-s3); font-weight: 700; padding: 0; line-height: 44px; }
 .seg { position: relative; }
@@ -552,9 +566,23 @@ svg { display: block; }
   .routes-table td:first-child { grid-column: 1 / -1; }
   .routes-table tr:last-child td { border: 0; }
   .stage-svg { max-width: 420px; margin-inline: auto; }
+  .flow { flex-direction: column; align-items: flex-start; }
+  .flow-arrow { width: 2px; height: 18px; margin-left: 22px; }
+  .flow-arrow::after { right: -4px; top: auto; bottom: -1px; border: 5px solid transparent; border-top-color: var(--line-strong); border-bottom: 0; }
   .modes { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
   .modes .seg-btn { min-width: 0; padding-inline: 6px; font-size: 0.9375rem; }
   .topbar-actions .btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+
+@media print {
+  body { background: #fff; color: #000; }
+  .topbar, .skip, .controls, .cta-row, .scenarios, #motion { display: none !important; }
+  .hero { background: #fff; color: #000; border: 1px solid #000; }
+  .hero h1, .hero .accent, .hero .eyebrow, .tagline, .fact-value, .facts li { color: #000; }
+  .panel, .card, .route-card, .sample, .steps li, .parts li, .progress { box-shadow: none; border-color: #000; break-inside: avoid; }
+  .reveal .panel { opacity: 1; transform: none; }
+  .foot { background: #fff; color: #000; border-top: 1px solid #000; }
+  .foot a, .brand-foot .brand-text span { color: #000; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -88,7 +88,7 @@ test("REQ-DEMO-14: brandbook tokens are present, no gradients, no external fetch
   assert.equal(light.get("nain-blue-deep"), "#002B66");
   assert.equal(light.get("nain-dark-bg"), "#060D1A");
   // Outbound links (<a href>), canonical and Open Graph metadata are navigation or metadata, not fetches.
-  const htmlWithoutLinks = html.replace(/<a\s[^>]*>/g, "<a>").replace(/<link rel="canonical"[^>]*>/g, "").replace(/<meta property="og:[^>]*>/g, "");
+  const htmlWithoutLinks = html.replace(/<a\s[^>]*>/g, "<a>").replace(/<link rel="(canonical|alternate)"[^>]*>/g, "").replace(/<meta property="og:[^>]*>/g, "");
   for (const file of [{ name: "styles.css", text: css }, { name: "index.html", text: htmlWithoutLinks }, ...sources]) {
     assert.ok(!/gradient\(/i.test(file.text.replace(/linear-gradient\(to (right|bottom), var\(--[a-z-]+\) 1px, transparent 1px\)/g, "")), `${file.name} must not use gradients beyond the 1px blueprint grid`);
     // The SVG namespace identifier is not a network reference.
@@ -113,6 +113,8 @@ test("REQ-DEMO-10/15/20: Spanish document, viewport and a single module entry", 
   assert.match(html, /<html lang="es"/);
   assert.match(html, /<meta name="viewport"/);
   assert.match(html, /<meta name="color-scheme" content="dark light">/);
+  assert.match(html, /<link rel="alternate" hreflang="es" href="https:\/\/modernizer\.naindev\.com\/">/);
+  assert.match(html, /<link rel="alternate" hreflang="en" href="https:\/\/modernizer\.naindev\.com\/\?lang=en">/);
   assert.equal((html.match(/<script/g) ?? []).length, 1);
   assert.match(html, /<script type="module" src="main\.js"><\/script>/);
   assert.ok(!/<style/i.test(html), "no inline styles");

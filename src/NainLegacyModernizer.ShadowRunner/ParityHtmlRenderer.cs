@@ -8,30 +8,38 @@ namespace NainLegacyModernizer.ShadowRunner;
 /// <summary>Renders a <see cref="ParityReport"/> as one self-contained HTML file: no script, no external resource.</summary>
 public static class ParityHtmlRenderer
 {
-    // Token values from the NainDev brandbook (tokens.css v1.5).
+    // Token values from the NainDev brandbook (tokens.css v1.6); light and dark, print-safe.
     private const string Style = """
-        :root{--blue-deep:#002B66;--blue-mid:#3C5F94;--paper:#EDF1F6;--surface:#F7F9FC;--line:#C6D2E3;--green-ink:#2E6B00;--red-ink:#C4001A;--black:#1D1D1B}
+        :root{--blue:#0047AB;--blue-deep:#002B66;--blue-mid:#3C5F94;--paper:#EDF1F6;--surface:#F7F9FC;--line:#C6D2E3;--line-strong:#5F7DA6;--green-ink:#2E6B00;--red-ink:#C4001A;--black:#1D1D1B;--bg:var(--paper);--card:var(--surface);--ink:var(--blue-deep);--ink-soft:var(--blue-mid);--heading:var(--blue);--ok:var(--green-ink);--bad:var(--red-ink);--failed:var(--black);--shadow:var(--black);--grid:rgba(0,43,102,.07);--bad-soft:rgba(196,0,26,.08);--ok-soft:rgba(46,107,0,.1);color-scheme:light dark}
+        @media (prefers-color-scheme:dark){:root{--bg:#060D1A;--card:#0B1930;--line:#1E3A5F;--line-strong:#4A6FA0;--ink:#EDF1F6;--ink-soft:#94A3B8;--heading:#EDF1F6;--ok:#80FF00;--bad:#FF5C6C;--failed:#F5BA63;--shadow:#000;--grid:rgba(0,255,224,.05);--bad-soft:rgba(255,92,108,.12);--ok-soft:rgba(128,255,0,.1)}}
         *{box-sizing:border-box}
-        body{margin:0;background:var(--paper);color:var(--blue-deep);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-        main{max-width:960px;margin:0 auto;padding:24px 16px 48px}
-        .banner{background:var(--surface);border:3px solid var(--green-ink);border-radius:4px;padding:16px 24px;box-shadow:8px 8px 0 var(--black)}
-        .banner.bad{border-color:var(--red-ink);border-style:dashed}
-        h1{margin:0;font-size:1.75rem}
-        .ok{color:var(--green-ink)}.bad-text{color:var(--red-ink)}
-        .counts{margin:8px 0 0;font-weight:600}
-        .bar{display:block;width:100%;height:28px;margin:16px 0;border:2px solid var(--blue-deep);border-radius:4px;background:var(--surface)}
-        .meta{color:var(--blue-mid);font-size:.9375rem;margin:16px 0}
-        code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9375em}
-        .route{background:var(--surface);border:2px solid var(--blue-mid);border-radius:4px;padding:12px 16px;margin:12px 0}
-        .route h2{margin:0;font-size:1.0625rem;display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
-        .state{font-weight:700;border:2px solid;border-radius:4px;padding:0 8px}
-        .state-matched{color:var(--green-ink);border-color:var(--green-ink)}
-        .state-different{color:var(--red-ink);border-color:var(--red-ink);border-style:dashed}
-        .state-failed{color:var(--black);border-color:var(--black);border-style:dotted;border-width:3px}
+        body{margin:0;background-color:var(--bg);background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);background-size:40px 40px;color:var(--ink);font:17px/1.5 "Urbanist",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+        main{max-width:960px;margin:0 auto;padding:32px 16px 64px}
+        .banner{background:var(--card);border:1px solid var(--line-strong);border-left:8px solid var(--ok);border-radius:4px;padding:20px 24px;box-shadow:12px 12px 0 var(--shadow)}
+        .banner.bad{border-left-color:var(--bad)}
+        h1{margin:0;font-size:1.75rem;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+        .ok{color:var(--ok)}.bad-text{color:var(--bad)}
+        .counts{margin:8px 0 0;font-weight:700;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+        .bar{display:block;width:100%;height:20px;margin:24px 0 8px;border:1px solid var(--line-strong);border-radius:4px;background:var(--card)}
+        .meta{color:var(--ink-soft);font-size:.9375rem;margin:8px 0}
+        code{font-family:ui-monospace,"Cascadia Code",SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+        .route{background:var(--card);border:1px solid var(--line-strong);border-top:4px solid var(--line-strong);border-radius:4px;padding:16px;margin:16px 0}
+        .route:has(.state-matched){border-top-color:var(--ok)}
+        .route:has(.state-different){border-top-color:var(--bad)}
+        .route:has(.state-failed){border-top-color:var(--failed)}
+        .route h2{margin:0;font-size:1.0625rem;display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--heading)}
+        .state{font-weight:700;font-size:.9375rem;border:2px solid;border-radius:4px;padding:1px 10px;background:var(--bg)}
+        .state-matched{color:var(--ok);border-color:var(--ok)}
+        .state-different{color:var(--bad);border-color:var(--bad);border-style:dashed}
+        .state-failed{color:var(--failed);border-color:var(--failed);border-style:dotted}
         table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.9375rem}
-        th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--blue-mid);vertical-align:top;overflow-wrap:anywhere}
-        td.diff{font-weight:700;color:var(--red-ink)}
-        .err{margin:8px 0 0}
+        th{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+        th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+        tbody th{font-size:inherit;letter-spacing:0;text-transform:none;color:inherit;font-weight:400}
+        td.diff{font-weight:700;color:var(--bad);background:var(--bad-soft)}
+        .err{margin:8px 0 0;color:var(--failed)}
+        @media (max-width:560px){main{padding-top:16px}.banner{box-shadow:6px 6px 0 var(--shadow)}}
+        @media print{body{background:#fff;color:#000}.banner,.route{box-shadow:none;border-color:#000}}
         """;
 
     public static string Render(ParityReport report)

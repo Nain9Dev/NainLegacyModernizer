@@ -13,3 +13,26 @@ export function minifyCss(css: string): string {
     .trim();
   return compact.replace(/\u0000(\d+)\u0000/g, (_, index: string) => strings[Number(index)] ?? "");
 }
+
+/**
+ * Drops indentation, blank lines and whole-line comments from compiled JavaScript. Code is left as
+ * written: nothing inside a line is touched, so strings and template literals keep their content.
+ */
+export function compactJs(js: string): string {
+  const out: string[] = [];
+  let inBlock = false;
+  for (const raw of js.split("\n")) {
+    const line = raw.trim();
+    if (inBlock) {
+      if (line.endsWith("*/")) inBlock = false;
+      continue;
+    }
+    if (line === "" || line.startsWith("//")) continue;
+    if (line.startsWith("/*")) {
+      if (!line.endsWith("*/")) inBlock = true;
+      continue;
+    }
+    out.push(line);
+  }
+  return out.join("\n") + "\n";
+}

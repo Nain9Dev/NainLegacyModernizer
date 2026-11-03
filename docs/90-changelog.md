@@ -24,6 +24,9 @@
   demo routes as configured in the gateway, each on its stage (REQ-DEMO-24). On phones the diagram
   turns vertical instead of scrolling sideways (REQ-DEMO-25); section navigation in the top bar; the
   four steps select the matching mode; panels rise into view; CSS is minified at build time.
+- Parity report (`nain-parity` and the sample reports): stylesheet aligned with the brandbook v1.6
+  tokens, dark mode by system preference, print-safe. Markup and wording unchanged; the committed
+  samples carry the same stylesheet.
 - Control panel: Spanish by default (the visitor's choice persists) and the NainDev isotype as its logo,
   replacing the previous gradient mark.
 - Gateway routing moved from static YARP configuration to per-request forwarding (ADR: per-request routing over

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { minifyCss } from "../scripts/minify.ts";
+import { compactJs, minifyCss } from "../scripts/minify.ts";
 
 test("REQ-DEMO-13: CSS minification keeps every rule, string and custom property", () => {
   const source = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
@@ -14,4 +14,21 @@ test("REQ-DEMO-13: CSS minification keeps every rule, string and custom property
   assert.equal(rules(out), rules(source));
   assert.ok(out.includes('content:"\\2713"'));
   assert.ok(out.includes("--nain-font-sans:\"Urbanist\",system-ui"));
+});
+
+test("REQ-DEMO-13: JavaScript compaction only removes indentation and whole-line comments", () => {
+  const source = [
+    "/** doc",
+    " * block */",
+    "export function f(a) {",
+    "  // note",
+    "  const url = \"http://www.w3.org/2000/svg\"; // trailing stays",
+    "",
+    "  return `x${a}`;",
+    "}",
+  ].join("\n");
+  assert.equal(
+    compactJs(source),
+    'export function f(a) {\nconst url = "http://www.w3.org/2000/svg"; // trailing stays\nreturn `x${a}`;\n}\n',
+  );
 });
