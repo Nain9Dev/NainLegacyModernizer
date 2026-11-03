@@ -37,6 +37,8 @@
   with a Docker daemon.
 - CI builds the gateway image and smoke-tests its liveness endpoint from the running container.
 - Gateway liveness endpoint `GET /_modernizer/health` for orchestrators (REQ-CP-06).
+- `nain-parity --lang es` writes the report in Spanish (REQ-PAR-18); the demo generator adds it when the page is in
+  Spanish.
 - `nain-parity --header "Name: value"` (repeatable) sends a header to both systems, so authenticated APIs can
   be compared; malformed values are rejected (REQ-PAR-17).
 - Parity report (`nain-parity` and the sample reports): stylesheet aligned with the brandbook v1.6

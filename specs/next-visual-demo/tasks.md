@@ -23,6 +23,7 @@
 | T-021 | A | Guided tour from the hero, rewrite-versus-route comparison, FAQ for decision makers | `npm test` green, tour driven in a browser with and without reduced motion |
 | T-023 | A | `nain-parity --header` (C#, tests written, not compiled here) and the authentication option in the generator | `dotnet test` green on the owner's machine |
 | T-024 | A | paths.txt output in the generator; gateway liveness endpoint `/_modernizer/health` (C#, test written, not compiled here) | `npm test` green; `dotnet test` on the owner's machine |
+| T-025 | A | `nain-parity --lang es` (Spanish report wording) and the generator adds it on the Spanish page | CI green on the pull request |
 | T-020 | A | CI job builds the image and checks `/_modernizer/health` from the running container | Job green on the pull request |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | Done: owner chose the shared bar (2026-11-03) |
 | T-022 | A | Load the shared ecosystem bar; layout unaffected when the script does not load | `npm test` green, both states rendered in a browser |

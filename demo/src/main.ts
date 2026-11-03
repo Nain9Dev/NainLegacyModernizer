@@ -172,6 +172,7 @@ function readSetup(): ClientSetup {
     ignoredFields: parseList(byId<HTMLInputElement>("f-ignored").value),
     aliases: parseAliases(byId<HTMLInputElement>("f-aliases").value),
     authHeader: byId<HTMLInputElement>("f-auth").checked,
+    reportLanguage: state.lang,
   };
 }
 

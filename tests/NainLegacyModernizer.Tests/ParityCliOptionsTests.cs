@@ -1,4 +1,5 @@
 using NainLegacyModernizer.ParityCli;
+using NainLegacyModernizer.ShadowRunner;
 using Xunit;
 
 namespace NainLegacyModernizer.Tests;
@@ -22,6 +23,17 @@ public sealed class ParityCliOptionsTests
         Assert.Empty(options.Ignore);
         Assert.Empty(options.Map);
         Assert.Empty(options.Headers);
+        Assert.Equal(ReportLanguage.English, options.Language);
+    }
+
+    [Fact]
+    public void TryParse_Lang_SelectsTheReportWording()
+    {
+        Assert.True(CliOptions.TryParse([.. Required, "--lang", "ES"], out var spanish, out var error), error);
+        Assert.Equal(ReportLanguage.Spanish, spanish!.Language);
+
+        Assert.False(CliOptions.TryParse([.. Required, "--lang", "fr"], out _, out var rejected));
+        Assert.Contains("--lang", rejected, StringComparison.Ordinal);
     }
 
     [Fact]

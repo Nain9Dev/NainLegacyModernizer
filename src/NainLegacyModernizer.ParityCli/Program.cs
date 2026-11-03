@@ -41,7 +41,7 @@ internal static class Program
             DateTimeOffset.UtcNow,
             CancellationToken.None);
 
-        await File.WriteAllTextAsync(options.OutputPath, ParityHtmlRenderer.Render(report));
+        await File.WriteAllTextAsync(options.OutputPath, ParityHtmlRenderer.Render(report, options.Language));
         if (options.JsonPath is not null)
         {
             await File.WriteAllTextAsync(options.JsonPath, JsonSerializer.Serialize(report, JsonOptions));

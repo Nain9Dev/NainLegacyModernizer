@@ -5,9 +5,42 @@ using NainLegacyModernizer.Core;
 
 namespace NainLegacyModernizer.ShadowRunner;
 
+/// <summary>Language of the wording in the rendered report. The markup and the data are the same in both.</summary>
+public enum ReportLanguage
+{
+    English,
+    Spanish,
+}
+
 /// <summary>Renders a <see cref="ParityReport"/> as one self-contained HTML file: no script, no external resource.</summary>
 public static class ParityHtmlRenderer
 {
+    private sealed record Wording(
+        string Lang,
+        string Title,
+        string Ready,
+        string NotReady,
+        string Matched,
+        string Different,
+        string Failed,
+        string LegacyLabel,
+        string AgainstModern,
+        string IgnoredFields,
+        string Field,
+        string LegacyColumn,
+        string ModernColumn,
+        string StateMatched,
+        string StateDifferent,
+        string StateFailed);
+
+    private static readonly Wording English = new(
+        "en", "Parity report", "Ready to cut over", "Not ready to cut over", "matched", "different", "failed",
+        "Legacy", "against modern", "Ignored fields", "Field", "Legacy", "Modern", "Matched", "Different", "Failed");
+
+    private static readonly Wording Spanish = new(
+        "es", "Informe de paridad", "Lista para cortar", "No lista para cortar", "coinciden", "distintas", "fallidas",
+        "Legado", "frente a moderna", "Campos ignorados", "Campo", "Legado", "Moderna", "Coincide", "Distinta", "Fallida");
+
     // Token values from the NainDev brandbook (tokens.css v1.6); light and dark, print-safe.
     private const string Style = """
         :root{--blue:#0047AB;--blue-deep:#002B66;--blue-mid:#3C5F94;--paper:#EDF1F6;--surface:#F7F9FC;--line:#C6D2E3;--line-strong:#5F7DA6;--green-ink:#2E6B00;--red-ink:#C4001A;--black:#1D1D1B;--bg:var(--paper);--card:var(--surface);--ink:var(--blue-deep);--ink-soft:var(--blue-mid);--heading:var(--blue);--ok:var(--green-ink);--bad:var(--red-ink);--failed:var(--black);--shadow:var(--black);--bad-soft:rgba(196,0,26,.08);--ok-soft:rgba(46,107,0,.1);color-scheme:light dark}
@@ -42,51 +75,55 @@ public static class ParityHtmlRenderer
         @media print{body{background:#fff;color:#000}.banner,.route{box-shadow:none;border-color:#000}}
         """;
 
-    public static string Render(ParityReport report)
+    public static string Render(ParityReport report) => Render(report, ReportLanguage.English);
+
+    public static string Render(ParityReport report, ReportLanguage language)
     {
+        ArgumentNullException.ThrowIfNull(report);
+        var w = language == ReportLanguage.Spanish ? Spanish : English;
         var ready = report.IsReadyToCut;
         var html = new StringBuilder();
-        html.Append("<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n");
+        html.Append("<!doctype html>\n<html lang=\"").Append(w.Lang).Append("\">\n<head>\n<meta charset=\"utf-8\">\n");
         html.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n");
-        html.Append("<title>Parity report</title>\n<style>\n").Append(Style).Append("\n</style>\n</head>\n<body>\n<main>\n");
+        html.Append("<title>").Append(w.Title).Append("</title>\n<style>\n").Append(Style).Append("\n</style>\n</head>\n<body>\n<main>\n");
 
         html.Append("<header class=\"banner").Append(ready ? string.Empty : " bad").Append("\">\n");
         html.Append("<h1 class=\"").Append(ready ? "ok" : "bad-text").Append("\">")
-            .Append(ready ? "&#10003; Ready to cut over" : "&#10005; Not ready to cut over").Append("</h1>\n");
+            .Append(ready ? "&#10003; " + w.Ready : "&#10005; " + w.NotReady).Append("</h1>\n");
         html.Append("<p class=\"counts\">")
-            .Append(report.Matched.ToString(CultureInfo.InvariantCulture)).Append(" matched &middot; ")
-            .Append(report.Discrepant.ToString(CultureInfo.InvariantCulture)).Append(" different &middot; ")
-            .Append(report.Failed.ToString(CultureInfo.InvariantCulture)).Append(" failed")
+            .Append(report.Matched.ToString(CultureInfo.InvariantCulture)).Append(' ').Append(w.Matched).Append(" &middot; ")
+            .Append(report.Discrepant.ToString(CultureInfo.InvariantCulture)).Append(' ').Append(w.Different).Append(" &middot; ")
+            .Append(report.Failed.ToString(CultureInfo.InvariantCulture)).Append(' ').Append(w.Failed)
             .Append("</p>\n</header>\n");
 
-        AppendBar(html, report);
+        AppendBar(html, report, w);
 
-        html.Append("<p class=\"meta\">Legacy <code>").Append(Encode(report.LegacyBaseUrl))
-            .Append("</code> against modern <code>").Append(Encode(report.ModernBaseUrl))
+        html.Append("<p class=\"meta\">").Append(w.LegacyLabel).Append(" <code>").Append(Encode(report.LegacyBaseUrl))
+            .Append("</code> ").Append(w.AgainstModern).Append(" <code>").Append(Encode(report.ModernBaseUrl))
             .Append("</code> &middot; ").Append(Encode(report.GeneratedAtUtc.ToString("u", CultureInfo.InvariantCulture)))
             .Append("</p>\n");
 
         if (report.IgnoredFields is { Count: > 0 })
         {
-            html.Append("<p class=\"meta\">Ignored fields: ")
+            html.Append("<p class=\"meta\">").Append(w.IgnoredFields).Append(": ")
                 .Append(string.Join(", ", report.IgnoredFields.Select(f => "<code>" + Encode(f) + "</code>")))
                 .Append("</p>\n");
         }
 
         foreach (var route in report.Routes)
         {
-            AppendRoute(html, route);
+            AppendRoute(html, route, w);
         }
 
         html.Append("</main>\n</body>\n</html>\n");
         return html.ToString();
     }
 
-    private static void AppendBar(StringBuilder html, ParityReport report)
+    private static void AppendBar(StringBuilder html, ParityReport report, Wording w)
     {
         var label = string.Create(
             CultureInfo.InvariantCulture,
-            $"{report.Matched} matched, {report.Discrepant} different, {report.Failed} failed");
+            $"{report.Matched} {w.Matched}, {report.Discrepant} {w.Different}, {report.Failed} {w.Failed}");
         html.Append("<svg class=\"bar\" viewBox=\"0 0 100 6\" preserveAspectRatio=\"none\" role=\"img\" aria-label=\"")
             .Append(Encode(label)).Append("\">\n");
 
@@ -110,13 +147,13 @@ public static class ParityHtmlRenderer
         html.Append("</svg>\n");
     }
 
-    private static void AppendRoute(StringBuilder html, RouteParityResult route)
+    private static void AppendRoute(StringBuilder html, RouteParityResult route, Wording w)
     {
         var (css, text) = route.Verdict switch
         {
-            ParityVerdict.Matched => ("matched", "&#10003; Matched"),
-            ParityVerdict.Discrepancy => ("different", "&ne; Different"),
-            _ => ("failed", "! Failed"),
+            ParityVerdict.Matched => ("matched", "&#10003; " + w.StateMatched),
+            ParityVerdict.Discrepancy => ("different", "&ne; " + w.StateDifferent),
+            _ => ("failed", "! " + w.StateFailed),
         };
 
         html.Append("<section class=\"route\">\n<h2><code>").Append(Encode(route.Path)).Append("</code> <span class=\"state state-")
@@ -129,7 +166,8 @@ public static class ParityHtmlRenderer
 
         if (route.Discrepancies.Count > 0)
         {
-            html.Append("<table>\n<thead><tr><th scope=\"col\">Field</th><th scope=\"col\">Legacy</th><th scope=\"col\">Modern</th></tr></thead>\n<tbody>\n");
+            html.Append("<table>\n<thead><tr><th scope=\"col\">").Append(w.Field).Append("</th><th scope=\"col\">").Append(w.LegacyColumn)
+                .Append("</th><th scope=\"col\">").Append(w.ModernColumn).Append("</th></tr></thead>\n<tbody>\n");
             foreach (var d in route.Discrepancies)
             {
                 html.Append("<tr><th scope=\"row\"><code>").Append(Encode(d.Field)).Append("</code></th><td class=\"diff\">")

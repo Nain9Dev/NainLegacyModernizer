@@ -71,6 +71,9 @@ Verification". No new runtime dependency: the .NET base library only.
   with every request to both systems; a value without a name or a name without a value shall be
   rejected as an invalid argument (exit code `2`). Secrets are expected from environment variables
   on the command line, never from a file in the repository.
+- **REQ-PAR-18** When `--lang es` is given, the HTML report shall carry its wording in Spanish (verdict,
+  counts, states, column headers) with the same markup and data; the default stays English and any
+  other value is an invalid argument.
 
 ## Verification
 

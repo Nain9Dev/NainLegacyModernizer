@@ -21,7 +21,7 @@ All tests live in `tests/NainLegacyModernizer.Tests`. Run `dotnet test`.
 | REQ-CP-04 | `GatewayRoutingTests.Panel_IsServedFromEmbeddedResources` |
 | REQ-CP-06 | `GatewayRoutingTests.HealthEndpoint_AnswersHealthy_WithoutTouchingTheBackends` |
 | REQ-CP-05 | Manual: demo panel "Send 50 requests" (browser-only behaviour) |
-| REQ-PAR (REQ-PAR-01 to REQ-PAR-17) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*` (REQ-PAR-17: `TryParse_Headers_*`, `TryParse_MalformedHeader_Fails`), `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
+| REQ-PAR (REQ-PAR-01 to REQ-PAR-18) | `ParityComparerTests.*`, `ParityRunnerTests.*`, `ParityHtmlRendererTests.*`, `ParityCliOptionsTests.*` (REQ-PAR-17: `TryParse_Headers_*`, `TryParse_MalformedHeader_Fails`; REQ-PAR-18: `TryParse_Lang_SelectsTheReportWording`, `ParityHtmlRendererTests.Render_InSpanish_TranslatesTheWordingOnly`), `SampleReportTests.*` (map in `specs/next-parity-report/spec.md`) |
 | NFR-02 | `DomainInvariantsTests.Order_CalculatesTotalAmount_WithDeterministicDecimalPrecision` |
 | NFR-03 | `GatewayFixture` (all hosts in memory, no sockets) |
 

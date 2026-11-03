@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using NainLegacyModernizer.ShadowRunner;
 
 namespace NainLegacyModernizer.ParityCli;
 
@@ -10,7 +11,8 @@ public sealed record CliOptions(
     IReadOnlyDictionary<string, string> Map,
     string OutputPath,
     string? JsonPath,
-    IReadOnlyList<KeyValuePair<string, string>> Headers)
+    IReadOnlyList<KeyValuePair<string, string>> Headers,
+    ReportLanguage Language)
 {
     public const string DefaultOutputPath = "parity-report.html";
 
@@ -26,6 +28,7 @@ public sealed record CliOptions(
           --json <file>      Also write a machine-readable summary
           --header <n: v>    Header sent with every request to both systems (repeatable); keep secrets in
                              environment variables, e.g. --header "Authorization: Bearer $PARITY_TOKEN"
+          --lang <en|es>     Wording of the HTML report (default: en)
 
         Only GET requests are sent. Exit code: 0 ready to cut over, 1 not ready, 2 invalid arguments.
         """;
@@ -53,6 +56,7 @@ public sealed record CliOptions(
         var output = DefaultOutputPath;
         string? json = null;
         var headers = new List<KeyValuePair<string, string>>();
+        var language = ReportLanguage.English;
 
         for (var i = 0; i < args.Length; i += 2)
         {
@@ -98,6 +102,22 @@ public sealed record CliOptions(
 
                     headers.Add(new KeyValuePair<string, string>(header[0], header[1]));
                     break;
+                case "--lang":
+                    if (string.Equals(value, "en", StringComparison.OrdinalIgnoreCase))
+                    {
+                        language = ReportLanguage.English;
+                    }
+                    else if (string.Equals(value, "es", StringComparison.OrdinalIgnoreCase))
+                    {
+                        language = ReportLanguage.Spanish;
+                    }
+                    else
+                    {
+                        error = $"Option --lang expects en or es, got '{value}'.";
+                        return false;
+                    }
+
+                    break;
                 default:
                     error = $"Unknown option {name}.";
                     return false;
@@ -124,7 +144,7 @@ public sealed record CliOptions(
             return false;
         }
 
-        options = new CliOptions(legacyUri, modernUri, list, ignore, map, output, json, headers);
+        options = new CliOptions(legacyUri, modernUri, list, ignore, map, output, json, headers, language);
         error = null;
         return true;
     }

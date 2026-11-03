@@ -83,6 +83,12 @@ test("REQ-DEMO-26: the authentication header reads the token from an environment
   assert.ok(!workflowYaml(defaultSetup).includes("secrets."));
 });
 
+test("REQ-DEMO-26: the report language follows the page language", () => {
+  assert.ok(parityCommand(defaultSetup).includes("--lang es"));
+  assert.ok(!parityCommand({ ...defaultSetup, reportLanguage: "en" }).includes("--lang"));
+  assert.ok(usage.includes("--lang"));
+});
+
 test("REQ-DEMO-26: the workflow embeds the same command and fails on a non-zero exit", () => {
   const yaml = workflowYaml(defaultSetup);
   assert.match(yaml, /^name: Parity gate/);
