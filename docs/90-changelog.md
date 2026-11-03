@@ -24,6 +24,8 @@
   demo routes as configured in the gateway, each on its stage (REQ-DEMO-24). On phones the diagram
   turns vertical instead of scrolling sideways (REQ-DEMO-25); section navigation in the top bar; the
   four steps select the matching mode; panels rise into view; CSS is minified at build time.
+- Static demo: the stored theme is applied before the first paint (no flash for visitors who chose the other
+  theme); print view of the stage list fixed; English and light-theme layouts checked on the same device matrix.
 - Static demo, layout: verified on a device matrix from 320 px phones to 2560 px desktops, including Android
   tablets and landscape phones; narrow-width overflows, tablet orphan cards and the 1024 px top bar fixed.
 - Static demo, adoption: a "why" strip under the hero, the cut-over rule with the configured values,
