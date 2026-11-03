@@ -122,6 +122,23 @@ public sealed class ParityHtmlRendererTests
     }
 
     [Fact]
+    public void Render_InSpanish_TranslatesTheWordingOnly()
+    {
+        var english = ParityHtmlRenderer.Render(Sample());
+        var spanish = ParityHtmlRenderer.Render(Sample(), ReportLanguage.Spanish);
+
+        Assert.Contains("<html lang=\"es\">", spanish, StringComparison.Ordinal);
+        Assert.Contains("No lista para cortar", spanish, StringComparison.Ordinal);
+        Assert.Contains("Coincide", spanish, StringComparison.Ordinal);
+        Assert.Contains("Distinta", spanish, StringComparison.Ordinal);
+        Assert.Contains("Fallida", spanish, StringComparison.Ordinal);
+        Assert.DoesNotContain("Not ready", spanish, StringComparison.Ordinal);
+        Assert.Contains("/api/orders/1", spanish, StringComparison.Ordinal);
+        Assert.Contains("99.99", spanish, StringComparison.Ordinal);
+        Assert.Equal(english.Count(c => c == '<'), spanish.Count(c => c == '<'));
+    }
+
+    [Fact]
     public void Render_IsDeterministic()
     {
         Assert.Equal(ParityHtmlRenderer.Render(Sample()), ParityHtmlRenderer.Render(Sample()));

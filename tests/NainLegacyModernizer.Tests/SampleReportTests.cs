@@ -54,7 +54,20 @@ public sealed class SampleReportTests
         AssertMatchesFile("parity-report-ready.html", html);
     }
 
-    private static async Task<string> RenderAsync(JsonParityOptions options, string[] paths)
+    /// <summary>The same two reports with Spanish wording, linked from the Spanish demo (REQ-PAR-18).</summary>
+    [Theory]
+    [InlineData("parity-report-not-ready.es.html", "No lista para cortar", "/api/orders/ORD-1", "/api/customers/CUST-501")]
+    [InlineData("parity-report-ready.es.html", "Lista para cortar", "/api/catalog/SKU-100", "/api/catalog/SKU-400", "/api/pricing/quote?sku=SKU-200&qty=12")]
+    public async Task SpanishSamples_MatchTheCommittedFiles(string file, string verdict, params string[] paths)
+    {
+        var html = await RenderAsync(new JsonParityOptions(Ignore: Generated, Map: Aliases), paths, ReportLanguage.Spanish);
+
+        Assert.Contains(verdict, html, StringComparison.Ordinal);
+        Assert.Contains("<html lang=\"es\">", html, StringComparison.Ordinal);
+        AssertMatchesFile(file, html);
+    }
+
+    private static async Task<string> RenderAsync(JsonParityOptions options, string[] paths, ReportLanguage language = ReportLanguage.English)
     {
         await using var legacyFactory = new WebApplicationFactory<LegacyMonolithProgram>();
         await using var modernFactory = new WebApplicationFactory<ModernApiProgram>();
@@ -68,7 +81,7 @@ public sealed class SampleReportTests
             FixedTime,
             CancellationToken.None);
 
-        return ParityHtmlRenderer.Render(report);
+        return ParityHtmlRenderer.Render(report, language);
     }
 
     private static void AssertMatchesFile(string name, string html)

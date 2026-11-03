@@ -162,9 +162,13 @@ test("REQ-DEMO-13: the published folder stays under 200 KB", () => {
   }
 });
 
-test("REQ-DEMO-19: the demo links the generated sample reports and ships them", () => {
+test("REQ-DEMO-19: the demo links the generated sample reports in both languages and ships them", () => {
   for (const name of ["parity-report-not-ready.html", "parity-report-ready.html"]) {
-    assert.ok(html.includes(`href="samples/${name}"`), `link to ${name}`);
+    const spanish = name.replace(".html", ".es.html");
+    assert.ok(html.includes(`href="samples/${spanish}" data-href-es="samples/${spanish}" data-href-en="samples/${name}"`), `links to ${name}`);
+  }
+  for (const name of ["parity-report-not-ready.html", "parity-report-ready.html", "parity-report-not-ready.es.html", "parity-report-ready.es.html"]) {
+    assert.ok(html.includes(`samples/${name}`), `reference to ${name}`);
     assert.ok(existsSync(new URL(`dist/samples/${name}`, demo)), `dist/samples/${name}`);
     const sample = read(demo, `samples/${name}`);
     assert.ok(!/<script/i.test(sample), `${name} has no script`);

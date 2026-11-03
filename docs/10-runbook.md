@@ -52,9 +52,11 @@ starting point that configures it with environment variables (`Modernizer__Legac
 docker compose up --build
 ```
 
+The image sets `Urls=http://0.0.0.0:8080`: `appsettings.json` binds the local demo to loopback and that key takes
+precedence over `ASPNETCORE_URLS`, so a container must override `Urls` itself (Compose does through the image).
 `GET /_modernizer/health` answers `200 Healthy` from the process itself (no backend call) for liveness probes.
-The control panel has no login: publish port 8080 inside your network only. Not yet verified with a Docker daemon;
-first build is an owner task (see `specs/next-visual-demo/tasks.md`).
+The control panel has no login: publish port 8080 inside your network only. CI builds the image and checks the
+liveness endpoint on every push and pull request (`ci.yml`, job "Container image").
 
 ## 5. Adoption checklist
 

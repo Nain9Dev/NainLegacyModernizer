@@ -81,6 +81,10 @@ function applyLang(): void {
   for (const el of document.querySelectorAll<HTMLElement>("[data-i18n-title]")) {
     el.title = t(state.lang, el.dataset["i18nTitle"] as Key);
   }
+  for (const link of document.querySelectorAll<HTMLAnchorElement>("[data-href-es]")) {
+    const href = state.lang === "es" ? link.dataset["hrefEs"] : link.dataset["hrefEn"];
+    if (href) link.setAttribute("href", href);
+  }
   for (const button of langButtons) {
     button.setAttribute("aria-pressed", String(button.dataset["lang"] === state.lang));
   }
@@ -172,6 +176,7 @@ function readSetup(): ClientSetup {
     ignoredFields: parseList(byId<HTMLInputElement>("f-ignored").value),
     aliases: parseAliases(byId<HTMLInputElement>("f-aliases").value),
     authHeader: byId<HTMLInputElement>("f-auth").checked,
+    reportLanguage: state.lang,
   };
 }
 

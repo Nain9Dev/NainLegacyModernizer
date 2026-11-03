@@ -15,6 +15,8 @@ export interface ClientSetup {
   aliases: Record<string, string>;
   /** Both systems need an Authorization header; the token comes from the PARITY_TOKEN variable, never from the page. */
   authHeader: boolean;
+  /** Wording of the HTML report: the page language, so a Spanish visitor gets a Spanish report. */
+  reportLanguage: "en" | "es";
 }
 
 export const defaultSetup: ClientSetup = {
@@ -26,6 +28,7 @@ export const defaultSetup: ClientSetup = {
   ignoredFields: ["generatedAt"],
   aliases: { OrderID: "id" },
   authHeader: false,
+  reportLanguage: "es",
 };
 
 export const TOKEN_VARIABLE = "PARITY_TOKEN";
@@ -103,6 +106,7 @@ export function parityCommand(setup: ClientSetup): string {
   for (const [legacyName, modernName] of Object.entries(setup.aliases)) parts.push(`--map ${shellQuote(`${legacyName}=${modernName}`)}`);
   if (setup.ignoredFields.length > 0) parts.push(`--ignore ${shellQuote(setup.ignoredFields.join(","))}`);
   if (setup.authHeader) parts.push(`--header "Authorization: Bearer $${TOKEN_VARIABLE}"`);
+  if (setup.reportLanguage === "es") parts.push("--lang es");
   parts.push("--out parity-report.html");
   return parts.join(" \\\n  ");
 }
