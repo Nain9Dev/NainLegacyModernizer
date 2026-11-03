@@ -42,6 +42,13 @@ jobs:
         run: npm run typecheck
       - name: Test
         run: npm test
+      - name: Lighthouse gate
+        run: |
+          node scripts/serve.ts &
+          sleep 2
+          npx --yes lighthouse@12.8.2 http://127.0.0.1:4173/ --quiet --output=json --output-path=lighthouse.json \
+            --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,best-practices,seo
+          node scripts/lighthouse-gate.ts lighthouse.json
       - name: Configure Pages
         if: github.ref == 'refs/heads/main'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
