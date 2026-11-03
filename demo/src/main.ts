@@ -6,6 +6,7 @@ import { composeYaml, defaultSetup, parityCommand, parseAliases, parseList, sett
 import { resolveLang, t, type Key, type Lang } from "./i18n.ts";
 import { LANG_KEY, THEME_KEY, readPref, resolveTheme, writePref, type Theme } from "./prefs.ts";
 import { layoutFor, type Layout, type NodeBox } from "./layout.ts";
+import { TOUR_STEP_MS, advance, finished, idle, modeAt, start, stop, type TourState } from "./tour.ts";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -90,6 +91,56 @@ function applyLang(): void {
   renderRule();
   renderShadow();
   renderSetup();
+  renderTour();
+}
+
+/* ---------- guided tour ---------- */
+
+let tour: TourState = idle;
+let tourTimer = 0;
+const tourButton = byId<HTMLButtonElement>("tour");
+const tourCaptionKey: Record<Mode, Key> = { legacy: "tourLegacy", shadow: "tourShadow", canary: "tourCanary", modern: "tourModern" };
+
+function renderTour(): void {
+  const caption = byId<HTMLElement>("tour-caption");
+  const mode = modeAt(tour);
+  caption.hidden = mode === null && !finished(tour);
+  if (mode !== null) {
+    byId<HTMLElement>("tour-step").textContent = t(state.lang, "tourStep", { n: tour.index + 1 });
+    byId<HTMLElement>("tour-text").textContent = t(state.lang, tourCaptionKey[mode]);
+  } else if (finished(tour)) {
+    byId<HTMLElement>("tour-step").textContent = "";
+    byId<HTMLElement>("tour-text").textContent = t(state.lang, "tourDone");
+  }
+  tourButton.setAttribute("aria-pressed", String(tour.running));
+  byId<HTMLElement>("tour-label").textContent = t(
+    state.lang,
+    tour.running ? (reducedMotion.matches ? "tourNext" : "tourStop") : "ctaTour",
+  );
+}
+
+function tourTick(): void {
+  tour = advance(tour);
+  const mode = modeAt(tour);
+  if (mode !== null) selectMode(mode);
+  renderTour();
+  if (tour.running && !reducedMotion.matches) tourTimer = window.setTimeout(tourTick, TOUR_STEP_MS);
+}
+
+function startTour(): void {
+  tour = start();
+  selectMode("legacy");
+  renderTour();
+  byId<HTMLElement>("diagram").scrollIntoView({ block: "start" });
+  if (!reducedMotion.matches) tourTimer = window.setTimeout(tourTick, TOUR_STEP_MS);
+}
+
+/** Any manual choice ends the tour; the caption stays until the next render. */
+function stopTour(): void {
+  if (!tour.running && !finished(tour)) return;
+  window.clearTimeout(tourTimer);
+  tour = stop();
+  renderTour();
 }
 
 /* ---------- cut-over rule ---------- */
@@ -501,12 +552,14 @@ function renderShadow(): void {
 /* ---------- wiring ---------- */
 
 slider.addEventListener("input", () => {
+  stopTour();
   state.percent = clampPercent(Number(slider.value));
   renderRoute();
 });
 
 for (const button of modeButtons) {
   button.addEventListener("click", () => {
+    stopTour();
     const mode = button.dataset["mode"];
     if (MODES.includes(mode as Mode)) selectMode(mode as Mode);
     if (button.classList.contains("stage")) byId<HTMLElement>("diagram").scrollIntoView({ block: "start" });
@@ -541,6 +594,16 @@ if (!reducedMotion.matches && "IntersectionObserver" in window) {
     observer.disconnect();
   }, 1200);
 }
+
+tourButton.addEventListener("click", () => {
+  if (!tour.running) {
+    startTour();
+  } else if (reducedMotion.matches) {
+    tourTick();
+  } else {
+    stopTour();
+  }
+});
 
 byId<HTMLFormElement>("setup-form").addEventListener("input", renderSetup);
 byId<HTMLFormElement>("setup-form").addEventListener("submit", (event) => event.preventDefault());

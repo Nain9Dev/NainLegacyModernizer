@@ -76,7 +76,11 @@
           <h1 id="hero-title"><span data-i18n="title">Migra un monolito .NET ruta a ruta.</span> <span class="accent" data-i18n="titleAccent">Sin paradas.</span></h1>
           <p class="tagline" data-i18n="tagline">Una pasarela mueve cada ruta por cuatro etapas y solo corta cuando las dos respuestas coinciden.</p>
           <div class="cta-row">
-            <a class="btn btn-primary" href="#diagram" data-i18n="ctaTry">Mover tráfico</a>
+            <button type="button" class="btn btn-primary" id="tour" aria-pressed="false">
+              <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16l13-8z"/></svg>
+              <svg class="icon-stop" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              <span id="tour-label" data-i18n="ctaTour">Reproducir la migración</span>
+            </button>
             <a class="btn btn-outline" href="#shadow" data-i18n="ctaShadow">Ver comparación</a>
           </div>
           <ul class="facts" aria-label="Datos">
@@ -155,6 +159,8 @@
           <span id="motion-label" data-i18n="pause">Pausar</span>
         </button>
       </div>
+
+      <p class="tour-caption" id="tour-caption" role="status" aria-live="polite" hidden><span class="tour-step" id="tour-step"></span><span id="tour-text"></span></p>
 
       <svg id="stage" class="stage-svg" viewBox="0 0 720 360" role="img" aria-labelledby="stage-label">
         <title id="stage-label" data-i18n="diagramLabel">Diagrama: un cliente envía peticiones por una pasarela al monolito legado o a la API moderna.</title>
@@ -451,6 +457,39 @@ dotnet run --project src/NainLegacyModernizer.Gateway
           </ul>
         </div>
       </div>
+    </section>
+    <section id="compare" class="shell panel" aria-labelledby="compare-title">
+      <div class="panel-head">
+        <p class="eyebrow">07</p>
+        <h2 id="compare-title" data-i18n="compareTitle">Reescritura total o ruta a ruta</h2>
+      </div>
+      <table class="cmp">
+        <thead>
+          <tr><th scope="col"></th><th scope="col" class="cmp-rewrite" data-i18n="compareRewrite">Reescritura total</th><th scope="col" class="cmp-strangler" data-i18n="compareStrangler">Ruta a ruta con sombra</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" data-i18n="cmp1">Parada del servicio</th><td class="cmp-bad" data-i18n="cmp1a">Sí, el día del corte</td><td class="cmp-good" data-i18n="cmp1b">No</td></tr>
+          <tr><th scope="row" data-i18n="cmp2">Vuelta atrás</th><td class="cmp-bad" data-i18n="cmp2a">Difícil y lenta</td><td class="cmp-good" data-i18n="cmp2b">Un clic en el tablero</td></tr>
+          <tr><th scope="row" data-i18n="cmp3">Evidencia antes de cortar</th><td class="cmp-bad" data-i18n="cmp3a">Pruebas sintéticas</td><td class="cmp-good" data-i18n="cmp3b">Tráfico real comparado</td></tr>
+          <tr><th scope="row" data-i18n="cmp4">Tamaño de cada entrega</th><td class="cmp-bad" data-i18n="cmp4a">Todo el sistema</td><td class="cmp-good" data-i18n="cmp4b">Una ruta</td></tr>
+          <tr><th scope="row" data-i18n="cmp5">Cuándo se asume el riesgo</th><td class="cmp-bad" data-i18n="cmp5a">Todo al final</td><td class="cmp-good" data-i18n="cmp5b">Repartido, ruta a ruta</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="faq" class="shell panel" aria-labelledby="faq-title">
+      <div class="panel-head">
+        <p class="eyebrow">08</p>
+        <h2 id="faq-title" data-i18n="faqTitle">Preguntas frecuentes</h2>
+      </div>
+      <dl class="faq">
+        <div><dt data-i18n="faq1q">¿Qué cuesta?</dt><dd data-i18n="faq1a">Licencia MIT. Sin servicios de pago: corre en tu máquina o en tu red.</dd></div>
+        <div><dt data-i18n="faq2q">¿Qué necesito?</dt><dd data-i18n="faq2a">El SDK de .NET 10, o Docker. Nada más.</dd></div>
+        <div><dt data-i18n="faq3q">¿Toca mi código o mi base de datos?</dt><dd data-i18n="faq3a">No. Solo se pone delante, como un proxy HTTP.</dd></div>
+        <div><dt data-i18n="faq4q">¿Salen datos de mi red?</dt><dd data-i18n="faq4a">No. La pasarela, el panel y los informes son tuyos.</dd></div>
+        <div><dt data-i18n="faq5q">¿Y si la API nueva falla en sombra?</dt><dd data-i18n="faq5a">El cliente recibe la respuesta del monolito. El fallo queda auditado.</dd></div>
+        <div><dt data-i18n="faq6q">¿Vale para .NET Framework?</dt><dd data-i18n="faq6a">Sí. El monolito solo tiene que responder por HTTP; la API nueva es .NET 10.</dd></div>
+      </dl>
     </section>
   </main>
 

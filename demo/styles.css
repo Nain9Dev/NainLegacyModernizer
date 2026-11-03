@@ -353,6 +353,32 @@ svg { display: block; }
 .note { margin: var(--nain-s4) 0 0; color: var(--ink-soft); font-size: 0.875rem; max-width: var(--nain-measure); }
 .panel h3 { margin: var(--nain-s6) 0 var(--nain-s2); font-size: 0.8125rem; font-weight: 700; letter-spacing: var(--nain-track-label); text-transform: uppercase; color: var(--ink-soft); }
 
+/* ---------- Guided tour ---------- */
+.tour-caption { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nain-s2) var(--nain-s4); margin: 0 0 var(--nain-s3); padding: var(--nain-s3) var(--nain-s4); border: 1px solid var(--modern); border-left-width: 6px; border-radius: var(--nain-radius); background: var(--modern-soft); font-weight: 700; }
+.tour-step { font-family: var(--nain-font-mono); font-size: 0.75rem; letter-spacing: var(--nain-track-label); text-transform: uppercase; color: var(--modern); }
+#tour[aria-pressed="true"] { background: var(--cta-hover); }
+#tour .icon-stop { display: none; }
+#tour[aria-pressed="true"] .icon-play { display: none; }
+#tour[aria-pressed="true"] .icon-stop { display: block; }
+
+/* ---------- Comparison and FAQ ---------- */
+.cmp { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.cmp th, .cmp td { text-align: left; padding: var(--nain-s3); border-top: 1px solid var(--line); vertical-align: top; }
+.cmp thead th { border-top: 0; padding-top: 0; font-size: 0.75rem; font-weight: 700; letter-spacing: var(--nain-track-label); text-transform: uppercase; color: var(--ink-soft); }
+.cmp thead .cmp-strangler { color: var(--modern); }
+.cmp tbody th { font-weight: 700; color: var(--heading); width: 32%; }
+.cmp td { font-weight: 600; }
+.cmp td::before { display: inline-block; width: 1.2em; font-weight: 800; }
+.cmp-bad { color: var(--ink-soft); }
+.cmp-bad::before { content: "\2013"; }
+.cmp-good { color: var(--modern); }
+.cmp-good::before { content: "\2713"; }
+.cmp tbody tr:last-child td, .cmp tbody tr:last-child th { border-bottom: 1px solid var(--line); }
+.faq { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--nain-s4); }
+.faq > div { padding: var(--nain-s4); background: var(--bg); border: 1px solid var(--line-strong); border-radius: var(--nain-radius); }
+.faq dt { font-weight: 800; color: var(--heading); margin-bottom: var(--nain-s1); }
+.faq dd { margin: 0; color: var(--ink-soft); font-size: 0.9375rem; }
+
 /* ---------- Diagram ---------- */
 .controls { display: flex; flex-wrap: wrap; gap: var(--nain-s4); align-items: center; margin-bottom: var(--nain-s4); }
 .slider { flex: 1 1 260px; display: grid; gap: var(--nain-s1); }
@@ -615,6 +641,11 @@ svg { display: block; }
   .flow { flex-direction: column; align-items: flex-start; }
   .flow-arrow { width: 2px; height: 18px; margin-left: 22px; }
   .flow-arrow::after { right: -4px; top: auto; bottom: -1px; border: 5px solid transparent; border-top-color: var(--line-strong); border-bottom: 0; }
+  .cmp thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .cmp tr { display: grid; gap: 2px; padding: var(--nain-s3) 0; border-top: 1px solid var(--line); }
+  .cmp th, .cmp td, .cmp tbody th { padding: 0; border: 0; width: auto; }
+  .cmp-bad::before { content: "\2013 "; }
+  .cmp-good::before { content: "\2713 "; }
   .modes { display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; }
   .modes .seg-btn { min-width: 0; padding-inline: 6px; font-size: 0.9375rem; }
   .topbar-actions .btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

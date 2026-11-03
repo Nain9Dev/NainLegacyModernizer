@@ -12,7 +12,8 @@ demo/
     fixtures.ts         synthetic scenarios copied from ShadowAuditorTests.cs
     routes.ts           the five demo routes copied from the gateway appsettings.json, readiness wording
     layout.ts           diagram geometry for wide (left to right) and narrow (top to bottom) screens
-    config.ts           setup generator: appsettings section, nain-parity command, CI job, validation
+    config.ts           setup generator: appsettings section, nain-parity command, CI job, Compose file, validation
+    tour.ts             guided tour state machine over the four modes
     i18n.ts             ES/EN strings, Spanish default, language resolution
     prefs.ts            persisted language and theme, theme resolution
     contrast.ts         WCAG contrast helper (used by tests only)

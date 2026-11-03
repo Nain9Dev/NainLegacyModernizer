@@ -20,6 +20,7 @@
 | T-017 | A | Shadow flow strip, print styles, hreflang links, JavaScript compaction at build time, parity report stylesheet aligned with the brand (renderer and samples) | `npm test` green; `dotnet test` pending (SampleReportTests compares the samples with the renderer) |
 | T-018 | A | Adoption: why strip, cut-over rule, setup generator (settings, command, CI job), getting-started steps and limits; budget raised to 200 KB | `npm test` green, generator driven in a browser |
 | T-019 | A | Dockerfile, compose.yaml, Compose output in the generator, runbook containers section and adoption checklist | `npm test` green |
+| T-021 | A | Guided tour from the hero, rewrite-versus-route comparison, FAQ for decision makers | `npm test` green, tour driven in a browser with and without reduced motion |
 | T-020 | H | Build the image once (`docker compose up --build`) and open `/_modernizer` | Panel answers from the container |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | ADR status changed by the owner |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
@@ -71,4 +72,7 @@ Redesign session.
 - Done: T-019. `npm test` 41/41 green. The Compose output is checked against the committed
   `compose.yaml` example. The Dockerfile could not be built here (no Docker daemon): T-020 is the owner's
   first check together with `dotnet test`.
+- Done and verified: T-021. `npm test` 43/43 green, `dist/` about 185 KB. Playwright: the tour steps
+  Legacy, Shadow, Canary, Modern every 3.5 s with its caption, a manual mode click ends it, and with
+  reduced motion the same button advances one step per activation.
 - Next: T-020 and `dotnet test` (owner, first thing), T-014, T-012 if still pending.

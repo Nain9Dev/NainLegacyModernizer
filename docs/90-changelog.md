@@ -28,7 +28,9 @@
   a setup generator that writes the `Modernizer` section, the `nain-parity` command and a GitHub
   Actions job from the visitor's addresses and route (validated against `ModernizerOptions.cs` and
   the CLI usage by tests), getting-started steps and the known limits (REQ-DEMO-26, 27). The size
-  budget is now 200 KB. The generator also writes a Compose file.
+  budget is now 200 KB. The generator also writes a Compose file. A guided tour plays the four modes
+  with a caption each (REQ-DEMO-28); a rewrite-versus-route comparison and a FAQ for decision makers
+  (REQ-DEMO-29).
 - `Dockerfile` (multi-stage, official .NET 10 images, port 8080) and `compose.yaml` example configured by
   environment variables; runbook gains a containers section and an adoption checklist. Not yet built
   with a Docker daemon.
