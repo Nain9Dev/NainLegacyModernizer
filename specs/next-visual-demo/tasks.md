@@ -30,6 +30,7 @@
 | T-029 | A | Device matrix check (Android phones 320 to 412 px, landscape, Android tablets 712 and 800 px, laptops 1024 to 1366 px, desktops 1920 and 2560 px): no horizontal overflow, no orphan cards, top bar fits | Matrix script reports no element outside the viewport |
 | T-030 | A | Control panel on the device matrix (stub API with five routes, traffic and audits): top bar, narrow widths | Matrix script reports no element outside the viewport |
 | T-031 | A | Lighthouse gate in the Pages workflow (performance 90, accessibility 100, best practices 95, SEO 100) | Step green on the pull request |
+| T-032 | A | Control panel Lighthouse: contrast, accessible names, no layout shift, Spanish markup defaults | Accessibility 100, CLS under 0.05 against the stub |
 | T-020 | A | CI job builds the image and checks `/_modernizer/health` from the running container | Job green on the pull request |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | Done: owner chose the shared bar (2026-11-03) |
 | T-022 | A | Load the shared ecosystem bar; layout unaffected when the script does not load | `npm test` green, both states rendered in a browser |

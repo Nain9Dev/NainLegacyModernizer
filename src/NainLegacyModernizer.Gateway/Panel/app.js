@@ -541,6 +541,9 @@ function applyLanguage(lang) {
   storage.set("modernizer.lang", lang);
   document.documentElement.lang = lang;
   $("btnLang").textContent = lang === "en" ? "ES" : "EN";
+  // The accessible name starts with the visible text (WCAG 2.5.3) and says what the button does.
+  $("btnLang").setAttribute("aria-label", lang === "en" ? "ES: cambiar a español" : "EN: switch to English");
+  document.title = lang === "en" ? "Legacy Modernizer · Control Panel" : "Legacy Modernizer · Panel de control";
   document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll("[data-i18n-title]").forEach((el) => { el.title = t(el.dataset.i18nTitle); });
   renderOverview();
