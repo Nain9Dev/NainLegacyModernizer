@@ -16,6 +16,9 @@
 - Integration tests that boot the gateway against in-memory legacy and modern servers.
 
 ### Changed
+- Static demo discoverability baseline (REQ-DEMO-31): `SoftwareApplication` JSON-LD, Twitter card tags, author
+  link, `robots.txt`, `sitemap.xml` (root only; the sample reports stay `noindex`) and `llms.txt`, all published
+  by the build. `og:site_name` is now the product name and the size budget is 210 KB.
 - Static demo (`demo/`) redesigned: Spanish by default with English as the second option, light and
   dark themes following the system preference, NainDev top bar and footer, the four route modes as
   controls that drive the diagram (shadow replay drawn), a components section, a self-hosted brand

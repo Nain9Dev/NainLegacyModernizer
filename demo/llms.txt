@@ -1,0 +1,9 @@
+# NainLegacyModernizer
+
+> Open-source gateway that migrates a legacy .NET monolith route by route: YARP routing, shadow execution against the new API and a parity report that says when each route is ready to cut over.
+
+## Links
+
+- [Interactive demo](https://modernizer.naindev.com/): static walkthrough of the four route modes (Legacy, Shadow, Canary, Modern), available in Spanish and English
+- [Source code](https://github.com/Nain9Dev/NainLegacyModernizer): C# gateway, `nain-parity` command-line tool, tests and documentation
+- [NainDev](https://www.naindev.com/): the author's main site

@@ -5,7 +5,7 @@ import { compactJs, minifyCss } from "./minify.ts";
 const demo = new URL("../", import.meta.url);
 const dist = new URL("dist/", demo);
 mkdirSync(dist, { recursive: true });
-for (const file of ["index.html", "card.webp"]) {
+for (const file of ["index.html", "card.webp", "robots.txt", "sitemap.xml", "llms.txt"]) {
   copyFileSync(new URL(file, demo), new URL(file, dist));
 }
 writeFileSync(new URL("styles.css", dist), minifyCss(readFileSync(new URL("styles.css", demo), "utf8")));
