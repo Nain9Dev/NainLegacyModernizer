@@ -89,7 +89,7 @@ test("REQ-DEMO-14: brandbook tokens are present, no gradients, no external fetch
   assert.equal(light.get("nain-dark-bg"), "#060D1A");
   // Outbound links (<a href>), canonical and Open Graph metadata, code samples and the one allowed script
   // (the shared NainDev ecosystem bar, ADR next-demo-ecosystem-bar) are not counted as fetches.
-  const htmlWithoutLinks = html.replace(/<a\s[^>]*>/g, "<a>").replace(/<script src="https:\/\/www\.naindev\.com\/assets\/js\/ecosystem-bar\.js[^"]*" defer><\/script>/, "").replace(/<code>[^<]*<\/code>/g, "<code></code>").replace(/<link rel="(canonical|alternate)"[^>]*>/g, "").replace(/<meta property="og:[^>]*>/g, "");
+  const htmlWithoutLinks = html.replace(/<a\s[^>]*>/g, "<a>").replace(/<script src="https:\/\/www\.naindev\.com\/assets\/js\/ecosystem-bar\.js[^"]*" defer><\/script>/, "").replace(/<code>[^<]*<\/code>/g, "<code></code>").replace(/<link rel="(canonical|alternate|author)"[^>]*>/g, "").replace(/<meta (property="og|name="twitter):[^>]*>/g, "").replace(/<script type="application\/ld\+json">[^<]*<\/script>/, "");
   for (const file of [{ name: "styles.css", text: css }, { name: "index.html", text: htmlWithoutLinks }, ...sources]) {
     assert.ok(!/gradient\(/i.test(file.text.replace(/linear-gradient\(to (right|bottom), var\(--[a-z-]+\) 1px, transparent 1px\)/g, "")), `${file.name} must not use gradients beyond the 1px blueprint grid`);
     // The SVG namespace identifier and RFC 2606 example addresses (form defaults) are not network references.
@@ -117,7 +117,8 @@ test("REQ-DEMO-10/15/20: Spanish document, viewport, one module entry and the ec
   // REQ-DEMO-30: the shared bar is the only external script, deferred, and names this project. The one inline
   // script applies the stored theme before the first paint (REQ-DEMO-21) and touches nothing else.
   const scripts = html.match(/<script[^>]*>/g) ?? [];
-  assert.equal(scripts.length, 3);
+  // The fourth script is inert JSON-LD metadata (REQ-DEMO-31).
+  assert.equal(scripts.length, 4);
   const inline = html.match(/<script>([\s\S]*?)<\/script>/);
   assert.ok(inline, "inline theme script");
   assert.match(inline[1] as string, /^try\{var t=localStorage\.getItem\("modernizer\.theme"\);/);
@@ -148,7 +149,7 @@ test("REQ-DEMO-23: the page carries the author, the NainDev links and no generat
   assert.ok((html.match(/class="brand-mark"/g) ?? []).length >= 2, "isotype in the top bar and the footer");
 });
 
-test("REQ-DEMO-13: the published folder stays under 200 KB", () => {
+test("REQ-DEMO-13: the published folder stays under 210 KB", () => {
   const dist = new URL("dist/", demo);
   assert.ok(existsSync(dist), "run `npm run build` first");
   let total = 0;
@@ -161,7 +162,7 @@ test("REQ-DEMO-13: the published folder stays under 200 KB", () => {
     }
   };
   walk(dist.pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-  assert.ok(total < 200_000, `dist is ${total} bytes`);
+  assert.ok(total < 210_000, `dist is ${total} bytes`);
   for (const file of ["index.html", "main.js", "styles.css", "fonts/urbanist-var.woff2", "card.webp"]) {
     assert.ok(existsSync(new URL(file, dist)), `dist/${file}`);
   }

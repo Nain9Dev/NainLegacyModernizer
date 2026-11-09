@@ -34,6 +34,7 @@
 | T-020 | A | CI job builds the image and checks `/_modernizer/health` from the running container | Job green on the pull request |
 | T-014 | H | Decide on the ecosystem bar (ADR `next-demo-ecosystem-bar`) | Done: owner chose the shared bar (2026-11-03) |
 | T-022 | A | Load the shared ecosystem bar; layout unaffected when the script does not load | `npm test` green, both states rendered in a browser |
+| T-next-seo | A | Discovery baseline (REQ-DEMO-31): JSON-LD, Twitter card, author link, `robots.txt`, `sitemap.xml`, `llms.txt`, build copies them; size budget 210 KB | `npm test` green (`seo.test.ts` written first and seen failing) |
 | T-012 | H | Set the Pages custom domain `modernizer.naindev.com` (`gh api -X PUT repos/Nain9Dev/NainLegacyModernizer/pages -f cname=modernizer.naindev.com`), then enable HTTPS enforcement once the certificate is issued | `curl -sI https://modernizer.naindev.com/` answers 200 |
 
 ## Blockers
