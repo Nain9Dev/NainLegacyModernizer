@@ -34,6 +34,17 @@ public sealed class ParityHtmlRendererTests
     }
 
     [Fact]
+    public void Render_AsksSearchEnginesNotToIndexTheReport()
+    {
+        foreach (var language in Enum.GetValues<ReportLanguage>())
+        {
+            var html = ParityHtmlRenderer.Render(Sample(), language);
+
+            Assert.Contains("<meta name=\"robots\" content=\"noindex\">", html, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void Render_LeadsWithTheVerdict()
     {
         var notReady = ParityHtmlRenderer.Render(Sample());

@@ -85,6 +85,7 @@ public static class ParityHtmlRenderer
         var html = new StringBuilder();
         html.Append("<!doctype html>\n<html lang=\"").Append(w.Lang).Append("\">\n<head>\n<meta charset=\"utf-8\">\n");
         html.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n");
+        html.Append("<meta name=\"robots\" content=\"noindex\">\n");
         html.Append("<title>").Append(w.Title).Append("</title>\n<style>\n").Append(Style).Append("\n</style>\n</head>\n<body>\n<main>\n");
 
         html.Append("<header class=\"banner").Append(ready ? string.Empty : " bad").Append("\">\n");
