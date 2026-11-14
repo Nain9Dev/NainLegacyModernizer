@@ -14,6 +14,8 @@
 - Demo host that runs legacy, modern and gateway in one process; deterministic demo data shared by both backends,
   including an intentional VAT rounding difference caught by the shadow audit.
 - Integration tests that boot the gateway against in-memory legacy and modern servers.
+- Installable demo (REQ-INS-01 to 05): web app manifest, install icons and iOS tags so the demo installs from
+  Android Chrome and iOS Safari. No service worker. The published-size budget (REQ-DEMO-13) is now 220 KB.
 
 ### Changed
 - Static demo discoverability baseline (REQ-DEMO-31): `SoftwareApplication` JSON-LD, Twitter card tags, author

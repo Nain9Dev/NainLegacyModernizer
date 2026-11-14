@@ -59,7 +59,7 @@ run proves both answer the same before the cut-over.
   shall update statically. Animation shall have a visible pause control otherwise.
 - **REQ-DEMO-12** Text and UI component contrast shall meet WCAG 2.2 AA, verified by a test over the
   tokens in use.
-- **REQ-DEMO-13** The published folder shall weigh less than 210 KB in total (150 KB until the setup
+- **REQ-DEMO-13** The published folder shall weigh less than 220 KB in total (210 KB until the install icons of REQ-INS-02 were added, 150 KB until the setup
   generator was added, 200 KB until the discovery files of REQ-DEMO-31 were added), with no external fonts, styles or images and no external script other than
   the shared NainDev ecosystem bar (REQ-DEMO-30). The brand typeface (Urbanist, SIL Open Font License) is self-hosted with its
   licence file.

@@ -149,7 +149,7 @@ test("REQ-DEMO-23: the page carries the author, the NainDev links and no generat
   assert.ok((html.match(/class="brand-mark"/g) ?? []).length >= 2, "isotype in the top bar and the footer");
 });
 
-test("REQ-DEMO-13: the published folder stays under 210 KB", () => {
+test("REQ-DEMO-13: the published folder stays under 220 KB", () => {
   const dist = new URL("dist/", demo);
   assert.ok(existsSync(dist), "run `npm run build` first");
   let total = 0;
@@ -162,7 +162,7 @@ test("REQ-DEMO-13: the published folder stays under 210 KB", () => {
     }
   };
   walk(dist.pathname.replace(/^\/([A-Za-z]:)/, "$1"));
-  assert.ok(total < 210_000, `dist is ${total} bytes`);
+  assert.ok(total < 220_000, `dist is ${total} bytes`);
   for (const file of ["index.html", "main.js", "styles.css", "fonts/urbanist-var.woff2", "card.webp"]) {
     assert.ok(existsSync(new URL(file, dist)), `dist/${file}`);
   }
